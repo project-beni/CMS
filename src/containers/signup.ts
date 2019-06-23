@@ -52,6 +52,7 @@ const WithHandlers = withHandlers <RouteComponentProps, Handlers>({
         set({ path: `/users/${await getUid()}`, data: defaultUser })
           .then(() => {
             verify()
+            history.push('/order')
           })
       })
   }

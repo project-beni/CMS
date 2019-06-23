@@ -64,6 +64,7 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   }
 })
 export default compose(
+  withRouter,
   stateHandlers,
   WithHandlers,
   Lifecycle
