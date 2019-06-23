@@ -45,7 +45,7 @@ const WithHandlers = withHandlers <RouteComponentProps, Handlers>({
     createUser({ mail, pass })
       .then(async () => {
         const defaultUser = {
-          profiels: { mail, firstName, familyName, nickname },
+          profiles: { mail, firstName, familyName, nickname },
           mailConfirmation: false,
           position: 'writer'
         }
