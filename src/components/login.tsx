@@ -1,8 +1,48 @@
 import * as React from 'react'
-import { Button } from 'antd'
+import { Button, Form, Input } from 'antd'
+import { Formik } from 'formik'
 
-const Login: React.SFC<any> = ({ doLogin }) => (
-  <Button onClick={() => {doLogin({ mail: 'ta@asdf.asdf', pass: 'asdfasdf' })}}></Button>
+const { Item } = Form
+
+const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
+  <Formik
+      initialValues={{mail: '', pass: ''}}
+      onSubmit={onLogin}
+      render={({
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        initialValues,
+        values: { pass, mail },
+        setFieldValue
+      }) => (
+        <Form onSubmit={handleSubmit} >
+          <Item label='メールアドレス'>
+            <Input
+              name='mail'
+              onChange={handleChange}
+              value={mail}
+            />
+          </Item>
+          <Item label='パスワード'>
+            <Input.Password
+              name='pass'
+              onChange={handleChange}
+              value={pass}
+            />
+          </Item>
+          <Item>
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+          >
+            ログイン
+          </Button>
+          </Item>
+        </Form>
+        
+      )}
+    />
 )
 
 export default Login

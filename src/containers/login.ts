@@ -1,54 +1,38 @@
 import { connect } from 'react-redux'
-import { compose, lifecycle } from 'recompose'
-import { Dispatch } from 'redux'
-import * as firebase from 'firebase'
+import { compose, lifecycle, withHandlers } from 'recompose'
+import { message } from 'antd'
 
 import Login from '../components/login'
 
 import { signIn } from '../firebase/auth'
 
-import { loginSucceed } from '../stores/actions/auth'
-
-const mapStateToProps = (state: any) => ({
-  isAuth: state.isAuth
-})
+import { RouteComponentProps } from 'react-router';
 
 type Login = {
   mail: string
   pass: string
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  doLogin: async ({ mail, pass }: Login) => {
-    await signIn(mail, pass)
-      .then(() => {
-        console.log('succeed')
-      })
+type Actions = {
+  onLogin: ({mail, pass}: Login) => void
+}
+
+const WithHandlers = withHandlers <RouteComponentProps, Actions> ({
+  onLogin: ({ history }) => ({ mail, pass })=> {
+    signIn(mail, pass)
+      .then(() => history.push('/order'))
       .catch((err: Error) => {
-        console.log(err)
+        message.error(err.message, 10)
       })
-  },
-  refLogin: () => {
-    firebase.auth().onAuthStateChanged((user: any) => {
-      if (!user) {
-        return
-      }
-      dispatch(loginSucceed(user))
-    })
   }
 })
 
 const Lifecycle = lifecycle <any, {}> ({
-  componentDidMount() {
-    this.props.refLogin()
-  }
+  componentDidMount() {}
 })
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  WithHandlers,
   Lifecycle
 )(Login)
 

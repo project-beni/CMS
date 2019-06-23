@@ -35,11 +35,11 @@ const tailFormItemLayout = {
 
 const selectOptions = ['aaa', 'bbb', 'ccc']
 
-const RecruitingArticles: React.SFC<any> = ({ onSubmit }) => (
+const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categories }) => (
   <div>
     <h1>記事の発注</h1>
     <Formik
-      initialValues={{title: 'aaa'}}
+      initialValues={{title: ''}}
       onSubmit={onSubmit}
       render={({
         handleChange,
@@ -52,7 +52,7 @@ const RecruitingArticles: React.SFC<any> = ({ onSubmit }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
           <Item label='キーワード'>
             <Input
-              name='keyWord'
+              name='keyword'
               onChange={handleChange}
             />
           </Item>
@@ -67,8 +67,8 @@ const RecruitingArticles: React.SFC<any> = ({ onSubmit }) => (
               // defaultValue={}
             >
               {
-                selectOptions.map((val: string, index: number) => (
-                  <Option key={index} value={selectOptions[index]}>{selectOptions[index]}</Option>
+                tags.map((val: string, index: number) => (
+                  <Option key={index} value={tags[index]}>{tags[index]}</Option>
                 ))
               }
             </Select>
@@ -91,14 +91,19 @@ const RecruitingArticles: React.SFC<any> = ({ onSubmit }) => (
               // defaultValue={}
             >
               {
-                selectOptions.map((val: string, index: number) => (
-                  <Option key={index} value={selectOptions[index]}>{selectOptions[index]}</Option>
+                categories.map((val: string, index: number) => (
+                  <Option key={index} value={categories[index]}>{categories[index]}</Option>
                 ))
               }
             </Select>
           </Item>
           <Item　{...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit} >発注</Button>
+            <Button
+              type="primary"
+              onClick={handleSubmit}
+              loading={isLoading}
+              disabled={isLoading}
+            >発注</Button>
           </Item>
         </Form>
         

@@ -1,14 +1,19 @@
 import firebase from './'
 import 'firebase/database'
 
-export const set = (path: string, data: object) => {
+type DB = {
+  path: string
+  data: object | string | number | boolean
+}
+
+export const set = ({ path, data }: DB) => {
   return firebase
     .database()
     .ref(path)
     .update(data)
 }
 
-export const push = (path: string, data: any) => {
+export const push = ({ path, data }: DB) => {
   return firebase
     .database()
     .ref(path)

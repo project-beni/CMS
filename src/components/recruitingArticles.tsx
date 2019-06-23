@@ -1,6 +1,8 @@
 import * as React from 'react'
-import { Table } from 'antd'
+import { Table, Tag, Button, Popconfirm } from 'antd'
 import styled from 'styled-components'
+
+const { Column } = Table
 
 const List = styled(Table)`
   margin: 20px
@@ -9,7 +11,7 @@ const List = styled(Table)`
 const columns: any = [
   {
     title: 'name',
-    dataIndex: 'name',
+    dataIndex: 'title',
     filters: [
       {
         text: 'aaa',
@@ -23,36 +25,47 @@ const columns: any = [
     onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
     sorter: (a: any, b: any) => a.name.length - b.name.length,
     sortDirections: ['descend']
+  },
+  {
+    title: 'order date',
+    dataIndex: 'ordered'
+  },
+  {
+    title: 'keyword',
+    dataIndex: 'keyword'
   }
 ]
 
-const data = [
-  {
-    key: '1',
-    name: 'aaa'
-  },
-  {
-    key: '2',
-    name: 'bbb'
-  },
-  {
-    key: '3',
-    name: 'aaa'
-  },
-  {
-    key: '4',
-    name: 'bbb'
-  },
-  {
-    key: '5',
-    name: 'aaa'
-  }
-]
-
-const RecruitingArticles: React.SFC<any> = () => (
+const RecruitingArticles: React.SFC<any> = ({
+  dataSource,
+  editArticle,
+  isLoading
+}) => (
   <div>
     <h1>募集中の記事</h1>
-    <List columns={columns} dataSource={data} />
+    <List dataSource={dataSource} bordered loading={isLoading}>
+      <Column title='Name' dataIndex='title' />
+      <Column title='Order date' dataIndex='ordered' />
+      <Column
+        title='Tags'
+        render={({ tags }) => (
+          tags.map((tag: string, i: number) => (
+            <Tag key={i}>{tag}</Tag>
+          ))
+        )}
+      />
+      <Column
+        title='Article id'
+        render={({ id }) => (
+          <Popconfirm
+            title='本当に受注しますか？'
+            onConfirm={() => editArticle({id})}
+          >
+            <Button size='small'>受注する</Button>
+          </Popconfirm>
+        )}
+      />
+    </List>
   </div>
 )
 
