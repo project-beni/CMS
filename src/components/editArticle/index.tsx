@@ -19,7 +19,8 @@ import './index.css'
 const editArticles: React.SFC<any> = ({
   onChange,
   body,
-  save
+  save,
+  submit
 }) => {
   const customActions = baseActions.default.concat([
     {type: "inline", label: "U", style: "UNDERLINE", icon: FormatUnderlined}
@@ -69,9 +70,16 @@ const editArticles: React.SFC<any> = ({
       <Button
         onClick={save}
         style={{marginTop: '50px'}}
+      >保存</Button>
+      <Popconfirm
+        title='本当に提出しますか'
+        onConfirm={submit}
       >
-        保存
-      </Button>
+        <Button
+          type='danger'
+          style={{marginTop: '50px'}}
+        >提出</Button>
+      </Popconfirm>
     </div>
   )
 }

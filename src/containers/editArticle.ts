@@ -22,6 +22,7 @@ export type State = Body
 
 export type StateUpdates = {
   updateBody: ({ body }: State) => State
+  receiveData: ({ body }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -29,7 +30,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     body: editorStateFromRaw(null)
   },
   {
-    updateBody: (props) => ({ body }) => ({ ...props, body })
+    updateBody: (props) => ({ body }) => ({ ...props, body }),
+    receiveData: (props) => ({ body }) => ({ ...props, body})
   }
 )
 
@@ -39,35 +41,31 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData, receiveTitle, receiveComment, match }) => () => {
-    
-    listenStart(
-      `/articles/${match.params.id}`,
-      ({ contents: { bodies, title, comment }}: any
-    ) => {
-      receiveTitle(title)
-      receiveData(bodies)
-      receiveComment(comment)
-    })
+  fetchData: ({ receiveData, receiveComment, match }) => () => {
+    read(`/articles/${match.params.id}`)
+      .then((snapshot) => {
+        const { contents: { body }} = snapshot.val()
+        receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+      })
   },
   onChange: ({ updateBody }) => (body) => {
     updateBody({ body })
   },
   save: ({ body, match }) => () => {
     const article = editorStateToJSON(body)
-    console.log(article);
     
-    // set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
-    //   .then(() => {
-    //     message.success('保存しました')
-    //   })
-    //   .catch((err) => {
-    //     message.error(err.message)
-    //   })
+    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+      .then(() => {
+        message.success('保存しました')
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
   },
-  submit: ({ bodies, match, history }) => async () => {
+  submit: ({ body, match, history }) => async () => {
     const rootPath = `/articles/${match.params.id}`
-    await set({ path: `${rootPath}/contents`, data: { bodies } })
+    const article = editorStateToJSON(body)
+    await set({ path: `${rootPath}/contents`, data: { body: article } })
     set({ path: `${rootPath}`, data: { status: 'pending' } })
       .then(() => {
         message.success('記事を保存し，提出しました')
@@ -88,15 +86,15 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
     const isMailConfirmed = isEmailConfirmed()
     
     if (isMailConfirmed && isConfirmedOnDB) {
-      // fetchData()
+      fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
-      // await set({
-      //   path: confirmationPath,
-      //   data: { mailConfirmation: true }
-      // })
-      // fetchData()
+      await set({
+        path: confirmationPath,
+        data: { mailConfirmation: true }
+      })
+      fetchData()
     } else {
-      // history.push('/mailConfirmation')
+      history.push('/mailConfirmation')
     }
   }
 })

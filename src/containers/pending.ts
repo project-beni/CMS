@@ -4,7 +4,7 @@ import * as moment from 'moment'
 
 import { listenStart, push, read, set } from '../firebase/database'
 
-import Pengding from '../components/pengind'
+import Pengding from '../components/pending'
 import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
 import { message, Button } from 'antd';
 

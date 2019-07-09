@@ -1,6 +1,6 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-const { editorStateFromRaw } = require('megadraft')
+const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 
 import { listenStart, push, read, set } from '../firebase/database'
 
@@ -16,14 +16,16 @@ type State = {
 
 export type StateUpdates = {
   updateBody: ({ body } : State) => State
+  receiveData: ({ body }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
-    body: {}
+    body: editorStateFromRaw(null)
   },
   {
-    updateBody: (props) => ({ body }) => ({ ...props, body })
+    updateBody: (props) => ({ body }) => ({ ...props, body }),
+    receiveData: (props) => ({ body }) => ({ ...props, body })
   }
 )
 
@@ -33,26 +35,35 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData, receiveTitle, match }) => () => {
-    
-    listenStart(
-      `/articles/${match.params.id}`,
-      ({ contents: { bodies, title }}: any
-    ) => {  
-      receiveData(bodies)
-      receiveTitle(title)
-    })
+  fetchData: ({ receiveData, match }) => () => {
+    read(`/articles/${match.params.id}`)
+      .then((snapshot) => {
+        const { contents: { body }} = snapshot.val()
+        receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+      })
   },
-  onChange: ({ updateBody }) => ({ body }) => {
+  onChange: ({ updateBody }) => (body) => {
     updateBody({ body })
   },
-  reject: ({ body, match, history, comment }) => () => {
-    if (!comment) {
-      message.error('差し戻す場合はコメントを入力してください')
-      return
-    }
+  save: ({ body, match }) => () => {
+    const article = editorStateToJSON(body)
+    
+    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+      .then(() => {
+        message.success('保存しました')
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
+  },
+  reject: ({ body, match, history, comment }) => async () => {
+    // if (!comment) {
+    //   message.error('差し戻す場合はコメントを入力してください')
+    //   return
+    // }
     const rootPath = `/articles/${match.params.id}`
-    set({ path: `${rootPath}/contents`, data:{ comment }})
+    const article = editorStateToJSON(body)
+    await set({ path: `${rootPath}/contents`, data: { body: article } })
     set({ path: `${rootPath}`, data: { status: 'rejected' } })
       .then(() => {
         history.push('/checkList')
@@ -75,8 +86,6 @@ type LifecycleProps = RouteComponentProps | ActionProps
 const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
     const { fetchData, history, updateBody } = this.props
-    
-    updateBody({ body: editorStateFromRaw(null)})
     const userId = await getUid()
 
     const confirmationPath = `/users/${userId}`
@@ -84,15 +93,15 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
     const isMailConfirmed = isEmailConfirmed()
     
     if (isMailConfirmed && isConfirmedOnDB) {
-      // fetchData()
+      fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
-      // await set({
-      //   path: confirmationPath,
-      //   data: { mailConfirmation: true }
-      // })
-      // fetchData()
+      await set({
+        path: confirmationPath,
+        data: { mailConfirmation: true }
+      })
+      fetchData()
     } else {
-      // history.push('/mailConfirmation')
+      history.push('/mailConfirmation')
     }
   }
 })

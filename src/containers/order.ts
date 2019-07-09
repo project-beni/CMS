@@ -2,6 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { message } from 'antd'
 import * as moment from 'moment'
+const { editorStateToJSON, editorStateFromRaw } = require('megadraft')
 
 import Order from '../components/order'
 
@@ -81,13 +82,72 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     toggleLoading()
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
+    
+    let defaultBody: any = {
+      entityMap: {},
+      blocks: []
+    }
+    let loop = 0
+    headings.split('\n').forEach((line, i) => {
+      const content = line.slice(2, line.length)
+      if (true) {
+        let tag = ''
+        let main = ''
+        switch (line[0]) {
+          case '1':
+            tag = 'header-one'
+            main = content
+            break
+          case '2':
+            tag = 'header-two'
+            main = content
+            break
+          case '3':
+            tag ='header-three'
+            main = content
+            break
+          case '4':
+            tag = 'unstyled'
+            main = '画像挿入'
+            break
+          case '5':
+            tag = 'unstyled'
+            main = 'テキスト'
+            break
+          case '6':
+            tag = 'unstyled'
+            main = '表'
+            break
+          case '7':
+            tag = 'unstyled'
+            main = '内部リンク'
+            break
+          case '8':
+            tag = 'unstyled'
+            main = '外部リンク'
+            break
+          case '9':
+            tag = 'unstyled'
+            main = 'Twitterリンク'
+            break
+        }
+
+        defaultBody.blocks[loop] = {
+          "key": `heading${loop}`,
+          "text": main,
+          "type": tag,
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": [],
+          "data": {}
+        }
+        loop++
+      }
+    })
     const article = {
       contents: {
         title: title,
-        bodies: headings.split('\n').map((heading) => ({
-          heading,
-          body: '<p>本文</p>'
-        })),
+        body: editorStateToJSON(editorStateFromRaw(defaultBody)),
         keyword,
         tags: tagNames
       },
@@ -107,9 +167,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         } 
       }
     }
-    console.log(article);
-    
-
     push({ path: '/articles', data: article })
       .then(() => {
         history.push('/')

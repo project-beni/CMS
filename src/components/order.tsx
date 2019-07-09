@@ -13,11 +13,11 @@ const List = styled(Table)`
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 }
+    sm: { span: 6 }
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
+    sm: { span: 12 }
   }
 }
 
@@ -29,7 +29,7 @@ const tailFormItemLayout = {
     },
     sm: {
       span: 16,
-      offset: 8
+      offset: 6
     }
   }
 }
@@ -86,7 +86,7 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
               name='headings'
               onChange={handleChange}
               value={headings}
-              rows={4}
+              rows={15}
             />
           </Item>
           <Item label='カテゴリ'>
