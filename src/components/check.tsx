@@ -42,7 +42,7 @@ const RecruitingArticles: React.SFC<any> = ({
   isLoading
 }) => (
   <div>
-    <h1>受注中の記事</h1>
+    <h1>検品待ちの記事</h1>
     <List dataSource={dataSource} bordered loading={isLoading}>
       <Column title='Name' dataIndex='title' />
       <Column title='Order date' dataIndex='ordered' />
