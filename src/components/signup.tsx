@@ -15,7 +15,7 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
+    sm: { span: 12 }
   }
 }
 
@@ -32,7 +32,7 @@ const tailFormItemLayout = {
   }
 }
 
-const Signup: React.SFC<any> = ({ onSubmit }) => (
+const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
   <div>
     <h1>アカウントの作成</h1>
     <Formik
@@ -47,47 +47,33 @@ const Signup: React.SFC<any> = ({ onSubmit }) => (
       render={({
         handleChange,
         handleSubmit,
-        isSubmitting,
-        initialValues,
-        values: { nickname, familyName, firstName },
-        setFieldValue
+        values: { nickname },
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label='苗字'>
-            <Input
-              name='familyName'
-              onChange={handleChange}
-              value={familyName}
-            />
-          </Item>
-          <Item label='名前'>
-            <Input
-              name='firstName'
-              onChange={handleChange}
-              value={firstName}
-            />
-          </Item>
-          <Item label='ニックネーム'>
+          <Item label='ペンネーム'>
             <Input
               name='nickname'
               onChange={handleChange}
               value={nickname}
+              disabled={isLoading}
             />
           </Item>
           <Item label='メールアドレス'>
             <Input
               name='mail'
               onChange={handleChange}
+              disabled={isLoading}
             />
           </Item>
           <Item label='パスワード'>
             <Input.Password
               name='pass'
               onChange={handleChange}
+              disabled={isLoading}
             />
           </Item>
           <Item　{...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit} >発注</Button>
+            <Button type="primary" onClick={handleSubmit} disabled={isLoading} loading={isLoading}>作成</Button>
           </Item>
         </Form>
         

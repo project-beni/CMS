@@ -6,7 +6,7 @@ import { Breadcrumb, Icon, Layout, Menu } from 'antd'
 const { Sider } = Layout
 const { Item } = Menu
 
-const sidebar: React.SFC<any> = ({ position }) => (
+const sidebar: React.SFC<any> = ({ position, isAuth }) => (
   <Sider
     collapsible
     // defaultCollapsed
@@ -73,7 +73,7 @@ const sidebar: React.SFC<any> = ({ position }) => (
         <span>ログイン</span>
         <Link to='/login' />
       </Item>
-      <Item key='11' disabled={!position}>
+      <Item key='11' disabled={!isAuth}>
         <Icon type='logout' />
         <span>ログアウト</span>
         <Link to='/logout' />
