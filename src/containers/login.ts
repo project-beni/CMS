@@ -4,9 +4,10 @@ import { message } from 'antd'
 
 import Login from '../components/login'
 
-import { signIn } from '../firebase/auth'
+import { signIn, getUid } from '../firebase/auth'
 
 import { RouteComponentProps } from 'react-router';
+import { read } from '../firebase/database';
 
 type Login = {
   mail: string
@@ -20,7 +21,17 @@ type Actions = {
 const WithHandlers = withHandlers <RouteComponentProps, Actions> ({
   onLogin: ({ history }) => ({ mail, pass })=> {
     signIn(mail, pass)
-      .then(() => history.push('/order'))
+      .then(async () => {
+        const uid = await getUid()
+        const position = (await read(`/users/${uid}/position`)).val()
+        switch (position) {
+          case 'writer':
+            history.push('/articles/recruiting')
+            break
+          case 'director':
+            history.push('/order')
+        }
+      })
       .catch((err: Error) => {
         message.error(err.message, 10)
       })
