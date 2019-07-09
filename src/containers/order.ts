@@ -71,20 +71,24 @@ export type Article = {
 
 type FormValues = {
   title: string,
+  headings: string,
   keyword: string,
   tagNames: string[]
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ title, keyword, tagNames }: FormValues) => {
+  onSubmit: ({ toggleLoading, history }) => async({ title, headings,  keyword, tagNames }: FormValues) => {
     toggleLoading()
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
     const article = {
       contents: {
         title: title,
-        body: '<h2>見出し</h2><p>本文</p>',
-        keyword: keyword,
+        bodies: headings.split('\n').map((heading) => ({
+          heading,
+          body: '<p>本文</p>'
+        })),
+        keyword,
         tags: tagNames
       },
       status: 'ordered',
@@ -103,6 +107,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         } 
       }
     }
+    console.log(article);
+    
 
     push({ path: '/articles', data: article })
       .then(() => {
@@ -130,9 +136,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
 const Lifecyle = lifecycle <RouteComponentProps | any, {}, {}> ({
   async componentDidMount() {
     const { fetchData } = this.props
-    if (!(await getUid())) {
-      this.props.history.push('/login')
-    } 
     fetchData()
     const position = await getPosition()
     console.log(position)

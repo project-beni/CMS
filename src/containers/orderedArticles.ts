@@ -73,8 +73,6 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
     const { fetchData, history } = this.props
     const userId = await getUid()
-    
-    if (!userId) history.push('/login')
 
     const confirmationPath = `/users/${userId}`
     const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()

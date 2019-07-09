@@ -5,7 +5,7 @@ import * as moment from 'moment'
 import { listenStart, push, read, set } from '../firebase/database'
 
 import RecruitingArticles from '../components/recruitingArticles'
-import { signOut, getUid, isEmailConfirmed, isLogined } from '../firebase/auth';
+import { signOut, getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth';
 import { message, Button } from 'antd';
 
 type State = {
@@ -92,7 +92,7 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
     const { fetchData, history } = this.props
     
-    if (!(await isLogined())) {
+    if (!(await isLogedIn())) {
       history.push('/login')
     }
     

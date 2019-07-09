@@ -44,8 +44,8 @@ const RecruitingArticles: React.SFC<any> = ({
   <div>
     <h1>募集中の記事</h1>
     <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title='Name' dataIndex='title' />
-      <Column title='Order date' dataIndex='ordered' />
+      <Column title='タイトル' dataIndex='title' />
+      <Column title='発注日時' dataIndex='ordered' />
       <Column
         title='Tags'
         render={({ tags }) => (
@@ -55,7 +55,7 @@ const RecruitingArticles: React.SFC<any> = ({
         )}
       />
       <Column
-        title='Article id'
+        title='記事ID'
         render={({ id }) => (
           <Popconfirm
             title='本当に受注しますか？'

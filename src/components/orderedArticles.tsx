@@ -44,10 +44,10 @@ const RecruitingArticles: React.SFC<any> = ({
   <div>
     <h1>受注中の記事</h1>
     <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title='Name' dataIndex='title' />
-      <Column title='Order date' dataIndex='ordered' />
+      <Column title='タイトル' dataIndex='title' />
+      <Column title='発注日時' dataIndex='ordered' />
       <Column
-        title='Tags'
+        title='タグ'
         render={({ tags }) => (
           tags.map((tag: string, i: number) => (
             <Tag key={i}>{tag}</Tag>

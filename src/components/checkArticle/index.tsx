@@ -18,7 +18,7 @@ const EditButton: React.SFC<any> = ({cmd, arg, name}) => (
 )
 
 const editArticles: React.SFC<any> = ({
-  body,
+  bodies,
   handleChange,
   propertyWindow: { x, y, isDisplay },
   recieve,
@@ -38,12 +38,20 @@ const editArticles: React.SFC<any> = ({
       margin: '50px 100px'
     }}>
       <h1>{title}</h1>
-      <C
-        html={body}
-        tagName={'article'}
-        onChange={handleChange}
-        disabled={true}
-      />
+      {
+        bodies.map((part: any, index: number) => (
+          <React.Fragment>
+            <h2>{part.heading}</h2>
+            <C
+              html={part.body}
+              tagName={'article'}
+              onChange={(e: Event) => handleChange(e, index)}
+              disabled={false}
+              key={index}
+            />
+          </React.Fragment>
+        ))
+      }
       <TextArea
         rows={4}
         placeholder='差し戻しの場合のコメント'

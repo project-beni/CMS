@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Formik, FormikActions, FormikProps } from 'formik'
 const { Item } = Form
 const { Option } = Select
+const { TextArea } = Input
 
 const List = styled(Table)`
   margin: 20px
@@ -39,14 +40,14 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
   <div>
     <h1>記事の発注</h1>
     <Formik
-      initialValues={{title: ''}}
+      initialValues={{title: '', headings: ''}}
       onSubmit={onSubmit}
       render={({
         handleChange,
         handleSubmit,
         isSubmitting,
         initialValues,
-        values: { title },
+        values: { title, headings },
         setFieldValue
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
@@ -78,6 +79,14 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
               name='title'
               onChange={handleChange}
               value={title}
+            />
+          </Item>
+          <Item label='見出し'>
+            <TextArea
+              name='headings'
+              onChange={handleChange}
+              value={headings}
+              rows={4}
             />
           </Item>
           <Item label='カテゴリ'>
