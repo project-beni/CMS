@@ -41,7 +41,6 @@ const stateHandlers = withStateHandlers <State, Handlers> (
 
 export type Article = {
   contents: {
-    title: string,
     body: string,
     keyword: string,
     tags: string[],
@@ -71,15 +70,19 @@ export type Article = {
 }
 
 type FormValues = {
-  title: string,
   headings: string,
   keyword: string,
   tagNames: string[]
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ title, headings,  keyword, tagNames }: FormValues) => {
+  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames }: FormValues) => {
     toggleLoading()
+    if (!headings || !keyword || !tagNames) {
+      toggleLoading()
+      message.error('全て入力してください')
+      return
+    }
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
     
@@ -88,8 +91,12 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
       blocks: []
     }
     let loop = 0
+    let title = ''
     headings.split('\n').forEach((line, i) => {
       const content = line.slice(2, line.length)
+      if (i === 0) {
+        title = line.slice(2, line.length)
+      }
       if (true) {
         let tag = ''
         let main = ''
@@ -146,8 +153,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     })
     const article = {
       contents: {
-        title: title,
         body: editorStateToJSON(editorStateFromRaw(defaultBody)),
+        title,
         keyword,
         tags: tagNames
       },
@@ -169,10 +176,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     }
     push({ path: '/articles', data: article })
       .then(() => {
+        message.success('記事を発注しました．')
         history.push('/')
       })
       .catch((err: Error) => {
-        message.error(Error)
+        message.error(err)
       })
   },
   fetchData: ({ receiveCategories, receiveTags, tags, match }) => () => {

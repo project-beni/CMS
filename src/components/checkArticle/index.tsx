@@ -1,8 +1,6 @@
 import * as React from 'react'
 import {
-  Title,
   InsertLink,
-  FormatUnderlined,
   FormatListBulleted,
   FormatListNumbered,
   FormatQuote,

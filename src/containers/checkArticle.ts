@@ -10,7 +10,6 @@ import { message, Button } from 'antd';
 
 type State = {
   body?: any
-  title?: string
   comment?: string
 }
 
@@ -66,6 +65,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     await set({ path: `${rootPath}/contents`, data: { body: article } })
     set({ path: `${rootPath}`, data: { status: 'rejected' } })
       .then(() => {
+        message.warn('記事を差し戻しました')
         history.push('/checkList')
       })
       .catch((err) => {
@@ -76,6 +76,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const rootPath = `/articles/${match.params.id}`
     set({ path: `${rootPath}`, data: { status: 'accepted' } })
       .then(() => {
+        message.success('記事を受理しました')
         history.push('/checkList')
       })
   }

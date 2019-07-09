@@ -1,8 +1,7 @@
 import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
-import { Button, Card, Popconfirm, Drawer, Icon } from 'antd'
+import { Button, Popconfirm } from 'antd'
 import {
-  Title,
   InsertLink,
   FormatUnderlined,
   FormatListBulleted,
