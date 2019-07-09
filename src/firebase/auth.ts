@@ -22,21 +22,6 @@ export function signOut () {
   return firebase.auth().signOut()
 }
 
-export function signupWithLink(email: string) {
-  const actionCodeSettings = {
-    url: 'https://job-scope.firebaseapp.com',
-    handleCodeInApp: true
-  }
-  firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
-    .then(() => {
-      console.log('ok')
-      window.localStorage.setItem('emailForSignIn', email);
-    })
-    .catch((error) => {
-      throw new Error(error)
-    })
-}
-
 export function verify() {
   const user = firebase.auth().currentUser
   if (user) {
@@ -56,8 +41,12 @@ export function isEmailConfirmed () {
   return false
 }
 
-export function isLogined (): any {
+export function isLogedIn (): Promise<boolean> {
   return new Promise((resolve) => {
     firebase.auth().onAuthStateChanged((user: any) => resolve(!!user))
   })
+}
+
+export function loglog () {
+  return firebase.auth().currentUser
 }

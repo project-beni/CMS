@@ -4,15 +4,12 @@ import * as moment from 'moment'
 
 import Signup from '../components/signup'
 
-import { createUser, signupWithLink, isEmailConfirmed, getUid, verify } from '../firebase/auth'
+import { createUser, isEmailConfirmed, getUid, verify } from '../firebase/auth'
 import { set, read } from '../firebase/database';
 import Routes from '../routes';
 
 const Lifecyle = lifecycle <RouteComponentProps, {}> ({
   async componentWillUpdate() {
-    if (!(await getUid())) {
-      this.props.history.push('/signin')
-    }
     const confirmationPath = `users/${await getUid()}/mailConfirmation`
     const isConfirmedOnDB = (await read(confirmationPath)).val()
     const isConfirmed = isEmailConfirmed()
