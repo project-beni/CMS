@@ -10,18 +10,22 @@ import { message, Button } from 'antd';
 
 type State = {
   position : '' | 'director' | 'writer'
+  isAuth: boolean
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
+  authed: () => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
-    position: ''
+    position: '',
+    isAuth: false
   },
   {
-    receiveData: () => ({ position }: any) => ({ position })
+    receiveData: (props) => ({ position }: State) => ({ ...props, position }),
+    authed: (props) => () => ({ ...props, isAuth: true })
   }
 )
 
@@ -41,10 +45,14 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
-    const { fetchPosition, history } = this.props
+    const { fetchPosition, history, authed } = this.props
     const userId = await getUid()
     
-    if (!userId) history.push('/login')
+    if (!userId) {
+      history.push('/login')
+    } else {
+      authed()
+    }
 
     const confirmationPath = `/users/${userId}`
     const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()

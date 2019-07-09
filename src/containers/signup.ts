@@ -4,19 +4,24 @@ import * as moment from 'moment'
 
 import Signup from '../components/signup'
 
-import { createUser, signupWithLink, getUid, verify } from '../firebase/auth'
+import { createUser, getUid, verify } from '../firebase/auth'
 import { set } from '../firebase/database';
+import { message } from 'antd';
 
 type State = {
-  selected: string
+  isLoading: boolean
 }
 
-const stateHandlers = withStateHandlers <State, any> (
+type StateHandlers = {
+  toggleLoading: ({ isLoading }: State) => State
+}
+
+const stateHandlers = withStateHandlers <State, StateHandlers> (
   {
-    selected: 'asdf'
+    isLoading: false
   },
   {
-    submit: () => {}
+    toggleLoading: (props) => () => ({ ...props, isLoading: !props.isLoading})
   }
 )
 
@@ -24,35 +29,39 @@ const now = moment().format('YYYY-MM-DD-hh-mm')
 
 type FormValues = {
   mail: string
-  firstName: string
-  familyName: string
   nickname: string
   pass: string
 }
 
 type Handlers = {
   onSubmit: ({
-    firstName,
-    familyName,
     nickname,
     mail,
     pass
   }: FormValues) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps, Handlers>({
-  onSubmit: ({ history }) => ({ mail, firstName, familyName, nickname, pass }) => {
+const WithHandlers = withHandlers <RouteComponentProps | any, Handlers>({
+  onSubmit: ({ history, toggleLoading }) => ({ mail, nickname, pass }) => {
+    toggleLoading()
+    if (!mail || !nickname || !pass) {
+      message.error('全て入力してください')
+      toggleLoading()
+      return
+    }
     createUser({ mail, pass })
       .then(async () => {
         const defaultUser = {
-          profiles: { mail, firstName, familyName, nickname },
+          profiles: { mail, nickname },
           mailConfirmation: false,
           position: 'writer'
         }
         set({ path: `/users/${await getUid()}`, data: defaultUser })
           .then(() => {
             verify()
-            history.push('/order')
+            message.success('設定されたメールに確認メールを送信しました。', 10)
+            toggleLoading()
+            history.push('/articles/recruiting')
           })
       })
   }
