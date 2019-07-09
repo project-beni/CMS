@@ -80,7 +80,7 @@ const sidebar: React.SFC<any> = ({ position, isAuth }) => (
       </Item>
       <Item key='12' disabled={position!==''}>
         <Icon type='user-add' />
-        <span>サインアップ</span>
+        <span>新規登録</span>
         <Link to='/signup' />
       </Item>
     </Menu>

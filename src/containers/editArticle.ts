@@ -14,7 +14,6 @@ import { message, Button } from 'antd';
 
 type Body = {
   body: any
-  title?: string
   comment?: string
 }
 

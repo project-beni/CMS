@@ -45,9 +45,7 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
       render={({
         handleChange,
         handleSubmit,
-        isSubmitting,
-        initialValues,
-        values: { title, headings },
+        values: { headings },
         setFieldValue
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
@@ -74,21 +72,6 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
               }
             </Select>
           </Item>
-          <Item label='タイトル'>
-            <Input
-              name='title'
-              onChange={handleChange}
-              value={title}
-            />
-          </Item>
-          <Item label='見出し'>
-            <TextArea
-              name='headings'
-              onChange={handleChange}
-              value={headings}
-              rows={15}
-            />
-          </Item>
           <Item label='カテゴリ'>
             <Select
               mode="multiple"
@@ -105,6 +88,14 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
                 ))
               }
             </Select>
+          </Item>
+          <Item label='見出し'>
+            <TextArea
+              name='headings'
+              onChange={handleChange}
+              value={headings}
+              rows={15}
+            />
           </Item>
           <Item　{...tailFormItemLayout}>
             <Button
