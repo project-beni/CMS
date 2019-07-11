@@ -27,8 +27,9 @@ import rejected from './containers/rejected'
 import Check from './containers/check'
 import CheckArticle from './containers/checkArticle'
 import Accepted from './containers/accepted'
-import CategoriesAndTags from './containers/categoriesAndTags';
-import Auth from './containers/auth';
+import CategoriesAndTags from './containers/categoriesAndTags'
+import Auth from './containers/auth'
+import SearchImages from './containers/searchImages'
 
 const Routes: React.SFC<any> = ({ isAuth }) => (
   <Provider store={store}>
@@ -57,6 +58,7 @@ const Routes: React.SFC<any> = ({ isAuth }) => (
                   <Route path={'/checkList'} exact={true} component={Check} />
                   <Route path={'/checkList/:id'} exact={true} component={CheckArticle} />
                   <Route path={'/categoriesAndTags'} exact={true} component={CategoriesAndTags} />
+                  <Route path={'/searchImages'} exact={true} component={SearchImages} />
                 </Auth>
               </Switch>
             </Content>

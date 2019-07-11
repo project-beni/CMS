@@ -15,6 +15,11 @@ import { message, Button } from 'antd';
 type Body = {
   body: any
   comment?: string
+  isDrawerVisible: boolean
+  counts: {
+    type: 'header-one' | 'header-two' | 'header-three' | 'paragraph' | 'unstyled'
+    count: number
+  }[]
 }
 
 export type State = Body
@@ -22,15 +27,21 @@ export type State = Body
 export type StateUpdates = {
   updateBody: ({ body }: State) => State
   receiveData: ({ body }: State) => State
+  toggleDrawer: ({ isDrawerVisible }: State) => State
+  setCounts: ({ counts }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
-    body: editorStateFromRaw(null)
+    body: editorStateFromRaw(null),
+    isDrawerVisible: false,
+    counts: []
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
-    receiveData: (props) => ({ body }) => ({ ...props, body})
+    receiveData: (props) => ({ body }) => ({ ...props, body}),
+    toggleDrawer: (props) => () => ({ ...props, isDrawerVisible: !props.isDrawerVisible }),
+    setCounts: (props) => ({ counts }) => ({ ...props, counts }) 
   }
 )
 
@@ -40,15 +51,35 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData, receiveComment, match }) => () => {
+  fetchData: ({ receiveData, setCounts, match }) => () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
         const { contents: { body }} = snapshot.val()
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        
+        const changed = JSON.parse(body).blocks
+        
+        const counts = changed.map((content: any) => {
+          return {
+            count: content.text.length,
+            type: content.type
+          }
+        })
+        setCounts({ counts })
       })
   },
-  onChange: ({ updateBody }) => (body) => {
-    updateBody({ body })
+  onChange: ({ updateBody, setCounts }) => (updated: any) => {
+    const changed = updated.getCurrentContent().getBlocksAsArray()
+    const counts = changed.map((content: any) => {
+      return {
+        count: content.text.length,
+        type: content.type
+      }
+    })
+    console.log(counts);
+    
+    setCounts({ counts })
+    updateBody({ body: updated })
   },
   save: ({ body, match }) => () => {
     const article = editorStateToJSON(body)
