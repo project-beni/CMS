@@ -12,8 +12,8 @@ console.log(process.env)
 const UNSPLASH_TOKEN: any = process.env.UNSPLASH_TOKEN
 const UNSPLASH_SECRET: any = process.env.UNSPLASH_SECRET
 const unsplash = new Unsplash({
-  applicationId: UNSPLASH_TOKEN,
-  secret: UNSPLASH_SECRET
+  applicationId: '2a60e2b4161b695c26e3dc8a19d89314c81d251a1c0478fd3fb265c4bef809f5',
+  secret: 'feda0b9397c36257b2bdf02e9dbfa8362e80f6cbd80fb91fd352d103e726eb5a'
 })
 
 type State = {
