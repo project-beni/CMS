@@ -43,7 +43,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'ordered') {
             const {
-              contents: { keyword, tags, title },
+              contents: { keyword, tags, title, description },
               dates: { ordered }
             } = val[key]
             dataSource.push({
@@ -51,6 +51,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               id: key,
               ordered,
               keyword,
+              description,
               tags,
               title
             }) 
@@ -78,7 +79,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     await set({ path: `/articles/${id}/dates`, data: date })
     await set({ path: `/articles/${id}/histories`, data: histories })
     await set({ path: `/articles/${id}`, data: status })
-    push({ path: `/users/${userId}/articles/writing`, data: id })
+    push({ path: `/users/${userId}/articles/writings`, data: id })
       .then(() => {
         message.success('記事を受注しました．「受注中」の記事から執筆できます')
       })

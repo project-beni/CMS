@@ -70,19 +70,21 @@ export type Article = {
 }
 
 type FormValues = {
-  headings: string,
-  keyword: string,
+  headings: string
+  keyword: string
+  title: string
   tagNames: string[]
+  description: string
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames }: FormValues) => {
+  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title, description }: FormValues) => {
     toggleLoading()
-    if (!headings || !keyword || !tagNames) {
-      toggleLoading()
-      message.error('全て入力してください')
-      return
-    }
+    // if (!headings || !keyword || !tagNames || !title) {
+    //   toggleLoading()
+    //   message.error('全て入力してください')
+    //   return
+    // }
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
     
@@ -91,16 +93,16 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
       blocks: []
     }
     let loop = 0
-    let title = ''
     headings.split('\n').forEach((line, i) => {
       const content = line.slice(2, line.length)
-      if (i === 0) {
-        title = line.slice(2, line.length)
-      }
       if (true) {
         let tag = ''
         let main = ''
         switch (line[0]) {
+          case 'D':
+            tag = 'paragraph'
+            main = content
+            break
           case '1':
             tag = 'header-one'
             main = content
@@ -110,37 +112,37 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
             main = content
             break
           case '3':
-            tag ='header-three'
+            tag = 'header-three'
             main = content
             break
           case '4':
             tag = 'unstyled'
-            main = '画像挿入'
+            main = content || '画像挿入'
             break
           case '5':
-            tag = 'unstyled'
-            main = 'テキスト'
+            tag = 'paragraph'
+            main = content || 'テキスト'
             break
           case '6':
             tag = 'unstyled'
-            main = '表'
+            main = content || '表'
             break
           case '7':
             tag = 'unstyled'
-            main = '内部リンク'
+            main = content || '内部リンク'
             break
           case '8':
             tag = 'unstyled'
-            main = '外部リンク'
+            main = content || '外部リンク'
             break
           case '9':
             tag = 'unstyled'
-            main = 'Twitterリンク'
+            main = content || 'Twitterリンク'
             break
         }
 
         defaultBody.blocks[loop] = {
-          "key": `heading${loop}`,
+          "key": `content${loop}`,
           "text": main,
           "type": tag,
           "depth": 0,
@@ -155,8 +157,9 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
       contents: {
         body: editorStateToJSON(editorStateFromRaw(defaultBody)),
         title,
-        keyword,
-        tags: tagNames
+        keyword: keyword.split('\n').map((key) => key),
+        tags: tagNames,
+        description
       },
       status: 'ordered',
       dates: {
