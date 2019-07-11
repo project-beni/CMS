@@ -65,11 +65,12 @@ const editArticles: React.SFC<any> = ({
         <Col sm={1}>
           <div className='megadraft' id='counts' style={{ marginTop: '3em' }}>
             {
-              counts.map((content: any) => {
+              counts.map((content: any, i: number) => {
                 switch (content.type) {
                   case 'header-one':
                     return (
                     <h1
+                    key={i}
                       style={{
                         lineHeight: '2em',
                         fontSize: '2em',
@@ -81,6 +82,7 @@ const editArticles: React.SFC<any> = ({
                   case 'header-two':
                     return (
                       <h2
+                        key={i}
                         style={{
                           lineHeight: '1.5em',
                           fontSize: '1.5em',
@@ -93,6 +95,7 @@ const editArticles: React.SFC<any> = ({
                   case 'header-three':
                     return (
                       <h3
+                        key={i}
                         style={{
                           lineHeight: '1.2em',
                           fontSize: '1.2em',
@@ -103,6 +106,7 @@ const editArticles: React.SFC<any> = ({
                   case 'paragraph':
                     return (
                       <div
+                        key={i}
                         className='paragraph'
                         style={{
                           marginBottom: '1.4em'
@@ -111,11 +115,12 @@ const editArticles: React.SFC<any> = ({
                     )
                     break
                   case 'unstyled':
-                      return <div>{content.count}</div>
+                      return <div key={i}>{content.count}</div>
                       break
                   case 'atomic':
                     return (
                       <div
+                        key={i}
                         style={{ margin: '25em 0'}}
                       >画像</div>
                     )

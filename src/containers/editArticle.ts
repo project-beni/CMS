@@ -76,7 +76,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         type: content.type
       }
     })
-    console.log(counts);
     
     setCounts({ counts })
     updateBody({ body: updated })
