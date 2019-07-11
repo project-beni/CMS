@@ -11,7 +11,8 @@
     "dev:ts": "webpack-dev-server --content-base dist",
     "dev:pug": "pug src -o dist -w",
     "prebuild": "rimraf dist",
-    "predev": "yarn run build"
+    "predev": "yarn run build",
+    "start": "npm run dev"
   },
   "repository": "git+https://github.com/project-beni/CMS.git",
   "keywords": [],
