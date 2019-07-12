@@ -22,6 +22,7 @@ const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
               name='mail'
               onChange={handleChange}
               value={mail}
+              disabled={isLoading}
             />
           </Item>
           <Item label='パスワード'>
@@ -29,12 +30,15 @@ const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
               name='pass'
               onChange={handleChange}
               value={pass}
+              disabled={isLoading}
             />
           </Item>
           <Item>
           <Button
             type="primary"
             onClick={handleSubmit}
+            disabled={isLoading}
+            loading={isLoading}
           >
             ログイン
           </Button>

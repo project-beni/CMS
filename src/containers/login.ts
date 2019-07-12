@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose, lifecycle, withHandlers } from 'recompose'
+import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { message } from 'antd'
 
 import Login from '../components/login'
@@ -18,8 +18,18 @@ type Actions = {
   onLogin: ({mail, pass}: Login) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps, Actions> ({
-  onLogin: ({ history }) => ({ mail, pass })=> {
+const WithStateHandlers = withStateHandlers <any, any> (
+    {
+      isLoading: false
+    },
+    {
+      toggleLoading: (props) => () => ({ isLoading: !props.isLoading })
+    }
+  )
+
+const WithHandlers = withHandlers <RouteComponentProps | any, Actions> ({
+  onLogin: ({ history, toggleLoading }) => ({ mail, pass })=> {
+    toggleLoading()
     signIn(mail, pass)
       .then(async () => {
         const uid = await getUid()
@@ -33,6 +43,7 @@ const WithHandlers = withHandlers <RouteComponentProps, Actions> ({
         }
       })
       .catch((err: Error) => {
+        toggleLoading()
         message.error(err.message, 10)
       })
   }
@@ -43,6 +54,7 @@ const Lifecycle = lifecycle <any, {}> ({
 })
 
 export default compose(
+  WithStateHandlers,
   WithHandlers,
   Lifecycle
 )(Login)
