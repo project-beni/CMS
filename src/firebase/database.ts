@@ -36,7 +36,7 @@ export const listenStart = (path: string, cb: Function) => {
     })
 }
 
-export const remove = (path: string) => {
+export const remove = ({ path }: { path: string }) => {
   return firebase
     .database()
     .ref(path)

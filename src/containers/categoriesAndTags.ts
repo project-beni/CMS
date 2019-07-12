@@ -3,34 +3,24 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import * as moment from 'moment'
 import * as sanitizeHTML from 'sanitize-html'
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, push, read, set, remove } from '../firebase/database'
 
 import CatesAndTags from '../components/categoriesAndTags'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { signOut, getUid, isEmailConfirmed } from '../firebase/auth'
+import { message, Button } from 'antd'
 
-type Body = { body: string }
-type PropertyWindow = {
-  propertyWindow: {
-    x: number
-    y: number
-    isDisplay: boolean
-  }
-}
-type S = {
+type State = {
   categories: string[]
   tags: string[]
+  isLoading: boolean
+  body: string
 }
-export type State = Body | PropertyWindow | S
 
 export type StateUpdates = {
   receiveCategories: (categories: any) => any
   receiveTags: (categories: any) => any
-  updateBody: ({ body }: Body) => State
-  updateWindow: ({
-    x, y, isDisplay
-  }: PropertyWindow['propertyWindow']) => State
-  // addCategory: (e: any) => any
+  updateBody: ({ body }: State) => State
+  toggleLoading: () => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -38,85 +28,99 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     body: '',
     categories: [],
     tags: [],
-    propertyWindow: {
-      x: 0,
-      y: 0,
-      isDisplay: false
-    }
+    isLoading: true
   },
   {
-    receiveCategories: (props) => (categories) => {
-      // return { ...props, body: dataSource }
-      return { ...props, categories }
-    },
-    receiveTags: (props) => (tags) => {
-      // return { ...props, body: dataSource }
-      return { ...props, tags }
-    },
-    updateBody: (props) => ({ body }) => {
-      // return { ...props, body }
-      return { body }
-    },
-    updateWindow: (props) => ({ x, y, isDisplay }) => {
-      return {
-        ...props,
-        propertyWindow: { x, y, isDisplay }
-      }
-    }
+    receiveCategories: (props) => (categories) => ({ ...props, categories }),
+    receiveTags: (props) => (tags) => ({ ...props, tags }),
+    updateBody: (props) => ({ body }) => ({ ...props, body }),
+    toggleLoading: (props) => () => ({ ...props, isLoading: false })
   }
 )
 
 type ActionProps = {
   fetchData: () => void
+  // deleteTag: (a: any) => Void
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   addCategory: ({ categories }: any) => ({target: { value }}: any) => {
-    if (value && categories.indexOf(value) === -1) {
-      categories.push(value)
-      console.log(categories)
-      
-      set({
-        path: '/categories',
-        data: categories
-      })
+    let isExist = false
+    categories.forEach((categorie: any) => {
+      if (value === categorie.value) {
+        isExist = true
+      }
+    })
+    if (!isExist) {
+      push({ path: '/categories', data: value })
+        .then(() => message.success('カテゴリーを追加しました'))
+    } else {
+      message.warning('すでに存在するカテゴリーです')
     }
   },
   addTag: ({ tags }: any) => ({target: { value }}: any) => {
-    if (value && tags.indexOf(value) === -1) {
-      tags.push(value)
-      console.log(tags)
-      
-      set({
-        path: '/tags',
-        data: tags
-      })
+    let isExist = false
+    tags.forEach((tag: any) => {
+      if (value === tag.value) {
+        isExist = true
+      }
+    })
+    if (!isExist) {
+      push({ path: '/tags', data: value })
+        .then(() => message.success('タグを追加しました'))
+    } else {
+      message.warning('すでに存在するタグです')
     }
   },
-  fetchData: ({ receiveCategories, receiveTags, tags, match }) => () => {
+  fetchData: ({ receiveCategories, receiveTags, toggleLoading }) => () => {
     
     listenStart(
       '/categories',
-      (categories: string[]) => {  
-      receiveCategories(categories)
+      (categories: any) => {
+        const result = Object.keys(categories).map((key: string) => {
+          return {
+            key,
+            value: categories[key]
+          }
+        })
+        
+      receiveCategories(result)
+      toggleLoading()
     })
     listenStart(
       '/tags',
-      (tags: string[]) => {  
-        receiveTags(tags)
+      (tags: any) => {
+        const result = Object.keys(tags).map((key: string) => {
+          return {
+            key,
+            value: tags[key]
+          }
+        })
+        receiveTags(result)
     })
+  },
+  deleteTag: () => (key: string) => {
+    remove({ path: `/tags/${key}` })
+      .then(() => {
+        message.success('タグを削除しました')
+      })
+      .catch((err: Error) => {
+        message.error(`エラーが発生しました：${err}`)
+      })
+  },
+  deleteCategorie: () => (key: string) => {
+    remove({ path: `/categories/${key}` })
+      .then(() => {
+        message.success('カテゴリーを削除しました')
+      })
+      .catch((err: Error) => {
+        message.error(`エラーが発生しました：${err}`)
+      })
   },
   handleChange: ({ updateBody }) => (e: any) => {
     const body = e.target.value
     updateBody({body})
     
-  },
-  sanitize: ({ body, updateBody }) => () => {
-    const sanitizeConf = {
-      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'p', 'h1', 'h2', 'h3'],
-      allowedAttributes: { a: ['href'] }
-    }
-    updateBody(sanitizeHTML(body, sanitizeConf))
   },
   reject: ({ body, match, history }) => () => {
     const rootPath = `/articles/${match.params.id}`
@@ -139,19 +143,6 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
-    // const editArea = document.getElementsByTagName('article')[0]
-    // let [x, y] = [0, 0]
-    
-    // editArea.addEventListener('mousedown', ({ pageX, pageY }) => {
-    //   editArea.addEventListener('mouseup', (e) => {
-    //     [x, y] = [(pageX+e.pageX) / 2, (pageY+e.pageY) / 2 ]
-    //     this.props.updateWindow({x, y, isDisplay: !window.getSelection()!.isCollapsed})
-    //   })
-    // })
-    // editArea.addEventListener('keydown', ({ keyCode }) => {
-    //   console.log(keyCode)
-    //   if (37 < keyCode || keyCode < 40) return
-    // })
     const { fetchData, history } = this.props
     const userId = await getUid()
 

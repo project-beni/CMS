@@ -190,13 +190,17 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     
     listenStart(
       '/categories',
-      (categories: string[]) => {  
-      receiveCategories(categories)
+      (categories: any) => {  
+        const result = Object.keys(categories).map((key: string) => categories[key] )
+      receiveCategories(result)
     })
     listenStart(
       '/tags',
-      (tags: string[]) => {  
-        receiveTags(tags)
+      (tags: any) => {  
+        console.log(tags);
+        
+        const result = Object.keys(tags).map((key: string) => tags[key] )
+        receiveTags(result)
     })
   },
 })

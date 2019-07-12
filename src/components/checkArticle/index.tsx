@@ -7,7 +7,7 @@ import {
   FormatBold,
   FormatItalic
 } from '@material-ui/icons'
-import { Button, Card, Input, Popconfirm } from 'antd'
+import { Button, Card, Input, Popconfirm, Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import './index.css'
@@ -61,7 +61,8 @@ const editArticles: React.SFC<any> = ({
   onChange,
   body,
   save,
-  changeComment
+  changeComment,
+  counts
 }) => {
   const PropertyCard = styled(Card)`
     position: fixed;
@@ -73,42 +74,132 @@ const editArticles: React.SFC<any> = ({
     <div style={{
       margin: '50px 100px'
     }}>
-      <MegadraftEditor
-        editorState={body}
-        onChange={onChange}
-        placeholder='ここから本文'
-        actions={actions}
-        // sidebarRendererFn={() => (
-        //   <p>asdf</p>
-        // )}
-      />
-      {/* <TextArea
-        rows={4}
-        placeholder='差し戻しの場合のコメント'
-        onChange={changeComment}
-      /> */}
-      <Button
-        onClick={save}
-        style={{marginTop: '50px'}}
-      >保存</Button>
-      <Popconfirm
-        title='本当に受理しますか？'
-        onConfirm={recieve}
+      <Row>
+        <Col sm={1}>
+          <div className='megadraft' id='counts' style={{ marginTop: '3em' }}>
+            {
+              counts.map((content: any, i: number) => {
+                switch (content.type) {
+                  case 'header-one':
+                    return (
+                    <h1
+                    key={i}
+                      style={{
+                        lineHeight: '2em',
+                        fontSize: '2em',
+                        margin: '1.5em 0'
+                      }}
+                    >大</h1>
+                    )
+                    break
+                  case 'header-two':
+                    return (
+                      <h2
+                        key={i}
+                        style={{
+                          lineHeight: '1.5em',
+                          fontSize: '1.5em',
+                          margin: '1em 0',
+                          fontWeight: 400
+                        }}
+                      >中</h2>
+                    )
+                    break
+                  case 'header-three':
+                    return (
+                      <h3
+                        key={i}
+                        style={{
+                          lineHeight: '1.2em',
+                          fontSize: '1.2em',
+                        }}
+                      >小</h3>
+                    )
+                    break
+                  case 'paragraph':
+                    return (
+                      <div
+                        key={i}
+                        className='paragraph'
+                        style={{
+                          marginBottom: '1.4em'
+                        }}
+                      >{content.count}</div>
+                    )
+                    break
+                  case 'unstyled':
+                      return <div key={i}>{content.count}</div>
+                      break
+                  case 'atomic':
+                    return (
+                      <div
+                        key={i}
+                        style={{ margin: '25em 0'}}
+                      >画像</div>
+                    )
+                    break   
+                  default:
+                    return null
+                }
+              })
+            }
+          </div>
+        </Col>
+        <Col span={3}></Col>
+        <Col sm={20}>
+          <MegadraftEditor
+            editorState={body}
+            onChange={onChange}
+            placeholder='ここから本文'
+            actions={actions}
+            // readOnly={true}
+            // keyBindings={[
+            //   {
+            //     name: "save",
+            //     isKeyBound: (e: any) => {
+            //       return e.keyCode === 13
+            //     },
+            //     action: () => {}}
+            // ]}
+            // sidebarRendererFn={() => (
+            //   <p>asdf</p>
+            // )}
+          />
+        </Col>
+      </Row>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 30,
+          left: 300,
+          zIndex: 1000,
+          backgroundColor: '#eee',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+        }}
       >
         <Button
-          type='primary'
-          style={{ margin: '0 15px'}}
-        >受理</Button>
-      </Popconfirm>
-      <Popconfirm
-        title='本当に差し戻しますか？'
-        onConfirm={reject}
-      >
-        <Button
-          type='danger'
-          style={{ margin: '0 15px'}}
-        >差し戻す</Button>
-      </Popconfirm>
+          onClick={save}
+          style={{marginTop: '50px'}}
+        >保存</Button>
+        <Popconfirm
+          title='本当に受理しますか？'
+          onConfirm={recieve}
+        >
+          <Button
+            type='primary'
+            style={{ margin: '0 15px'}}
+          >受理</Button>
+        </Popconfirm>
+        <Popconfirm
+          title='本当に差し戻しますか？'
+          onConfirm={reject}
+        >
+          <Button
+            type='danger'
+            style={{ margin: '0 15px'}}
+          >差し戻す</Button>
+        </Popconfirm>
+      </div>
       {/* <PropertyCard>
         <EditButton cmd='italic' name='斜体' />
         <EditButton cmd='bold'  name='太字' />
