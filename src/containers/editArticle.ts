@@ -18,6 +18,7 @@ type Body = {
   counts: {
     type: 'header-one' | 'header-two' | 'header-three' | 'paragraph' | 'unstyled'
     count: number
+    height: number
   }[]
   countAll: number
 }
@@ -77,8 +78,19 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           }
         })
         setCountAll({ countAll })
+
+        const asdf = document.getElementsByClassName('public-DraftEditor-content')
+        const contents = asdf[0].childNodes[0].childNodes
+        let styles: any = []
+        Array.prototype.forEach.call(contents, (content: any, i: number) => {
+          styles[i] = {
+            height: content.offsetHeight,
+            count: counts[i].count,
+            type: counts[i].type
+          }
+        })
         
-        setCounts({ counts })
+        setCounts({ counts: styles })
       })
   },
   onChange: ({ updateBody, setCounts }) => (updated: any) => {
@@ -89,9 +101,21 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         type: content.type
       }
     })
-    
-    setCounts({ counts })
     updateBody({ body: updated })
+
+    const asdf = document.getElementsByClassName('public-DraftEditor-content')
+    const contents = asdf[0].childNodes[0].childNodes
+    let styles: any = []
+    Array.prototype.forEach.call(contents, (content: any, i: number) => {
+      styles[i] = {
+        height: content.offsetHeight,
+        count: counts[i].count,
+        type: counts[i].type
+      }
+    })
+    setCounts({ counts: styles })
+    
+    
   },
   save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)

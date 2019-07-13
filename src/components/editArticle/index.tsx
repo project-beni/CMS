@@ -72,9 +72,8 @@ const editArticles: React.SFC<any> = ({
                     <h1
                     key={i}
                       style={{
-                        lineHeight: '2em',
-                        fontSize: '2em',
-                        margin: '1.5em 0'
+                        lineHeight: `${content.height}px`,
+                        margin: '1em 0'
                       }}
                     >大</h1>
                     )
@@ -84,10 +83,9 @@ const editArticles: React.SFC<any> = ({
                       <h2
                         key={i}
                         style={{
-                          lineHeight: '1.5em',
-                          fontSize: '1.5em',
-                          margin: '1em 0',
-                          fontWeight: 400
+                          lineHeight: `${content.height}px`,
+                          fontWeight: 400,
+                          margin: '.8em 0 0 0'
                         }}
                       >中</h2>
                     )
@@ -97,8 +95,7 @@ const editArticles: React.SFC<any> = ({
                       <h3
                         key={i}
                         style={{
-                          lineHeight: '1.2em',
-                          fontSize: '1.2em',
+                          lineHeight: `${content.height}px`
                         }}
                       >小</h3>
                     )
@@ -108,9 +105,7 @@ const editArticles: React.SFC<any> = ({
                       <p
                         key={i}
                         style={{
-                          lineHeight: '1.2em',
-                          fontSize: '1.2em',
-                          color: '#f44'
+                          lineHeight: `${content.height}px`
                         }}
                       >コメ</p>
                     )
@@ -121,19 +116,31 @@ const editArticles: React.SFC<any> = ({
                         key={i}
                         className='paragraph'
                         style={{
-                          marginBottom: '1.4em'
+                          lineHeight: `${content.height}px`,
+                          marginBottom: '1.6em'
                         }}
                       >{content.count}</div>
                     )
                     break
                   case 'unstyled':
-                      return <div key={i}>{content.count}</div>
+                      return (
+                        <div
+                          key={i}
+                          style={{
+                            lineHeight: `${content.height}px`,
+                            marginBottom: '28px'
+                          }}
+                        >{content.count}</div>
+                      )
                       break
                   case 'atomic':
                     return (
                       <div
                         key={i}
-                        style={{ margin: '25em 0'}}
+                        style={{
+                          lineHeight: `${content.height}px`,
+                          marginBottom: '40px'
+                        }}
                       >画像</div>
                     )
                     break   
@@ -151,18 +158,6 @@ const editArticles: React.SFC<any> = ({
             onChange={onChange}
             placeholder='ここから本文'
             actions={actions}
-            // readOnly={true}
-            // keyBindings={[
-            //   {
-            //     name: "save",
-            //     isKeyBound: (e: any) => {
-            //       return e.keyCode === 13
-            //     },
-            //     action: () => {}}
-            // ]}
-            // sidebarRendererFn={() => (
-            //   <p>asdf</p>
-            // )}
           />
         </Col>
       </Row>
