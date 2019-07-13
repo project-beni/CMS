@@ -1,4 +1,32 @@
+.megadraft h1 {
+  line-height: 1.8em;
+  font-size: 1.8em;
+  margin: 1em 0;
+}
+
+.megadraft h2 {
+  line-height: 1.5em;
+  font-size: 1.5em;
+  margin: .8em 0 0 0;
+  font-weight: 400;
+}
+
+.megadraft h3 {
+  line-height: 1.2em;
+  font-size: 1.2em;
+}
+
 .megadraft h6 {
   color: #f44;
   font-size: 1.2em;
+}
+
+
+.megadraft .paragraph {
+  margin-bottom: 1.5em;
+}
+
+
+.counts {
+  margin-top: 5px;
 }

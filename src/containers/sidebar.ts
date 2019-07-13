@@ -65,8 +65,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       Object.keys(articles).forEach((type) => {
         badges[type] = !!Object.keys(articles[type]).length 
       })
-      console.log(badges);
-      
       setBadge({ badges })
     })
   }

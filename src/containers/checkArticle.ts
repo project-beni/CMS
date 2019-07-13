@@ -14,6 +14,7 @@ type State = {
   counts: {
     type: 'header-one' | 'header-two' | 'header-three' | 'paragraph' | 'unstyled'
     count: number
+    height: number
   }[]
   countAll: number
 }
@@ -50,8 +51,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       .then((snapshot) => {
         
         const { contents: { body }} = snapshot.val()
-        console.log(body)
-        console.log(editorStateFromRaw(JSON.parse(body)))
         
         
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
@@ -72,7 +71,18 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           }
         })
         setCountAll({ countAll })
-        setCounts({ counts })
+
+        const asdf = document.getElementsByClassName('public-DraftEditor-content')
+        const contents = asdf[0].childNodes[0].childNodes
+        let styles: any = []
+        Array.prototype.forEach.call(contents, (content: any, i: number) => {
+          styles[i] = {
+            height: content.offsetHeight,
+            count: counts[i].count,
+            type: counts[i].type
+          }
+        })
+        setCounts({ counts: styles })
       })
   },
   onChange: ({ updateBody, setCounts }) => (updated: any) => {
@@ -84,8 +94,19 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
     
-    setCounts({ counts })
     updateBody({ body: updated })
+  
+    const asdf = document.getElementsByClassName('public-DraftEditor-content')
+        const contents = asdf[0].childNodes[0].childNodes
+        let styles: any = []
+        Array.prototype.forEach.call(contents, (content: any, i: number) => {
+          styles[i] = {
+            height: content.offsetHeight,
+            count: counts[i].count,
+            type: counts[i].type
+          }
+        })
+    setCounts({ counts: styles })
   },
   save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)
@@ -123,7 +144,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     await push({ path: `/users/${writerId}/articles/rejects`, data: match.params.id })
     let removePath = ''
     const articles: any = (await read(`/users/${writerId}/articles/pendings`)).val()
-    console.log(articles)
     
     Object.keys(articles).forEach((key: any) => {
       if (articles[key] === match.params.id) {
