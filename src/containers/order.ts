@@ -73,11 +73,10 @@ type FormValues = {
   keyword: string
   title: string
   tagNames: string[]
-  description: string
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title, description }: FormValues) => {
+  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title }: FormValues) => {
     toggleLoading()
     // if (!headings || !keyword || !tagNames || !title) {
     //   toggleLoading()
@@ -100,7 +99,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         switch (line[0]) {
           case 'D':
             tag = 'paragraph'
-            main = content
+            main = content || 'ディスクリプション'
             break
           case '1':
             tag = 'header-one'
@@ -157,8 +156,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         body: editorStateToJSON(editorStateFromRaw(defaultBody)),
         title,
         keyword: keyword.split('\n').map((key) => key),
-        tags: tagNames,
-        description
+        tags: tagNames
       },
       status: 'ordered',
       dates: {

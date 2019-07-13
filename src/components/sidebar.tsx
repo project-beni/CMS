@@ -1,12 +1,20 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Breadcrumb, Icon, Layout, Menu } from 'antd'
+import { Badge, Icon, Layout, Menu } from 'antd'
 
 
 const { Sider } = Layout
 const { Item } = Menu
 
-const sidebar: React.SFC<any> = ({ position, isAuth }) => (
+const sidebar: React.SFC<any> = ({
+  position,
+  isAuth,
+  badges: {
+    writings,
+    pendings,
+    rejects
+  }
+}) => (
   <Sider
     collapsible
     // defaultCollapsed
@@ -29,17 +37,23 @@ const sidebar: React.SFC<any> = ({ position, isAuth }) => (
         <Link to='/articles/recruiting' />
       </Item>
       <Item key='3' disabled={position!=='writer'}>
-        <Icon type='edit' />
+        <Badge dot={writings} offset={[ -8, 0 ]} >
+          <Icon type='edit' />
+        </Badge>
         <span>受注中</span>
         <Link to='/articles/ordered' />
       </Item>
       <Item key='4' disabled={position!=='writer'}>
-        <Icon type='clock-circle' />
+        <Badge dot={pendings} offset={[ -8, 0 ]} >
+          <Icon type='clock-circle' />
+        </Badge>
         <span>検品中</span>
         <Link to='/articles/pending' />
       </Item>
       <Item key='5' disabled={position!=='writer'}>
-        <Icon type='stop' />
+        <Badge dot={rejects} offset={[ -8, 0 ]} >
+          <Icon type='stop' />
+        </Badge>
         <span>差し戻し</span>
         <Link to='/articles/rejected' />
       </Item>

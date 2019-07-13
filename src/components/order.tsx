@@ -40,30 +40,15 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
   <div>
     <h1>記事の発注</h1>
     <Formik
-      initialValues={{title: '', headings: '', keyword: [], description: ''}}
+      initialValues={{title: '', headings: '', keyword: [] }}
       onSubmit={onSubmit}
       render={({
         handleChange,
         handleSubmit,
-        values: { headings, keyword, title, description },
+        values: { headings, keyword, title },
         setFieldValue
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label='タイトル'>
-            <Input
-              name='title'
-              onChange={handleChange}
-              value={title}
-            />
-          </Item>
-          <Item label='ディスクリプション'>
-            <TextArea
-              name='description'
-              onChange={handleChange}
-              value={description}
-              rows={3}
-            />
-          </Item>
           <Item label='キーワード'>
             <TextArea
               name='keyword'
@@ -88,6 +73,13 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
                 ))
               }
             </Select>
+          </Item>
+          <Item label='タイトル'>
+            <Input
+              name='title'
+              onChange={handleChange}
+              value={title}
+            />
           </Item>
           <Item label='カテゴリ'>
             <Select

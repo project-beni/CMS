@@ -11,33 +11,64 @@ import { message, Button } from 'antd';
 type State = {
   position : '' | 'director' | 'writer'
   isAuth: boolean
+  badges: {
+    writings: boolean
+    pendings: boolean
+    rejects: boolean
+    wrotes: boolean
+  }
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
   authed: () => State
+  setBadge: ({ badges }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     position: '',
-    isAuth: false
+    isAuth: false,
+    badges: {
+      writings: false,
+      pendings: false,
+      rejects: false,
+      wrotes: false
+    }
   },
   {
     receiveData: (props) => ({ position }: State) => ({ ...props, position }),
-    authed: (props) => () => ({ ...props, isAuth: true })
+    authed: (props) => () => ({ ...props, isAuth: true }),
+    setBadge: (props) => ({ badges }) => ({ ...props, badges })
   }
 )
 
 type ActionProps = {
   fetchPosition: () => void
+  fetchArticles: () => void
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchPosition: ({ receiveData }: any) => async () => {
     const uid = await getUid()
+    
     const position = (await read(`/users/${uid}/position`)).val()
     receiveData({ position })
+  },
+  fetchArticles: ({ setBadge }) => async () => {
+    
+    const uid = await getUid()
+    await read(`/users/${uid}/articles`)
+    listenStart(`/users/${uid}/articles`, async (articles: any) => {
+      if (!articles) return
+      let badges: any = {}
+      Object.keys(articles).forEach((type) => {
+        badges[type] = !!Object.keys(articles[type]).length 
+      })
+      console.log(badges);
+      
+      setBadge({ badges })
+    })
   }
 })
 
@@ -45,8 +76,10 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
-    const { fetchPosition, history, authed } = this.props
+    
+    const { fetchPosition, fetchArticles, history, authed } = this.props
     const userId = await getUid()
+    
     
     if (!userId) {
       history.push('/login')
@@ -59,7 +92,9 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
     const isMailConfirmed = isEmailConfirmed()
     
     if (isMailConfirmed && isConfirmedOnDB) {
+      
       fetchPosition()
+      fetchArticles()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
