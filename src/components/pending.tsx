@@ -56,6 +56,10 @@ const RecruitingArticles: React.SFC<any> = ({
         }}
       />
       <Column
+        title='文字数'
+        dataIndex='countAll'
+      />
+      <Column
         title='キーワード'
         render={({ keyword }) => (
           keyword.map((tag: string, i: number) => (

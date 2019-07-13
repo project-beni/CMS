@@ -15,23 +15,27 @@ type State = {
     type: 'header-one' | 'header-two' | 'header-three' | 'paragraph' | 'unstyled'
     count: number
   }[]
+  countAll: number
 }
 
 export type StateUpdates = {
   updateBody: ({ body } : State) => State
   receiveData: ({ body }: State) => State
   setCounts: ({ counts }: State) => State
+  setCountAll: ({ countAll }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     body: editorStateFromRaw(null),
-    counts: []
+    counts: [],
+    countAll: 0
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body }),
-    setCounts: (props) => ({ counts }) => ({ ...props, counts }) 
+    setCounts: (props) => ({ counts }) => ({ ...props, counts }),
+    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll })
   }
 )
 
@@ -41,7 +45,7 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, receiveData, match }) => async () => {
+  fetchData: ({ setCounts, setCountAll, receiveData, match }) => async () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
         
@@ -60,8 +64,14 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
             type: content.type
           }
         })
-        console.log('counts', counts);
-        
+
+        let countAll = 0
+        counts.forEach(({count, type}: any) => {
+          if (type === 'paragraph') {
+            countAll += count
+          }
+        })
+        setCountAll({ countAll })
         setCounts({ counts })
       })
   },
@@ -77,10 +87,13 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     setCounts({ counts })
     updateBody({ body: updated })
   },
-  save: ({ body, match }) => () => {
+  save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)
     
-    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+    set({
+      path: `/articles/${match.params.id}/contents`,
+      data: { body: article, countAll }
+    })
       .then(() => {
         message.success('保存しました')
       })
@@ -88,11 +101,14 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  reject: ({ body, match, history, save }) => async () => {
+  reject: ({ body, match, history, countAll }) => async () => {
     // save
     const article = editorStateToJSON(body)
     
-    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+    set({
+      path: `/articles/${match.params.id}/contents`,
+      data: { body: article, countAll }
+    })
       .then(() => {
         message.success('保存しました')
       })
@@ -116,7 +132,10 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     })
     await remove({ path: removePath })
 
-    await set({ path: `${rootPath}/contents`, data: { body: article } })
+    await set({
+      path: `${rootPath}/contents`,
+      data: { body: article, countAll }
+    })
     set({ path: `${rootPath}`, data: { status: 'rejected' } })
       .then(() => {
         message.warn('記事を差し戻しました')
@@ -126,11 +145,14 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  recieve: ({ body, match, history }) => async () => {
+  recieve: ({ body, match, history, countAll }) => async () => {
     // save
     const article = editorStateToJSON(body)
     
-    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+    set({
+      path: `/articles/${match.params.id}/contents`,
+      data: { body: article, countAll }
+    })
       .then(() => {
         message.success('保存しました')
       })
