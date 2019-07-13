@@ -88,10 +88,20 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  reject: ({ body, match, history, comment }) => async () => {
+  reject: ({ body, match, history, save }) => async () => {
+    // save
+    const article = editorStateToJSON(body)
+    
+    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+      .then(() => {
+        message.success('保存しました')
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
+
     const writerId = (await read(`/articles/${match.params.id}/writer`)).val()
     const rootPath = `/articles/${match.params.id}`
-    const article = editorStateToJSON(body)
 
     // remove pendings status instead of rejects
     await push({ path: `/users/${writerId}/articles/rejects`, data: match.params.id })
@@ -117,6 +127,16 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       })
   },
   recieve: ({ body, match, history }) => async () => {
+    // save
+    const article = editorStateToJSON(body)
+    
+    set({ path: `/articles/${match.params.id}/contents`, data: { body: article } })
+      .then(() => {
+        message.success('保存しました')
+      })
+      .catch((err) => {
+        message.error(err.message)
+      })
     const rootPath = `/articles/${match.params.id}`
     const writerId = (await read(`/articles/${match.params.id}/writer`)).val()
 
