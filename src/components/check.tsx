@@ -44,16 +44,23 @@ const RecruitingArticles: React.SFC<any> = ({
   <div>
     <h1>検品待ちの記事</h1>
     <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title='Name' dataIndex='title' />
-      <Column title='Order date' dataIndex='ordered' />
+      <Column title='タイトル' dataIndex='title' />
       <Column
-        title='Tags'
+        title='発注日時'
+        render={({ ordered }) => {
+          const s = ordered.split('-')
+          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+        }}
+      />
+      <Column
+        title='タグ'
         render={({ tags }) => (
           tags.map((tag: string, i: number) => (
             <Tag key={i}>{tag}</Tag>
           ))
         )}
       />
+      <Column title='文字数' dataIndex='countAll' />
       <Column
         title='検品'
         render={({ id }) => (
