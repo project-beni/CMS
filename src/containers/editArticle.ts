@@ -6,7 +6,7 @@ const {
   editorStateToJSON
 } = require('megadraft')
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, push, read, set, remove } from '../firebase/database'
 
 import RecruitingArticles from '../components/editArticle'
 import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
@@ -54,6 +54,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData, setCounts, match }) => () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
+        
         const { contents: { body }} = snapshot.val()
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
         
@@ -65,6 +66,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
             type: content.type
           }
         })
+        console.log('counts', counts);
+        
         setCounts({ counts })
       })
   },
@@ -93,7 +96,30 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   },
   submit: ({ body, match, history }) => async () => {
     const rootPath = `/articles/${match.params.id}`
+    const uid = await getUid()
     const article = editorStateToJSON(body)
+    await push({ path: `/users/${uid}/articles/pendings`, data: match.params.id })
+
+    // remove old status
+    let removePath = ''
+    const writingArticles: any = (await read(`/users/${uid}/articles/writings`)).val()
+    const rejectedArticles: any = (await read(`/users/${uid}/articles/rejects`)).val()
+    if (writingArticles) {
+      Object.keys(writingArticles).forEach((key: any) => {
+        if (writingArticles[key] === match.params.id) {
+          removePath = `/users/${uid}/articles/writings/${key}`
+        }
+      })
+    }
+    if (rejectedArticles) {
+      Object.keys(rejectedArticles).forEach((key: any) => {
+        if (rejectedArticles[key] === match.params.id) {
+          removePath = `/users/${uid}/articles/rejects/${key}`
+        }
+      })
+    }
+    await remove({ path: removePath })
+
     await set({ path: `${rootPath}/contents`, data: { body: article } })
     set({ path: `${rootPath}`, data: { status: 'pending' } })
       .then(() => {

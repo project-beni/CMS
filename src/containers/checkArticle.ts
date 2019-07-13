@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, push, read, set, remove } from '../firebase/database'
 
 import CheckArticle from '../components/checkArticle'
 import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
@@ -41,11 +41,17 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, receiveData, match }) => () => {
+  fetchData: ({ setCounts, receiveData, match }) => async () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
+        
         const { contents: { body }} = snapshot.val()
+        console.log(body)
+        console.log(editorStateFromRaw(JSON.parse(body)))
+        
+        
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        
         const changed = JSON.parse(body).blocks
         
         const counts = changed.map((content: any) => {
@@ -54,6 +60,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
             type: content.type
           }
         })
+        console.log('counts', counts);
+        
         setCounts({ counts })
       })
   },
@@ -81,12 +89,21 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       })
   },
   reject: ({ body, match, history, comment }) => async () => {
-    // if (!comment) {
-    //   message.error('差し戻す場合はコメントを入力してください')
-    //   return
-    // }
+    const writerId = (await read(`/articles/${match.params.id}/writer`)).val()
     const rootPath = `/articles/${match.params.id}`
     const article = editorStateToJSON(body)
+
+    // remove pendings status instead of rejects
+    await push({ path: `/users/${writerId}/articles/rejects`, data: match.params.id })
+    let removePath = ''
+    const articles: any = (await read(`/users/${writerId}/articles/pendings`)).val()
+    Object.keys(articles).forEach((key: any) => {
+      if (articles[key] === match.params.id) {
+        removePath = `/users/${writerId}/articles/pendings/${key}`
+      }
+    })
+    await remove({ path: removePath })
+
     await set({ path: `${rootPath}/contents`, data: { body: article } })
     set({ path: `${rootPath}`, data: { status: 'rejected' } })
       .then(() => {
@@ -97,8 +114,21 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  recieve: ({ body, match, history }) => () => {
+  recieve: ({ body, match, history }) => async () => {
     const rootPath = `/articles/${match.params.id}`
+    const writerId = (await read(`/articles/${match.params.id}/writer`)).val()
+
+    // remove pendings status instead of rejects
+    await push({ path: `/users/${writerId}/articles/wrotes`, data: match.params.id })
+    let removePath = ''
+    const articles: any = (await read(`/users/${writerId}/articles/pendings`)).val()
+    Object.keys(articles).forEach((key: any) => {
+      if (articles[key] === match.params.id) {
+        removePath = `/users/${writerId}/articles/pendings/${key}`
+      }
+    })
+    await remove({ path: removePath })
+
     set({ path: `${rootPath}`, data: { status: 'accepted' } })
       .then(() => {
         message.success('記事を受理しました')

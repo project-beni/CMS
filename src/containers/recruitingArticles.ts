@@ -73,9 +73,10 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         userId: await getUid()
       }
     }
-    const status = { status: 'writing' }
+
     const userId = await getUid()
-    
+    const status = { status: 'writing', writer: userId }
+
     await set({ path: `/articles/${id}/dates`, data: date })
     await set({ path: `/articles/${id}/histories`, data: histories })
     await set({ path: `/articles/${id}`, data: status })

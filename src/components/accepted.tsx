@@ -42,14 +42,24 @@ const RecruitingArticles: React.SFC<any> = ({
   isLoading
 }) => (
   <div>
-    <h1>受注中の記事</h1>
-    <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title='Name' dataIndex='title' />
-      <Column title='Order date' dataIndex='ordered' />
+    <h1>納品済みの記事</h1>
+    <List
+      dataSource={dataSource}
+      bordered
+      loading={isLoading}
+    >
+      <Column title='タイトル' dataIndex='title' />
       <Column
-        title='Tags'
-        render={({ tags }) => (
-          tags.map((tag: string, i: number) => (
+        title='発注日時'
+        render={({ ordered }) => {
+          const s = ordered.split('-')
+          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+        }}
+      />
+      <Column
+        title='キーワード'
+        render={({ keyword }) => (
+          keyword.map((tag: string, i: number) => (
             <Tag key={i}>{tag}</Tag>
           ))
         )}

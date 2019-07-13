@@ -30,7 +30,6 @@ const stateHandlers = withStateHandlers <State, Handlers> (
   {
     toggleLoading: ({ isLoading }) => () => ({ isLoading: !isLoading }),
     receiveCategories: (props) => (categories) => {
-      console.log(categories)
       return { ...props, categories }
     },
     receiveTags: (props) => (tags) => {
@@ -197,8 +196,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     listenStart(
       '/tags',
       (tags: any) => {  
-        console.log(tags);
-        
         const result = Object.keys(tags).map((key: string) => tags[key] )
         receiveTags(result)
     })
@@ -210,7 +207,6 @@ const Lifecyle = lifecycle <RouteComponentProps | any, {}, {}> ({
     const { fetchData } = this.props
     fetchData()
     const position = await getPosition()
-    console.log(position)
     
   }
 })

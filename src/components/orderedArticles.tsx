@@ -47,7 +47,6 @@ const RecruitingArticles: React.SFC<any> = ({
       dataSource={dataSource}
       bordered
       loading={isLoading}
-      expandedRowRender={(record: any) => <p style={{ margin: 0 }}>{record.description}</p>}
     >
       <Column title='タイトル' dataIndex='title' />
       <Column
