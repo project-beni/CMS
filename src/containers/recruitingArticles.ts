@@ -43,7 +43,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'ordered') {
             const {
-              contents: { keyword, tags, title, description },
+              contents: { keyword, tags, title },
               dates: { ordered }
             } = val[key]
             dataSource.push({
@@ -51,7 +51,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               id: key,
               ordered,
               keyword,
-              description,
               tags,
               title
             }) 
