@@ -36,31 +36,57 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData }: any) => () => {
-    listenStart('/articles', (val: any) => {
+  fetchData: ({ receiveData }: any) => async () => {
+    const userId = await getUid()
+    listenStart(`/users/${userId}/articles/rejects`, async (val: any) => {
       if (val) {
         let dataSource: any = []
-        Object.keys(val).forEach((key, i) => {
-          if (val[key].status === 'rejected') {
+        await Promise.all(
+          Object.keys(val).map(async (key, i) => {
             const {
-              contents: { keyword, tags, title },
+              contents: { keyword, tags, title, description },
               dates: { ordered }
-            } = val[key]
+            } = (await read(`/articles/${val[key]}`)).val()
             dataSource.push({
               key: i,
-              id: key,
+              id: val[key],
               ordered,
               keyword,
               tags,
-              title
+              title,
+              description
             }) 
-          }
-        })
+          })
+        )
         receiveData(dataSource)
       } else {
         receiveData([])
       }
     })
+    // listenStart('/articles', (val: any) => {
+    //   if (val) {
+    //     let dataSource: any = []
+    //     Object.keys(val).forEach((key, i) => {
+    //       if (val[key].status === 'rejected') {
+    //         const {
+    //           contents: { keyword, tags, title },
+    //           dates: { ordered }
+    //         } = val[key]
+    //         dataSource.push({
+    //           key: i,
+    //           id: key,
+    //           ordered,
+    //           keyword,
+    //           tags,
+    //           title
+    //         }) 
+    //       }
+    //     })
+    //     receiveData(dataSource)
+    //   } else {
+    //     receiveData([])
+    //   }
+    // })
   },
   editArticle: ({ history, dataSource }) => async ({ id }) => {
     history.push(`/articles/edit/${id}`)
