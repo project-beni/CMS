@@ -97,6 +97,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     await push({ path: `/users/${writerId}/articles/rejects`, data: match.params.id })
     let removePath = ''
     const articles: any = (await read(`/users/${writerId}/articles/pendings`)).val()
+    console.log(articles)
+    
     Object.keys(articles).forEach((key: any) => {
       if (articles[key] === match.params.id) {
         removePath = `/users/${writerId}/articles/pendings/${key}`

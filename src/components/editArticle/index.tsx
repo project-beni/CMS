@@ -103,6 +103,18 @@ const editArticles: React.SFC<any> = ({
                       >小</h3>
                     )
                     break
+                  case 'header-six':
+                    return (
+                      <p
+                        key={i}
+                        style={{
+                          lineHeight: '1.2em',
+                          fontSize: '1.2em',
+                          color: '#f44'
+                        }}
+                      >コメ</p>
+                    )
+                    break
                   case 'paragraph':
                     return (
                       <div

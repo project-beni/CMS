@@ -5,7 +5,8 @@ import {
   FormatListNumbered,
   FormatQuote,
   FormatBold,
-  FormatItalic
+  FormatItalic,
+  Comment
 } from '@material-ui/icons'
 import { Button, Card, Input, Popconfirm, Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
@@ -26,6 +27,8 @@ const EditButton: React.SFC<any> = ({cmd, arg, name}) => (
 )
 
 const actions = [
+  {type: "block", label: "H6", style: "header-six", icon: Comment},
+  {type: "separator"},
   {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
   {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
@@ -114,6 +117,18 @@ const editArticles: React.SFC<any> = ({
                           fontSize: '1.2em',
                         }}
                       >小</h3>
+                    )
+                    break
+                  case 'header-six':
+                    return (
+                      <p
+                        key={i}
+                        style={{
+                          lineHeight: '1.2em',
+                          fontSize: '1.2em',
+                          color: '#f44'
+                        }}
+                      >コメ</p>
                     )
                     break
                   case 'paragraph':
