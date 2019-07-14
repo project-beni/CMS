@@ -2,7 +2,6 @@ import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
 import { Button, Drawer, Popconfirm, Icon, Row, Col } from 'antd'
 import {
-  InsertLink,
   FormatUnderlined,
   FormatListBulleted,
   FormatListNumbered,
@@ -39,7 +38,7 @@ const editArticles: React.SFC<any> = ({
     {type: "separator"},
     {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
     {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
-    // {type: "separator"},
+    {type: "separator"},
     // {type: "block", label: "H1", style: "header-one", icon: () => (
     //   <h1 style={{color: '#fff', lineHeight: '0.7em'}}>大<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h1>
     // )},
@@ -49,9 +48,9 @@ const editArticles: React.SFC<any> = ({
     // {type: "block", label: "H3", style: "header-three", icon: () => (
     //   <h3 style={{color: '#fff', lineHeight: '0.925em'}}>小<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h3>
     // )},
-    // {type: "block", label: "P", style: "main", icon: () => (
-    //   <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
-    // )}
+    {type: "block", label: "P", style: "main", icon: () => (
+      <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
+    )}
   ];
   
   
@@ -63,7 +62,7 @@ const editArticles: React.SFC<any> = ({
     >
       <Row>
         <Col sm={1}>
-          <div className='megadraft' id='counts' style={{ marginTop: '3em' }}>
+          <div className='megadraft-editor'>
             {
               counts.map((content: any, i: number) => {
                 switch (content.type) {
@@ -73,7 +72,9 @@ const editArticles: React.SFC<any> = ({
                     key={i}
                       style={{
                         lineHeight: `${content.height}px`,
-                        margin: '1em 0'
+                        marginTop: content.marginTop,
+                        marginBottom: content.marginBottom,
+                        color: '#ddd'
                       }}
                     >大</h1>
                     )
@@ -81,13 +82,14 @@ const editArticles: React.SFC<any> = ({
                   case 'header-two':
                     return (
                       <h2
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          fontWeight: 400,
-                          margin: '.8em 0 0 0'
-                        }}
-                      >中</h2>
+                      key={i}
+                      style={{
+                        lineHeight: `${content.height}px`,
+                        marginTop: '16px',
+                        marginBottom: content.marginBottom,
+                        color: '#ddd'
+                      }}
+                        >中</h2>
                     )
                     break
                   case 'header-three':
@@ -95,7 +97,10 @@ const editArticles: React.SFC<any> = ({
                       <h3
                         key={i}
                         style={{
-                          lineHeight: `${content.height}px`
+                          lineHeight: `${content.height}px`,
+                          marginTop: content.marginTop,
+                          marginBottom: content.marginBottom,
+                          color: '#ddd'
                         }}
                       >小</h3>
                     )
@@ -106,6 +111,8 @@ const editArticles: React.SFC<any> = ({
                         key={i}
                         style={{
                           lineHeight: `${content.height}px`,
+                          marginTop: content.marginTop,
+                          marginBottom: content.marginBottom,
                           color: '#f44'
                         }}
                       >コ</h6>
@@ -118,7 +125,8 @@ const editArticles: React.SFC<any> = ({
                         className='paragraph'
                         style={{
                           lineHeight: `${content.height}px`,
-                          marginBottom: '1.6em'
+                          marginTop: content.marginTop,
+                          marginBottom: content.marginBottom
                         }}
                       >{content.count}</div>
                     )
@@ -129,7 +137,9 @@ const editArticles: React.SFC<any> = ({
                           key={i}
                           style={{
                             lineHeight: `${content.height}px`,
-                            marginBottom: '28px'
+                            marginTop: content.marginTop,
+                            marginBottom: content.marginBottom,
+                            color: '#ddd'
                           }}
                         >{content.count}</div>
                       )
@@ -140,7 +150,9 @@ const editArticles: React.SFC<any> = ({
                         key={i}
                         style={{
                           lineHeight: `${content.height}px`,
-                          marginBottom: '40px'
+                          marginTop: content.marginTop,
+                          marginBottom: content.marginBottom,
+                          color: '#ddd'
                         }}
                       >画像</div>
                     )

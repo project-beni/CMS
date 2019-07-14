@@ -76,8 +76,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const contents = asdf[0].childNodes[0].childNodes
         let styles: any = []
         Array.prototype.forEach.call(contents, (content: any, i: number) => {
+          const style: any = content.currentStyle || window.getComputedStyle(content)
           styles[i] = {
             height: content.offsetHeight,
+            marginTop: style.marginTop,
+            marginBottom: style.marginBottom,
             count: counts[i].count,
             type: counts[i].type
           }
@@ -100,8 +103,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const contents = asdf[0].childNodes[0].childNodes
         let styles: any = []
         Array.prototype.forEach.call(contents, (content: any, i: number) => {
+          const style: any = content.currentStyle || window.getComputedStyle(content)
           styles[i] = {
             height: content.offsetHeight,
+            marginTop: style.marginTop,
+            marginBottom: style.marginBottom,
             count: counts[i].count,
             type: counts[i].type
           }
