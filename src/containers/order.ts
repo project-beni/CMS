@@ -73,16 +73,17 @@ type FormValues = {
   keyword: string
   title: string
   tagNames: string[]
+  categories: []
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title }: FormValues) => {
+  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title, categories }: FormValues) => {
     toggleLoading()
-    // if (!headings || !keyword || !tagNames || !title) {
-    //   toggleLoading()
-    //   message.error('全て入力してください')
-    //   return
-    // }
+    if (!headings || !keyword || !tagNames || !title || !categories ) {
+      toggleLoading()
+      message.error('全て入力してください')
+      return
+    }
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
     
@@ -156,7 +157,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         body: editorStateToJSON(editorStateFromRaw(defaultBody)),
         title,
         keyword: keyword.split('\n').map((key) => key),
-        tags: tagNames
+        tags: tagNames,
+        categories
       },
       status: 'ordered',
       dates: {

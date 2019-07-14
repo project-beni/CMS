@@ -77,26 +77,33 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     listenStart(
       '/categories',
       (categories: any) => {
-        const result = Object.keys(categories).map((key: string) => {
-          return {
-            key,
-            value: categories[key]
-          }
-        })
-        
-      receiveCategories(result)
+        if (!categories) {
+          receiveCategories([])    
+        } else {
+          const result = Object.keys(categories).map((key: string) => {
+            return {
+              key,
+              value: categories[key]
+            }
+          })
+          receiveCategories(result)
+        }
       toggleLoading()
     })
     listenStart(
       '/tags',
       (tags: any) => {
-        const result = Object.keys(tags).map((key: string) => {
-          return {
-            key,
-            value: tags[key]
-          }
-        })
-        receiveTags(result)
+        if (!tags) {
+          receiveTags([])
+        } else {
+          const result = Object.keys(tags).map((key: string) => {
+            return {
+              key,
+              value: tags[key]
+            }
+          })
+          receiveTags(result)
+        }
     })
   },
   deleteTag: () => (key: string) => {

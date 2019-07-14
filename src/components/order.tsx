@@ -49,7 +49,7 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
         setFieldValue
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label='キーワード'>
+          <Item label='キーワード（１つごとに改行）'>
             <TextArea
               name='keyword'
               onChange={handleChange}
