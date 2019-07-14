@@ -1,5 +1,5 @@
-.megadraft h1 {
-  line-height: 1.8em;
+/* .megadraft  h1 {
+  line-height: 32px;
   font-size: 1.8em;
   margin: 1em 0;
 }
@@ -19,6 +19,7 @@
 .megadraft h6 {
   color: #f44;
   font-size: 1.2em;
+  margin-top: 0;
 }
 
 
@@ -29,4 +30,4 @@
 
 .counts {
   margin-top: 5px;
-}
+} */
