@@ -50,14 +50,14 @@ const editArticles: React.SFC<any> = ({
   body,
   save,
   changeComment,
-  counts
+  countAll
 }) => {
   return (
     <div style={{
       margin: '100px 200px'
     }}>
       <Row>
-        <Col sm={1}>
+        {/* <Col sm={1}>
           <div className='megadraft' id='counts' style={{ marginTop: '3em' }}>
           {
               counts.map((content: any, i: number) => {
@@ -160,8 +160,8 @@ const editArticles: React.SFC<any> = ({
             }
           </div>
         </Col>
-        <Col span={3}></Col>
-        <Col sm={20}>
+        <Col span={3}></Col> */}
+        <Col sm={24}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
