@@ -6,11 +6,11 @@
   "scripts": {
     "build": "run-p build:*",
     "build:ts": "webpack",
-    "build:pug": "pug src -o dist",
+    "build:pug": "pug src -o docs",
     "dev": "run-p dev:*",
-    "dev:ts": "webpack-dev-server --content-base dist",
-    "dev:pug": "pug src -o dist -w",
-    "prebuild": "rimraf dist",
+    "dev:ts": "webpack-dev-server --content-base docs",
+    "dev:pug": "pug src -o docs -w",
+    "prebuild": "rimraf docs",
     "predev": "yarn run build",
     "start": "npm run dev"
   },
