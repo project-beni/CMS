@@ -130,6 +130,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       })
   },
   reject: ({ body, match, history, countAll }) => async () => {
+    
     // save
     const article = editorStateToJSON(body)
     
@@ -143,7 +144,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       .catch((err) => {
         message.error(err.message)
       })
-
     const writerId = (await read(`/articles/${match.params.id}/writer`)).val()
     const rootPath = `/articles/${match.params.id}`
 
@@ -157,13 +157,15 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         removePath = `/users/${writerId}/articles/pendings/${key}`
       }
     })
-    await remove({ path: removePath })
+    if (removePath) {
+      await remove({ path: removePath })
+    }
 
     const date = {
       rejected: moment().format('YYYY-MM-DD-hh-mm-ss')
     }
-    const uid = getUid()
-    await set({ path: `/articles/${uid}/dates`, data: date })
+    await set({ path: `/articles/${match.params.id}/dates`, data: date })
+    
 
     await set({
       path: `${rootPath}/contents`,
@@ -204,13 +206,15 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         removePath = `/users/${writerId}/articles/pendings/${key}`
       }
     })
-    await remove({ path: removePath })
+    if (removePath) {
+      await remove({ path: removePath })
+    }
 
     const date = {
       accepted: moment().format('YYYY-MM-DD-hh-mm-ss')
     }
-    const uid = getUid()
-    await set({ path: `/articles/${uid}/dates`, data: date })
+
+    await set({ path: `/articles/${match.params.id}/dates`, data: date })
 
     set({ path: `${rootPath}`, data: { status: 'accepted' } })
       .then(() => {
