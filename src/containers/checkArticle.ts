@@ -1,6 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
+import * as moment from 'moment'
 
 import { listenStart, push, read, set, remove } from '../firebase/database'
 
@@ -158,6 +159,12 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     })
     await remove({ path: removePath })
 
+    const date = {
+      rejected: moment().format('YYYY-MM-DD-hh-mm-ss')
+    }
+    const uid = getUid()
+    await set({ path: `/articles/${uid}/dates`, data: date })
+
     await set({
       path: `${rootPath}/contents`,
       data: { body: article, countAll }
@@ -198,6 +205,12 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
     await remove({ path: removePath })
+
+    const date = {
+      accepted: moment().format('YYYY-MM-DD-hh-mm-ss')
+    }
+    const uid = getUid()
+    await set({ path: `/articles/${uid}/dates`, data: date })
 
     set({ path: `${rootPath}`, data: { status: 'accepted' } })
       .then(() => {
