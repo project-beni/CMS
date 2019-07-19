@@ -10,6 +10,7 @@ import { push, read, set, remove } from '../firebase/database'
 import RecruitingArticles from '../components/editArticle'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 import { message } from 'antd'
+import * as moment from 'moment'
 
 type Body = {
   body: any
@@ -170,6 +171,10 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       path: `${rootPath}/contents`,
       data: { body: article, countAll }
     })
+    const date = {
+      pending: moment().format('YYYY-MM-DD-hh-mm-ss')
+    }
+    await set({ path: `/articles/${uid}/dates`, data: date })
     set({ path: `${rootPath}`, data: { status: 'pending' } })
       .then(() => {
         message.success('記事を保存し，提出しました')
