@@ -174,7 +174,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const date = {
       pending: moment().format('YYYY-MM-DD-hh-mm-ss')
     }
-    await set({ path: `/articles/${uid}/dates`, data: date })
+    await set({ path: `/articles/${match.params.id}/dates`, data: date })
     set({ path: `${rootPath}`, data: { status: 'pending' } })
       .then(() => {
         message.success('記事を保存し，提出しました')
