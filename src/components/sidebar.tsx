@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Badge, Icon, Layout, Menu } from 'antd'
+import { Group } from '@material-ui/icons'
 
 
 const { Sider } = Layout
@@ -89,6 +90,11 @@ const sidebar: React.SFC<any> = ({
             <Icon type='tags' />
             <span>カテゴリー・タグ</span>
             <Link to='/categoriesAndTags' />
+          </Item>
+          <Item key='10' disabled={position!=='director'}>
+            <Icon type='idcard' />
+            <span>ライターステータス</span>
+            <Link to='/usersList' />
           </Item>
           <Item key='11' disabled={!isAuth}>
             <Icon type='logout' />

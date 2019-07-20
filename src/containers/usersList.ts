@@ -15,53 +15,96 @@ type Users = {
     profiles: {
       nickname: string
     }
-    ordered: number
-    rejected: number
-    accepted: number
+    pendings: {
+      title: string
+      keywords: string[]
+      categories: string[]
+      tags: string[]
+      count: number
+      id: string
+    }[]
   }
-}
+}[]
 
 type State = {
-  dataSource: {
-    users: Users
-    userArticles: {
-      [key: string]: {
-        title: string
-        keywords: string[]
-        categories: string[]
-        tags: string[]
-        count: number
-        id: string
-      }[]
-    }
-  }
+  users: Users
 }
 
 export type StateUpdates = {
-  setUsersInfo: (users: Users) => State
+  setUsersInfo: (users: any, articles: any) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
-    dataSource: {
-      users: {},
-      userArticles: {
-        ordered: [],
-        rejected: [],
-        accepted: []
-      }
-    }
+    users: [],
   },
   {
-    setUsersInfo: (props) => (users) => {
+    setUsersInfo: (props) => (users, allArticles) => {
+      
       let data: any = []
-      for (let key in users) {
-        const { profiles: { nickname }} = users[key]
-        data.push({
-          nickname
-        })
+
+      Object.keys(users).forEach((key: string, i: number) => {
+        let pendingData: any = []
+        let writingData: any = []
+        let rejectData: any = []
+        let wroteData: any = []
+
+        if (users[key].articles && users[key].position === 'writer') {
+          let {
+            pendings, writings, rejects, wrotes
+          } = users[key].articles
+
+          if (pendings) {
+            Object.keys(pendings).map((key: string) => {
+              const articleId = pendings[key]
+              pendingData.push(allArticles[articleId])
+            })
+          } else {
+            pendingData = []
+          }
+
+          if (writings) {
+            Object.keys(writings).map((key: string) => {
+              const articleId = writings[key]
+              writingData.push(allArticles[articleId])
+            })
+          } else {
+            writingData = []
+          }
+
+          if (rejects) {
+            Object.keys(rejects).map((key: string) => {
+              const articleId = rejects[key]
+              rejectData.push(allArticles[articleId])
+            })
+          } else {
+            rejectData = []
+          }
+          if (wrotes) {
+            Object.keys(wrotes).map((key: string) => {
+              const articleId = wrotes[key]
+              wroteData.push(allArticles[articleId])
+            })
+          } else {
+            wroteData = []
+          }
+
+          data.push({
+            nickname: users[key].profiles.nickname,
+            writerId: key,
+            writings: writingData,
+            pendings: pendingData,
+            rejects: rejectData,
+            accepted: wroteData,
+            key: i
+          }) 
+        }
+      })
+      
+      return {
+        ...props,
+        users: data,
       }
-      return data
     }
   }
 )
@@ -73,8 +116,11 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
-  fetchData: ({ match }) => async () => {
+  fetchData: ({ setUsersInfo, match }) => async () => {
     const users = (await read('/users')).val()
+    const allArticles = (await read('/articles')).val()
+    setUsersInfo(users, allArticles)
+
   },
 })
 
