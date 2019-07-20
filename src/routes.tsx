@@ -30,6 +30,7 @@ import Accepted from './containers/accepted'
 import CategoriesAndTags from './containers/categoriesAndTags'
 import Auth from './containers/auth'
 import SearchImages from './containers/searchImages'
+import UsersList from './containers/usersList'
 
 const Routes: React.SFC<any> = ({ isAuth }) => (
   <Provider store={store}>
@@ -59,6 +60,7 @@ const Routes: React.SFC<any> = ({ isAuth }) => (
                   <Route path={'/checkList/:id'} exact={true} component={CheckArticle} />
                   <Route path={'/categoriesAndTags'} exact={true} component={CategoriesAndTags} />
                   <Route path={'/searchImages'} exact={true} component={SearchImages} />
+                  <Route path={'/usersList'} exact={true} component={UsersList} />
                 </Auth>
               </Switch>
             </Content>
