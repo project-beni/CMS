@@ -57,7 +57,12 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           if (pendings) {
             Object.keys(pendings).map((key: string) => {
               const articleId = pendings[key]
-              pendingData.push(allArticles[articleId])
+              pendingData.push(
+                {
+                  ...allArticles[articleId],
+                  articleId
+                }
+              )
             })
           } else {
             pendingData = []
@@ -66,7 +71,12 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           if (writings) {
             Object.keys(writings).map((key: string) => {
               const articleId = writings[key]
-              writingData.push(allArticles[articleId])
+              writingData.push(
+                {
+                  ...allArticles[articleId],
+                  articleId
+                }
+              )
             })
           } else {
             writingData = []
@@ -75,7 +85,12 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           if (rejects) {
             Object.keys(rejects).map((key: string) => {
               const articleId = rejects[key]
-              rejectData.push(allArticles[articleId])
+              rejectData.push(
+                {
+                  ...allArticles[articleId],
+                  articleId
+                }
+              )
             })
           } else {
             rejectData = []
@@ -83,14 +98,21 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           if (wrotes) {
             Object.keys(wrotes).map((key: string) => {
               const articleId = wrotes[key]
-              wroteData.push(allArticles[articleId])
+              wroteData.push(
+                {
+                  ...allArticles[articleId],
+                  articleId
+                }
+              )
             })
           } else {
             wroteData = []
           }
-
+          console.log('writings', writingData)
+          
           data.push({
             nickname: users[key].profiles.nickname,
+            mail: users[key].profiles.mail,
             writerId: key,
             writings: writingData,
             pendings: pendingData,
@@ -113,6 +135,7 @@ type WithHandlersProps = RouteComponentProps<{id: string}> & StateUpdates
 
 type ActionProps = {
   fetchData: () => void
+  checkArticle: ({ articleId }: { articleId: string}) => void
 }
 
 const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
@@ -122,6 +145,9 @@ const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
     setUsersInfo(users, allArticles)
 
   },
+  checkArticle: ({ history }) => ({ articleId }) => {
+    history.push(`/checkList/${articleId}`)
+  }
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps

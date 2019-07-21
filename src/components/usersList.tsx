@@ -1,12 +1,9 @@
 import * as React from 'react'
-import { Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd';
 
 const UsersList: React.SFC<any> = ({
   users,
-  ordered,
-  pendings,
-  rejected,
-  accepted
+  checkArticle
 }) => {
   // console.log(users);
   
@@ -15,6 +12,7 @@ const UsersList: React.SFC<any> = ({
     
     return (
       <React.Fragment>
+        <p>ユーザーID:{a.writerId}</p>
         {
           a.writings.length ? (
             <Table
@@ -100,6 +98,17 @@ const UsersList: React.SFC<any> = ({
                       return <p>-</p>
                     }
                   }
+                },
+                {
+                  title: '検品する',
+                  key: 'check',
+                  render: ({ articleId }) => (
+                    <Button
+                      onClick={() => checkArticle({articleId})}
+                      size='small'
+                      type='primary'
+                    >検品する</Button>
+                  )
                 },
               ]}
               style={{ margin: 10}}
@@ -210,7 +219,7 @@ const UsersList: React.SFC<any> = ({
       bordered
       columns={[
         { title: 'ペンネーム', key: 'nickname', dataIndex: 'nickname' },
-        { title: 'ライターID', key: 'writerId', dataIndex: 'writerId' },
+        { title: 'メールアドレス', key: 'mail', dataIndex: 'mail' },
         {
           title: '受注（執筆）中',
           key: 'ordered',
