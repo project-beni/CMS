@@ -19,6 +19,7 @@ const actions = [
   {type: "separator"},
   {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
+  {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
   {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
   {type: "entity", label: "Link", style: "link", entity: "LINK", icon: InsertLink},
 
@@ -175,33 +176,46 @@ const editArticles: React.SFC<any> = ({
           position: 'fixed',
           bottom: 30,
           left: 300,
+          width: 600,
           zIndex: 1000,
           backgroundColor: '#eee',
           boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
         }}
       >
-        <Button
-          onClick={save}
-          style={{margin: '15px'}}
-        >保存</Button>
-        <Popconfirm
-          title='本当に受理しますか？'
-          onConfirm={recieve}
-        >
-          <Button
-            type='primary'
-            style={{ margin: '0 15px'}}
-          >受理</Button>
-        </Popconfirm>
-        <Popconfirm
-          title='本当に差し戻しますか？'
-          onConfirm={reject}
-        >
-          <Button
-            type='danger'
-            style={{ margin: '0 15px'}}
-          >差し戻す</Button>
-        </Popconfirm>
+        <Row>
+          <Col span={6}>
+            <Button
+              onClick={save}
+              style={{margin: '15px'}}
+            >保存</Button>
+          </Col>
+          <Col span={6}>
+            <Popconfirm
+              title='本当に受理しますか？'
+              onConfirm={recieve}
+            >
+              <Button
+                type='primary'
+                style={{ margin: '0 15px'}}
+              >受理</Button>
+            </Popconfirm>
+          </Col>
+          <Col span={6}>
+            <Popconfirm
+              title='本当に差し戻しますか？'
+              onConfirm={reject}
+            >
+              <Button
+                type='danger'
+                style={{ margin: '0 15px'}}
+              >差し戻す</Button>
+            </Popconfirm>
+          </Col>
+          <Col span={6}>
+            <p>執筆文字数：{countAll}</p>
+          </Col>
+        </Row>
+        
       </div>
     </div>
   )
