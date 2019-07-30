@@ -55,7 +55,7 @@ const editArticles: React.SFC<any> = ({
                   key={i}
                   style={{
                     position: 'absolute',
-                    top: content.top + 20
+                    top: content.top + 10
                   }}
                   >150文字程度</p>
                   )
@@ -66,7 +66,7 @@ const editArticles: React.SFC<any> = ({
                     key={i}
                     style={{
                       position: 'absolute',
-                      top: content.top + 10
+                      top: content.top + 5
                     }}
                       >250文字程度</p>
                   )
