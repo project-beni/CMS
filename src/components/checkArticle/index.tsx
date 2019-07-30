@@ -6,6 +6,7 @@ import {
   FormatQuote,
   FormatBold,
   FormatItalic,
+  FormatColorFill,
   Comment
 } from '@material-ui/icons'
 import { Button, Popconfirm, Row, Col } from 'antd'
@@ -23,7 +24,7 @@ const actions = [
 
   {type: "separator"},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-  {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
+  // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
     <h1 style={{color: '#fff', lineHeight: '0.7em'}}>大<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h1>
@@ -50,123 +51,122 @@ const editArticles: React.SFC<any> = ({
   body,
   save,
   changeComment,
-  countAll
+  counts,
+  countAll,
+  myBlockStyle
 }) => {
   return (
     <div style={{
-      margin: '100px 200px'
+      margin: '100px 50px'
     }}>
       <Row>
-        {/* <Col sm={1}>
-          <div className='megadraft' id='counts' style={{ marginTop: '3em' }}>
+        <Col span={3}>
           {
-              counts.map((content: any, i: number) => {
-                switch (content.type) {
-                  case 'header-one':
-                    return (
-                    <h1
+            counts.map((content: any, i: number) => {
+              switch (content.type) {
+                case 'header-one':
+                  return (
+                  <p
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    top: content.top + 20
+                  }}
+                  >150文字程度</p>
+                  )
+                  break
+                case 'header-two':
+                  return (
+                    <p
                     key={i}
-                      style={{
-                        lineHeight: `${content.height}px`,
-                        marginTop: content.marginTop,
-                        marginBottom: content.marginBottom,
-                        color: '#ddd'
-                      }}
-                    >大</h1>
-                    )
-                    break
-                  case 'header-two':
-                    return (
-                      <h2
+                    style={{
+                      position: 'absolute',
+                      top: content.top + 10
+                    }}
+                      >250文字程度</p>
+                  )
+                  break
+                case 'header-three':
+                  return (
+                    <h3
                       key={i}
+                      className='header-three'
                       style={{
-                        lineHeight: `${content.height}px`,
-                        marginTop: '16px',
-                        marginBottom: content.marginBottom,
-                        color: '#ddd'
+                        position: 'absolute',
+                        top: content.top
                       }}
-                        >中</h2>
-                    )
-                    break
-                  case 'header-three':
-                    return (
-                      <h3
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#ddd'
-                        }}
-                      >小</h3>
-                    )
-                    break
-                  case 'header-six':
-                    return (
-                      <h6
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#f44'
-                        }}
-                      >コ</h6>
-                    )
-                    break
-                  case 'paragraph':
-                    return (
-                      <div
-                        key={i}
-                        className='paragraph'
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom
-                        }}
-                      >{content.count}</div>
-                    )
-                    break
-                  case 'unstyled':
-                      return (
-                        <div
-                          key={i}
-                          style={{
-                            lineHeight: `${content.height}px`,
-                            marginTop: content.marginTop,
-                            marginBottom: content.marginBottom,
-                            color: '#ddd'
-                          }}
-                        >{content.count}</div>
-                      )
-                      break
-                  case 'atomic':
-                    return (
-                      <div
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#ddd'
-                        }}
-                      >画像</div>
-                    )
-                    break   
-                  default:
-                    return null
-                }
-              })
-            }
-          </div>
+                    >小</h3>
+                  )
+                  break
+                case 'header-six':
+                  // return (
+                  //   <h6
+                  //     key={i}
+                  //     className='header-six'
+                  //     style={{
+                  //       position: 'absolute',
+                  //       top: content.top
+                  //     }}
+                  //   ></h6>
+                  // )
+                  return null
+                  break
+                case 'paragraph':
+                  return (
+                    <div
+                      key={i}
+                      className='paragraph'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >{content.count}</div>
+                  )
+                  break
+                // case 'image':
+                //     return (
+                //       <div
+                //         key={i}
+                //         className='atomic'
+                //         style={{
+                //           position: 'absolute',
+                //           top: content.top
+                //         }}
+                //       >{content.count}</div>
+                //     )
+                //     break
+                case 'twitter-link':
+                  return (
+                    <div
+                      key={i}
+                      className='twitter-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >100文字程度</div>
+                  )
+                  break
+                default:
+                  return null
+              }
+            })
+          }
         </Col>
-        <Col span={3}></Col> */}
-        <Col sm={24}>
+        <Col sm={1}></Col>  
+        <Col sm={20}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
             placeholder='ここから本文'
             actions={actions}
+            blockStyleFn={myBlockStyle}
+            customStyleMap={{
+              'BACK': {
+                background: 'linear-gradient(transparent 25%, #fbd 35%)',
+                borderRadius: '1px'
+              }
+            }}
           />
         </Col>
       </Row>

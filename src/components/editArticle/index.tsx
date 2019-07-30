@@ -7,7 +7,8 @@ import {
   FormatListNumbered,
   FormatQuote,
   FormatBold,
-  FormatItalic
+  FormatItalic,
+  FormatColorFill
 } from '@material-ui/icons';
 const { MegadraftEditor } = require('megadraft')
 const baseActions = require('megadraft/lib/actions/default')
@@ -22,155 +23,135 @@ const editArticles: React.SFC<any> = ({
   submit,
   isDrawerVisible,
   toggleDrawer,
-  counts
+  counts,
+  countAll,
+  myBlockStyle
 }) => {
-  const customActions = baseActions.default.concat([
-    {type: "inline", label: "U", style: "UNDERLINE", icon: FormatUnderlined}
-  ]);
   const actions = [
     {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
     {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
-    {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
-    // these actions correspond with the entityInputs above
-    // {type: "entity", label: "Link", style: "link", entity: "LINK", icon: InsertLink},
-    // {type: "entity", label: "Page Link", style: "link", entity: "INTERNAL_PAGE_LINK", icon: MyPageLinkIcon},
-  
+    {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
+    // {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
     {type: "separator"},
     {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-    {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
-    {type: "separator"},
-    // {type: "block", label: "H1", style: "header-one", icon: () => (
-    //   <h1 style={{color: '#fff', lineHeight: '0.7em'}}>大<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h1>
-    // )},
-    // {type: "block", label: "H2", style: "header-two", icon: () => (
-    //   <h2 style={{color: '#fff', lineHeight: '0.8em'}}>中<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h2>
-    // )},
-    // {type: "block", label: "H3", style: "header-three", icon: () => (
-    //   <h3 style={{color: '#fff', lineHeight: '0.925em'}}>小<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h3>
-    // )},
-    {type: "block", label: "P", style: "main", icon: () => (
+    // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
+    // {type: "separator"},
+    {type: "block", label: "P", style: "paragraph", icon: () => (
       <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
     )}
   ];
   
   
   return (
-    <div
-      style={{
-        margin: '100px 200px'
-      }}
-    >
+    <div style={{ margin: '100px 50px' }} >
       <Row>
-        {/* <Col sm={1}>
-          <div className='megadraft-editor'>
-            {
-              counts.map((content: any, i: number) => {
-                switch (content.type) {
-                  case 'header-one':
-                    return (
-                    <h1
+        <Col sm={3}>
+          {
+            counts.map((content: any, i: number) => {
+              switch (content.type) {
+                case 'header-one':
+                  return (
+                  <p
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    top: content.top + 20
+                  }}
+                  >150文字程度</p>
+                  )
+                  break
+                case 'header-two':
+                  return (
+                    <p
                     key={i}
-                      style={{
-                        lineHeight: `${content.height}px`,
-                        marginTop: content.marginTop,
-                        marginBottom: content.marginBottom,
-                        color: '#ddd'
-                      }}
-                    >大</h1>
-                    )
-                    break
-                  case 'header-two':
-                    return (
-                      <h2
+                    style={{
+                      position: 'absolute',
+                      top: content.top + 10
+                    }}
+                      >250文字程度</p>
+                  )
+                  break
+                case 'header-three':
+                  return (
+                    <h3
                       key={i}
+                      className='header-three'
                       style={{
-                        lineHeight: `${content.height}px`,
-                        marginTop: '16px',
-                        marginBottom: content.marginBottom,
-                        color: '#ddd'
+                        position: 'absolute',
+                        top: content.top
                       }}
-                        >中</h2>
-                    )
-                    break
-                  case 'header-three':
-                    return (
-                      <h3
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#ddd'
-                        }}
-                      >小</h3>
-                    )
-                    break
-                  case 'header-six':
-                    return (
-                      <h6
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#f44'
-                        }}
-                      >コ</h6>
-                    )
-                    break
-                  case 'paragraph':
-                    return (
-                      <div
-                        key={i}
-                        className='paragraph'
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom
-                        }}
-                      >{content.count}</div>
-                    )
-                    break
-                  case 'unstyled':
-                      return (
-                        <div
-                          key={i}
-                          style={{
-                            lineHeight: `${content.height}px`,
-                            marginTop: content.marginTop,
-                            marginBottom: content.marginBottom,
-                            color: '#ddd'
-                          }}
-                        >{content.count}</div>
-                      )
-                      break
-                  case 'atomic':
-                    return (
-                      <div
-                        key={i}
-                        style={{
-                          lineHeight: `${content.height}px`,
-                          marginTop: content.marginTop,
-                          marginBottom: content.marginBottom,
-                          color: '#ddd'
-                        }}
-                      >画像</div>
-                    )
-                    break   
-                  default:
-                    return null
-                }
-              })
-            }
-          </div>
+                    >小</h3>
+                  )
+                  break
+                case 'header-six':
+                  // return (
+                  //   <h6
+                  //     key={i}
+                  //     className='header-six'
+                  //     style={{
+                  //       position: 'absolute',
+                  //       top: content.top
+                  //     }}
+                  //   >コ</h6>
+                  // )
+                  return null
+                  break
+                case 'paragraph':
+                  return (
+                    <div
+                      key={i}
+                      className='paragraph'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >{content.count}</div>
+                  )
+                  break
+                // case 'image':
+                //     return (
+                //       <div
+                //         key={i}
+                //         className='atomic'
+                //         style={{
+                //           position: 'absolute',
+                //           top: content.top
+                //         }}
+                //       >{content.count}</div>
+                //     )
+                //     break
+                case 'twitter-link':
+                  return (
+                    <div
+                      key={i}
+                      className='twitter-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >100文字程度</div>
+                  )
+                  break
+                default:
+                  return null
+              }
+            })
+          }
         </Col>
-        <Col span={3}></Col> */}
-        <Col sm={24}>
+        <Col span={1}></Col>
+        <Col sm={20}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
             placeholder='ここから本文'
             actions={actions}
+            blockStyleFn={myBlockStyle}
+            customStyleMap={{
+              'BACK': {
+                background: 'linear-gradient(transparent 25%, #fbd 35%)',
+                borderRadius: '1px'
+              }
+            }}
           />
         </Col>
       </Row>
@@ -179,44 +160,43 @@ const editArticles: React.SFC<any> = ({
           position: 'fixed',
           bottom: 30,
           left: 300,
+          width: 600,
           zIndex: 1000,
           backgroundColor: '#eee',
           boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
-        }}
-      >
-        <Button
-          onClick={save}
-          style={{ margin: 10}}
-        >
-          <Icon type='save' /> 保存
-        </Button>
-        <Popconfirm
-          title='本当に提出しますか'
-          onConfirm={submit}
-        >
-          <Button
-            type='danger'
-            style={{ margin: 10}}
-          >
-            <Icon type='check' /> 提出
-          </Button>
-        </Popconfirm>
-        <Button
-          onClick={toggleDrawer}
-          style={{
-            margin: '10',
-            // borderLeft: 'solid 1px #666'
-          }}
-        >
-          <Icon type='file-image' /> 画像の検索
-        </Button>
-        <Drawer
-          visible={isDrawerVisible}
-          onClose={toggleDrawer}
-          width={400}
-          >
-            <SearchImages />
-          </Drawer>
+        }}>
+          <Row style={{ margin: 10 }}>
+            <Col span={6}>
+              <Button onClick={save} >
+                <Icon type='save' /> 保存
+              </Button>
+            </Col>
+            <Col span={6}>
+              <Popconfirm
+                title='本当に提出しますか'
+                onConfirm={submit}
+              >
+                <Button type='danger'>
+                  <Icon type='check' /> 提出
+                </Button>
+              </Popconfirm>
+            </Col>
+            <Col span={6}>
+              <Button onClick={toggleDrawer} >
+                <Icon type='file-image' /> 画像の検索
+              </Button>
+            </Col>
+            <Col span={6}>
+              <p>執筆文字数：{countAll}</p>
+            </Col>
+            <Drawer
+              visible={isDrawerVisible}
+              onClose={toggleDrawer}
+              width={400}
+            >
+              <SearchImages />
+            </Drawer>
+          </Row>
       </div>
     </div>
   )

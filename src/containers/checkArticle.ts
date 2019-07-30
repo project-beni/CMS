@@ -43,7 +43,7 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
 
 type ActionProps = {
   fetchData: () => void
-  onChange: ({ body }: State) => void
+  onChange: (updated: any) => void
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
@@ -61,7 +61,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const counts = changed.map((content: any) => {
           return {
             count: content.text.length,
-            type: content.type
+            type: content.type,
+            top: content.offsetTop
           }
         })
 
@@ -77,44 +78,50 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const contents = asdf[0].childNodes[0].childNodes
         let styles: any = []
         Array.prototype.forEach.call(contents, (content: any, i: number) => {
-          const style: any = content.currentStyle || window.getComputedStyle(content)
           styles[i] = {
-            height: content.offsetHeight,
-            marginTop: style.marginTop,
-            marginBottom: style.marginBottom,
             count: counts[i].count,
-            type: counts[i].type
+            type: counts[i].type,
+            top: content.offsetTop
           }
         })
         setCounts({ counts: styles })
       })
   },
-  onChange: ({ updateBody, setCounts }) => (updated: any) => {
-    const changed = updated.getCurrentContent().getBlocksAsArray()
-    const counts = changed.map((content: any) => {
+  onChange: ({ updateBody, body, setCountAll, setCounts }) => (updated: any) => {
+    const current = updated.getCurrentContent().getBlocksAsArray()
+    const base = body.getCurrentContent().getBlocksAsArray()
+
+    updateBody({ body: updated })
+
+    // set counts
+    const counts = current.map((content: any) => {
       return {
-        count: content.text.length,
-        type: content.type
+        count: content.text.length || 0,
+        type: content.type,
+        top: content.offsetTop
+      }
+    })    
+    const asdf = document.getElementsByClassName('public-DraftEditor-content')
+    const contents = asdf[0].childNodes[0].childNodes
+    let styles: any = []
+    Array.prototype.forEach.call(contents, (content: any, i: number) => {
+      styles[i] = {
+        count: counts[i].count,
+        type: counts[i].type,
+        top: content.offsetTop
+      }
+    })  
+    setCounts({ counts: styles })
+
+    let countAll = 0
+    counts.forEach(({count, type}: any) => {
+      if (type === 'paragraph') {
+        countAll += count
       }
     })
-    
-    updateBody({ body: updated })
-  
-    const asdf = document.getElementsByClassName('public-DraftEditor-content')
-        const contents = asdf[0].childNodes[0].childNodes
-        let styles: any = []
-        Array.prototype.forEach.call(contents, (content: any, i: number) => {
-          const style: any = content.currentStyle || window.getComputedStyle(content)
-          styles[i] = {
-            height: content.offsetHeight,
-            marginTop: style.marginTop,
-            marginBottom: style.marginBottom,
-            count: counts[i].count,
-            type: counts[i].type
-          }
-        })
-    setCounts({ counts: styles })
+    setCountAll({ countAll })
   },
+  myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
   save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)
     
