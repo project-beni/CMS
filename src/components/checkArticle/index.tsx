@@ -36,7 +36,7 @@ const actions = [
   {type: "block", label: "H3", style: "header-three", icon: () => (
     <h3 style={{color: '#fff', lineHeight: '0.925em'}}>小<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h3>
   )},
-  {type: "block", label: "P", style: "main", icon: () => (
+  {type: "block", label: "P", style: "paragraph", icon: () => (
     <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
   )}
 ];
