@@ -43,14 +43,39 @@ const RecruitingArticles: React.SFC<any> = ({
 }) => (
   <div>
     <h1>検品待ちの記事</h1>
-    <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title='タイトル' dataIndex='title' />
+    <List dataSource={dataSource} bordered loading={isLoading} size='small'>
+      <Column
+        title='ライター / タイトル'
+        render={({ writer, title }) => {
+          return (
+            <React.Fragment>
+              <p>{writer}</p>
+              <p>『{title}』</p>
+            </React.Fragment>
+          )
+        }}
+      />
       <Column
         title='発注日時'
         render={({ ordered }) => {
           const s = ordered.split('-')
           return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
         }}
+      />
+      <Column
+        title='提出日時'
+        render={({ pending }) => {
+          const s = pending.split('-')
+          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+        }}
+      />
+      <Column
+        title='カテゴリー'
+        render={({ categories }) => (
+          categories.map((categorie: string, i: number) => (
+            <Tag key={i}>{categorie}</Tag>
+          ))
+        )}
       />
       <Column
         title='タグ'
@@ -67,7 +92,8 @@ const RecruitingArticles: React.SFC<any> = ({
           <Button
             size='small'
             onClick={() => checkArticle({ id })}
-          >検品する</Button>
+            type='primary'
+          >する</Button>
         )}
       />
     </List>
