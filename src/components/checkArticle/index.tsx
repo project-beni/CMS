@@ -61,7 +61,7 @@ const editArticles: React.SFC<any> = ({
       margin: '100px 50px'
     }}>
       <Row>
-        <Col span={3}>
+        {/* <Col span={3}>
           {
             counts.map((content: any, i: number) => {
               switch (content.type) {
@@ -100,16 +100,6 @@ const editArticles: React.SFC<any> = ({
                   )
                   break
                 case 'header-six':
-                  // return (
-                  //   <h6
-                  //     key={i}
-                  //     className='header-six'
-                  //     style={{
-                  //       position: 'absolute',
-                  //       top: content.top
-                  //     }}
-                  //   ></h6>
-                  // )
                   return null
                   break
                 case 'paragraph':
@@ -124,18 +114,6 @@ const editArticles: React.SFC<any> = ({
                     >{content.count}</div>
                   )
                   break
-                // case 'image':
-                //     return (
-                //       <div
-                //         key={i}
-                //         className='atomic'
-                //         style={{
-                //           position: 'absolute',
-                //           top: content.top
-                //         }}
-                //       >{content.count}</div>
-                //     )
-                //     break
                 case 'twitter-link':
                   return (
                     <div
@@ -153,9 +131,9 @@ const editArticles: React.SFC<any> = ({
               }
             })
           }
-        </Col>
-        <Col sm={1}></Col>  
-        <Col sm={20}>
+        </Col> */}
+        {/* <Col sm={1}></Col>   */}
+        <Col sm={24}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
