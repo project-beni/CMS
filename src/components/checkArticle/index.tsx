@@ -96,7 +96,7 @@ const editArticles: React.SFC<any> = ({
                         position: 'absolute',
                         top: content.top
                       }}
-                    >小</h3>
+                    >250文字程度</h3>
                   )
                   break
                 case 'header-six':
