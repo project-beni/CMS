@@ -2,12 +2,16 @@
   font-size: 2em !important;
   color: #555;
   margin: 3em 0 0 0 !important;
+  padding: .3em .5em !important;
+  background-color: #fcc;
 }
 
 .header-two {
   font-weight: 600 !important;
   font-size: 1.4em !important;
-  margin-top: 1em !important;
+  margin-top: 0 !important;
+  padding-left: .5em !important;
+  border-left: solid 5px #f55;
 }
 
 .header-six {
