@@ -61,7 +61,7 @@ const editArticles: React.SFC<any> = ({
       margin: '100px 50px'
     }}>
       <Row>
-        {/* <Col span={3}>
+        <Col span={3}>
           {
             counts.map((content: any, i: number) => {
               switch (content.type) {
@@ -131,9 +131,9 @@ const editArticles: React.SFC<any> = ({
               }
             })
           }
-        </Col> */}
-        {/* <Col sm={1}></Col>   */}
-        <Col sm={24}>
+        </Col>
+        <Col sm={1}></Col>  
+        <Col sm={20}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
