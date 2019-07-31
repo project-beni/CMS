@@ -1,33 +1,25 @@
-/* .megadraft  h1 {
-  line-height: 32px;
-  font-size: 1.8em;
-  margin: 1em 0;
+.header-one {
+  font-size: 2em !important;
+  color: #555;
+  margin: 3em 0 0 0 !important;
+  padding: .3em .5em !important;
+  background-color: #fcc;
 }
 
-.megadraft h2 {
-  line-height: 1.5em;
-  font-size: 1.5em;
-  margin: .8em 0 0 0;
-  font-weight: 400;
+.header-two {
+  font-weight: 600 !important;
+  font-size: 1.4em !important;
+  margin-top: 0 !important;
+  padding-left: .5em !important;
+  border-left: solid 5px #f55;
 }
 
-.megadraft h3 {
-  line-height: 1.2em;
-  font-size: 1.2em;
+.paragraph {
+  border-left: 1px solid #f99;
+  margin-bottom: 1em !important;
 }
 
-.megadraft h6 {
-  color: #f44;
-  font-size: 1.2em;
-  margin-top: 0;
+.header-six {
+  color: #f55;
+  font-size: 1em !important;
 }
-
-
-.megadraft .paragraph {
-  margin-bottom: 1.5em;
-}
-
-
-.counts {
-  margin-top: 5px;
-} */

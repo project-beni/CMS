@@ -4,6 +4,7 @@ const {
   editorStateFromRaw,
   editorStateToJSON
 } = require('megadraft')
+import { get } from 'immutable'
 
 import { push, read, set, remove } from '../firebase/database'
 
@@ -61,6 +62,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       .then((snapshot) => {
         
         const { contents: { body }} = snapshot.val()
+
+
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
         
         const changed = JSON.parse(body).blocks
@@ -68,7 +71,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const counts = changed.map((content: any) => {
           return {
             count: content.text.length,
-            type: content.type
+            type: content.type,
+            top: content.offsetTop
           }
         })
 
@@ -84,49 +88,117 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const contents = asdf[0].childNodes[0].childNodes
         let styles: any = []
         Array.prototype.forEach.call(contents, (content: any, i: number) => {
-          const style: any = content.currentStyle || window.getComputedStyle(content)
           styles[i] = {
-            height: content.offsetHeight,
-            marginTop: style.marginTop,
-            marginBottom: style.marginBottom,
             count: counts[i].count,
-            type: counts[i].type
+            type: counts[i].type,
+            top: content.offsetTop
           }
         })
-        console.log(styles);
-        
-        
-        
         setCounts({ counts: styles })
       })
   },
-  onChange: ({ updateBody, setCounts }) => (updated: any) => {
-    const changed = updated.getCurrentContent().getBlocksAsArray()
-    const counts = changed.map((content: any) => {
-      return {
-        count: content.text.length,
-        type: content.type
-      }
-    })
-    updateBody({ body: updated })
+  onChange: ({ updateBody, setCounts, body, setCountAll }) => (updated: any) => {
+    const current = updated.getCurrentContent().getBlocksAsArray()
+    const base = body.getCurrentContent().getBlocksAsArray()
+    
 
+    const changedLen = current.length
+    const baseLen = base.length
+
+    updateBody({ body: updated })
+    
+    if (baseLen < changedLen) { // 要素の追加
+      // let hasAlreadyChanged = false
+      // base.forEach((content: any, i: number) => {
+      //   i < 5 ? console.log(current[i].type) : null
+      //   if (
+      //     content.key !== current[i].key &&
+      //     ( current[i].type === 'paragraph' || current[i].type === 'atomic' ) &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body: updated })
+      //     hasAlreadyChanged = true
+      //   } else if (
+      //     content.key !== current[i].key &&
+      //     current[i].type !== 'paragraph' &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body })
+      //     hasAlreadyChanged = true
+      //   }
+      // })
+    } else if (baseLen > changedLen) { // 要素の削除
+      // let hasAlreadyChanged = false
+      // current.forEach((content: any, i: number) => {
+      //   i < 5 ? console.log(content.type) : null
+      //   if (
+      //     content.key !== base[i].key &&
+      //     (content.type === 'unstyled' || content.type === 'atomic') &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body: updated })
+      //     hasAlreadyChanged = true
+      //   } else {
+      //     updateBody({ body })
+      //     hasAlreadyChanged = true
+      //   }
+      // })
+    } else { // 要素の変更
+      // let hasAlreadyChanged = false
+      // current.map((content: any, i: number) => {
+      //   if (
+      //     content.type === 'unstyled' &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body })
+      //     hasAlreadyChanged = true
+      //   } else if (
+      //     content.text !== base[i].text &&
+      //     (content.type === 'paragraph' || content.type === 'image') &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body: updated })
+      //     hasAlreadyChanged = true
+      //   } else if (
+      //     content.text !== base[i].text &&
+      //     content.type !== 'paragraph' &&
+      //     !hasAlreadyChanged
+      //   ) {
+      //     updateBody({ body })
+      //     hasAlreadyChanged = true
+      //   }
+      // })
+    }
+
+    // set counts
+    const counts = current.map((content: any) => {
+      return {
+        count: content.text.length || 0,
+        type: content.type,
+        top: content.offsetTop
+      }
+    })    
     const asdf = document.getElementsByClassName('public-DraftEditor-content')
     const contents = asdf[0].childNodes[0].childNodes
     let styles: any = []
     Array.prototype.forEach.call(contents, (content: any, i: number) => {
-      const style: any = content.currentStyle || window.getComputedStyle(content)
       styles[i] = {
-        height: content.offsetHeight,
-        marginTop: style.marginTop,
-        marginBottom: style.marginBottom,
         count: counts[i].count,
-        type: counts[i].type
+        type: counts[i].type,
+        top: content.offsetTop
+      }
+    })  
+    setCounts({ counts: styles })
+
+    let countAll = 0
+    counts.forEach(({count, type}: any) => {
+      if (type === 'paragraph') {
+        countAll += count
       }
     })
-    setCounts({ counts: styles })
-    
-    
+    setCountAll({ countAll })
   },
+  myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
   save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)
     

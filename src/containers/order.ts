@@ -115,7 +115,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
             main = content
             break
           case '4':
-            tag = 'unstyled'
+            tag = 'image'
             main = content || '画像挿入'
             break
           case '5':
@@ -123,19 +123,19 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
             main = content || 'テキスト'
             break
           case '6':
-            tag = 'unstyled'
+            tag = 'table'
             main = content || '表'
             break
           case '7':
-            tag = 'unstyled'
+            tag = 'inside-link'
             main = content || '内部リンク'
             break
           case '8':
-            tag = 'unstyled'
+            tag = 'outside-link'
             main = content || '外部リンク'
             break
           case '9':
-            tag = 'unstyled'
+            tag = 'twitter-link'
             main = content || 'Twitterリンク'
             break
         }
