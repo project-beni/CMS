@@ -76,6 +76,11 @@ const sidebar: React.SFC<any> = ({
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
         >
+          <Item key='2' disabled={position!=='director'}>
+            <Icon type='file-search' />
+            <span>募集中</span>
+            <Link to='/articles/recruiting' />
+          </Item>
           <Item key='7' disabled={position!=='director'}>
             <Icon type='file-add' />
             <span>発注</span>
