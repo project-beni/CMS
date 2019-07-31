@@ -73,14 +73,14 @@ const editArticles: React.SFC<any> = ({
                   break
                 case 'header-three':
                   return (
-                    <h3
+                    <p
                       key={i}
                       className='header-three'
                       style={{
                         position: 'absolute',
                         top: content.top
                       }}
-                    >250文字程度</h3>
+                    >250文字程度</p>
                   )
                   break
                 case 'header-six':
