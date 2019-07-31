@@ -43,13 +43,20 @@ const RecruitingArticles: React.SFC<any> = ({
 }) => (
   <div>
     <h1>検品待ちの記事</h1>
-    <List dataSource={dataSource} bordered loading={isLoading}>
+    <List dataSource={dataSource} bordered loading={isLoading} size='small'>
       <Column title='タイトル' dataIndex='title' />
       <Column
         title='発注日時'
         render={({ ordered }) => {
-          const s = ordered.split('-')
-          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+          const s = ordered ? ordered.split('-') : null
+          return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
+        }}
+      />
+      <Column
+        title='提出日時'
+        render={({ pending }) => {
+          const s = pending ? pending.split('-') : null
+          return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
       />
       <Column
