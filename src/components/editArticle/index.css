@@ -14,6 +14,11 @@
   border-left: solid 5px #f55;
 }
 
+.paragraph {
+  border-left: 1px solid #f99;
+  margin-bottom: 1em !important;
+}
+
 .header-six {
   color: #f55;
   font-size: 1em !important;
