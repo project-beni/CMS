@@ -43,7 +43,7 @@ const RecruitingArticles: React.SFC<any> = ({
   position,
   amountOfArticles
 }) => {
-  console.log('asdf', amountOfArticles)
+  console.log(dataSource)
   
   return (
     <div>
