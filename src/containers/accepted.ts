@@ -45,12 +45,12 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           Object.keys(val).map(async (key, i) => {
             const {
               contents: { keyword, tags, title, countAll },
-              dates: { ordered }
+              dates: { accepted }
             } = (await read(`/articles/${val[key]}`)).val()
             dataSource.push({
               key: i,
               id: val[key],
-              ordered,
+              accepted,
               keyword,
               tags,
               title,

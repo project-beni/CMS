@@ -44,12 +44,13 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           if (val[key].status === 'pending') {
             const {
               contents: { keyword, tags, title, countAll },
-              dates: { ordered }
+              dates: { ordered, pending }
             } = val[key]
             dataSource.push({
               key: i,
               id: key,
               ordered,
+              pending,
               keyword,
               tags,
               title,

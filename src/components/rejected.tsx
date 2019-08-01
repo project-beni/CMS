@@ -50,10 +50,10 @@ const RecruitingArticles: React.SFC<any> = ({
     >
       <Column title='タイトル' dataIndex='title' />
       <Column
-        title='発注日時'
-        render={({ ordered }) => {
-          const s = ordered.split('-')
-          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+        title='差し戻し日時'
+        render={({ rejected }) => {
+          const s = rejected ? rejected.split('-') : null
+          return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
       />
       <Column
