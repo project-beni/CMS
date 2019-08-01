@@ -106,7 +106,6 @@ const editArticles: React.SFC<any> = ({
                   return (
                     <div
                       key={i}
-                      className='paragraph'
                       style={{
                         position: 'absolute',
                         top: content.top
@@ -124,6 +123,17 @@ const editArticles: React.SFC<any> = ({
                         top: content.top
                       }}
                     >100文字程度</div>
+                  )
+                  break
+                case 'unordered-list-item':
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        position: 'absolute',
+                        top: content.top + 10
+                      }}
+                    >{content.count}</div>
                   )
                   break
                 default:
