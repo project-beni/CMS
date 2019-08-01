@@ -56,6 +56,13 @@ const RecruitingArticles: React.SFC<any> = ({
         }}
       />
       <Column
+        title='提出日時'
+        render={({ pending }) => {
+          const s = pending.split('-')
+          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+        }}
+      />
+      <Column
         title='文字数'
         dataIndex='countAll'
       />

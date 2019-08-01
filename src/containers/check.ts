@@ -54,11 +54,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               key: i,
               id: key,
               ordered,
+              pending,
               keyword,
               tags,
               title,
               countAll,
-              pending,
               categories,
               writer: users[writer].profiles ? users[writer].profiles.nickname : '' 
             }) 
