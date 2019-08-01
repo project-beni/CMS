@@ -67,24 +67,45 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         })
 
         let countAll = 0
+        
         counts.forEach(({count, type}: any) => {
-          if (type === 'paragraph') {
+          if (type === 'paragraph' || type === 'unordered-list-item') {
             countAll += count
           }
         })
         setCountAll({ countAll })
 
-        const asdf = document.getElementsByClassName('public-DraftEditor-content')
-        const contents = asdf[0].childNodes[0].childNodes
-        let styles: any = []
-        Array.prototype.forEach.call(contents, (content: any, i: number) => {
-          styles[i] = {
-            count: counts[i].count,
-            type: counts[i].type,
-            top: content.offsetTop
-          }
-        })
-        setCounts({ counts: styles })
+        setTimeout(() => {
+          const asdf = document.getElementsByClassName('public-DraftEditor-content')
+          const contents = asdf[0].childNodes[0].childNodes
+          let styles: any = []
+          console.log(contents)
+          let countIndex = 0
+          Array.prototype.forEach.call(contents, (content: any) => {
+            if (content.className === 'public-DraftStyleDefault-ul') {
+              console.log(content.childNodes)
+              
+              Array.prototype.forEach.call(content.childNodes, (li: any) => {
+                styles[countIndex] = {
+                  count: counts[countIndex].count,
+                  type: counts[countIndex].type,
+                  top: li.offsetTop
+                }
+                countIndex++  
+              })
+            } else {
+              styles[countIndex] = {
+                count: counts[countIndex].count,
+                type: counts[countIndex].type,
+                top: content.offsetTop
+              }
+              countIndex++
+            }
+          })
+          console.log(styles)
+          
+          setCounts({ counts: styles })
+        }, 1000)
       })
   },
   onChange: ({ updateBody, body, setCountAll, setCounts }) => (updated: any) => {
@@ -92,6 +113,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const base = body.getCurrentContent().getBlocksAsArray()
 
     updateBody({ body: updated })
+    
 
     // set counts
     const counts = current.map((content: any) => {
@@ -104,18 +126,31 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const asdf = document.getElementsByClassName('public-DraftEditor-content')
     const contents = asdf[0].childNodes[0].childNodes
     let styles: any = []
-    Array.prototype.forEach.call(contents, (content: any, i: number) => {
-      styles[i] = {
-        count: counts[i].count,
-        type: counts[i].type,
-        top: content.offsetTop
+    let countIndex = 0
+    Array.prototype.forEach.call(contents, (content: any) => {
+      if (content.className === 'public-DraftStyleDefault-ul') {
+        Array.prototype.forEach.call(content.childNodes, (li: any) => {
+          styles[countIndex] = {
+            count: counts[countIndex].count,
+            type: counts[countIndex].type,
+            top: li.offsetTop
+          }
+          countIndex++  
+        })
+      } else {
+        styles[countIndex] = {
+          count: counts[countIndex].count,
+          type: counts[countIndex].type,
+          top: content.offsetTop
+        }
+        countIndex++
       }
-    })  
+    })
     setCounts({ counts: styles })
 
     let countAll = 0
     counts.forEach(({count, type}: any) => {
-      if (type === 'paragraph') {
+      if (type === 'paragraph' || type === 'unordered-list-item') {
         countAll += count
       }
     })
