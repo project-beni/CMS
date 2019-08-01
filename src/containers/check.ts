@@ -36,15 +36,19 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData }: any) => () => {
+  fetchData: ({ receiveData }: any) => async () => {
+    const users = (await read('/users')).val()
+    console.log(users)
+    
     listenStart('/articles', (val: any) => {
       if (val) {
         let dataSource: any = []
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'pending') {
             const {
-              contents: { keyword, tags, title, countAll },
-              dates: { ordered, pending }
+              contents: { keyword, tags, title, countAll, categories },
+              dates: { ordered, pending },
+              writer
             } = val[key]
             dataSource.push({
               key: i,
@@ -54,7 +58,9 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               keyword,
               tags,
               title,
-              countAll
+              countAll,
+              categories,
+              writer: users[writer].profiles ? users[writer].profiles.nickname : '' 
             }) 
           }
         })
