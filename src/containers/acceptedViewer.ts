@@ -157,7 +157,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const article = editorStateToJSON(body)
     
     set({
-      path: `/articles/${match.params.id}/contents`,
+      path: `/articles/${match.params.articleId}/contents`,
       data: { body: article, countAll }
     })
       .then(() => {
