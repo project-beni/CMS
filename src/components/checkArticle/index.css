@@ -24,3 +24,7 @@
   color: #f55;
   font-size: 1em !important;
 }
+
+.public-DraftStyleDefault-ul {
+  border-left: solid 1px #99f; 
+}

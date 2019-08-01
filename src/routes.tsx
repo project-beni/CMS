@@ -3,36 +3,38 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import { Layout } from 'antd'
-const { Header, Content, Footer } = Layout
-
-import C from 'react-contenteditable'
+const { Header, Content } = Layout
 
 import reducer from './stores/reducers/auth'
 const store = createStore(reducer)
 
-// import Sidebar from './components/sidebar'
 import Sidebar from './containers/sidebar'
 
 import dashboard from './components/dashboard'
 import login from './containers/login'
-import recruitingArticles from './containers/recruitingArticles'
-import OrderedArticles from './containers/orderedArticles'
-import Pending from './containers/pending'
+
 import Order from './containers/order'
 import Signup from './containers/signup'
 import MailConfirmation from './containers/mailConfirmation'
-import EditArticles from './containers/editArticle'
 import Logout from './containers/logout'
-import rejected from './containers/rejected'
-import Check from './containers/check'
-import CheckArticle from './containers/checkArticle'
-import Accepted from './containers/accepted'
-import CategoriesAndTags from './containers/categoriesAndTags'
 import Auth from './containers/auth'
-import SearchImages from './containers/searchImages'
+
+import Check from './containers/check'
+import CategoriesAndTags from './containers/categoriesAndTags'
 import UsersList from './containers/usersList'
 
-const Routes: React.SFC<any> = ({ isAuth }) => (
+// Articles
+import recruitingArticles from './containers/recruitingArticles'
+import OrderedArticles from './containers/orderedArticles'
+import CheckArticle from './containers/checkArticle'
+import Accepted from './containers/accepted'
+import Pending from './containers/pending'
+import EditArticles from './containers/editArticle'
+import rejected from './containers/rejected'
+import AcceptedList from './containers/acceptedList'
+import AcceptedViewer from './containers/acceptedViewer'
+
+const Routes: React.SFC<any> = () => (
   <Provider store={store}>
     <Router>
       <Layout　style={{ minHeight: '100vh' }}>
@@ -54,12 +56,12 @@ const Routes: React.SFC<any> = ({ isAuth }) => (
                   <Route path={'/articles/rejected'} exact={true} component={rejected} />
                   <Route path={'/articles/edit/:id'} exact={true} component={EditArticles} />
                   <Route path={'/articles/accepted'} exact={true} component={Accepted} />
-                  {/* <Route path={'/mypage'} exact={true} component={} /> */}
+                  <Route path={'/articles/acceptedList'} exact={true} component={AcceptedList} />
+                  <Route path={'/articles/acceptedList/:articleId'} exact={true} component={AcceptedViewer} />
                   <Route path={'/order'} exact={true} component={Order} />
                   <Route path={'/checkList'} exact={true} component={Check} />
                   <Route path={'/checkList/:id'} exact={true} component={CheckArticle} />
                   <Route path={'/categoriesAndTags'} exact={true} component={CategoriesAndTags} />
-                  <Route path={'/searchImages'} exact={true} component={SearchImages} />
                   <Route path={'/usersList'} exact={true} component={UsersList} />
                 </Auth>
               </Switch>

@@ -17,6 +17,7 @@
 .paragraph {
   border-left: 1px solid #f99;
   margin-bottom: 1em !important;
+  padding-left: .5em !important;
 }
 
 .header-six {
@@ -25,5 +26,5 @@
 }
 
 .public-DraftStyleDefault-ul {
-  border-left: solid 1px #f99; 
+  border-left: solid 1px #99f; 
 }
