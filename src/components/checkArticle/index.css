@@ -17,10 +17,13 @@
 .paragraph {
   border-left: 1px solid #f99;
   margin-bottom: 1em !important;
-  padding-left: .5em !important;
 }
 
 .header-six {
   color: #f55;
   font-size: 1em !important;
+}
+
+.public-DraftStyleDefault-ul {
+  border-left: solid 1px #99f; 
 }

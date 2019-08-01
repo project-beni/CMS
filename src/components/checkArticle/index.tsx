@@ -42,16 +42,11 @@ const actions = [
 ];
 
 const editArticles: React.SFC<any> = ({
-  bodies,
-  handleChange,
   recieve,
   reject,
-  title,
-  comment,
   onChange,
   body,
   save,
-  changeComment,
   counts,
   countAll,
   myBlockStyle

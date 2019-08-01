@@ -78,13 +78,12 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         setTimeout(() => {
           const asdf = document.getElementsByClassName('public-DraftEditor-content')
           const contents = asdf[0].childNodes[0].childNodes
+
           let styles: any = []
-          console.log(contents)
           let countIndex = 0
+
           Array.prototype.forEach.call(contents, (content: any) => {
             if (content.className === 'public-DraftStyleDefault-ul') {
-              console.log(content.childNodes)
-              
               Array.prototype.forEach.call(content.childNodes, (li: any) => {
                 styles[countIndex] = {
                   count: counts[countIndex].count,
@@ -102,7 +101,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               countIndex++
             }
           })
-          console.log(styles)
           
           setCounts({ counts: styles })
         }, 1000)
