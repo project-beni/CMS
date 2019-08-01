@@ -81,6 +81,11 @@ const sidebar: React.SFC<any> = ({
             <span>募集中</span>
             <Link to='/articles/recruiting' />
           </Item>
+          <Item key='6' disabled={position!=='director'}>
+            <Icon type='check' />
+            <span>受理済</span>
+            <Link to='/articles/acceptedList' />
+          </Item>
           <Item key='7' disabled={position!=='director'}>
             <Icon type='file-add' />
             <span>発注</span>
