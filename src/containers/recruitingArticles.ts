@@ -11,22 +11,27 @@ import { message, Button } from 'antd';
 type State = {
   dataSource: any
   isLoading: boolean
+  position: string
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
+  receivePosition: ({ position }: any) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     dataSource: [],
-    isLoading: true
+    isLoading: true,
+    position: ''
   },
   {
-    receiveData: () => (dataSource: any) => ({
+    receiveData: (props) => (dataSource: any) => ({
+      ...props,
       dataSource,
       isLoading: false
-    })
+    }),
+    receivePosition: (props) => ({ position }) => ({ ...props, position })
   }
 )
 
@@ -36,6 +41,12 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
+  fetchPosition: ({ receivePosition }: any) => async () => {
+    const uid = await getUid()
+    
+    const position = (await read(`/users/${uid}/position`)).val()
+    receivePosition({ position })
+  },
   fetchData: ({ receiveData }: any) => () => {
     listenStart('/articles', (val: any) => {
       if (val) {
@@ -91,7 +102,7 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
   async componentDidMount () {
-    const { fetchData, history } = this.props
+    const { fetchData, history, fetchPosition } = this.props
     
     if (!(await isLogedIn())) {
       history.push('/login')
@@ -104,12 +115,14 @@ const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
     const isMailConfirmed = isEmailConfirmed()
     
     if (isMailConfirmed && isConfirmedOnDB) {
+      fetchPosition()
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
         data: { mailConfirmation: true }
       })
+      fetchPosition()
       fetchData()
     } else {
       history.push('/mailConfirmation')
