@@ -39,44 +39,53 @@ const columns: any = [
 const RecruitingArticles: React.SFC<any> = ({
   dataSource,
   editArticle,
-  isLoading
-}) => (
-  <div>
-    <h1>募集中の記事</h1>
-    <List
-      dataSource={dataSource}
-      bordered
-      loading={isLoading}
-    >
-      <Column title='タイトル' dataIndex='title' />
-      <Column
-        title='発注日時'
-        render={({ ordered }) => {
-          const s = ordered.split('-')
-          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
-        }}
-      />
-      <Column
-        title='キーワード'
-        render={({ keyword }) => (
-          keyword.map((tag: string, i: number) => (
-            <Tag key={i}>{tag}</Tag>
-          ))
-        )}
-      />
-      <Column
-        title='受注'
-        render={({ id }) => (
-          <Popconfirm
-            title='本当に受注しますか？'
-            onConfirm={() => editArticle({id})}
-          >
-            <Button size='small'>受注する</Button>
-          </Popconfirm>
-        )}
-      />
-    </List>
-  </div>
-)
+  isLoading,
+  position
+}) => {
+  console.log(position)
+  
+  return (
+    <div>
+      <h1>募集中の記事</h1>
+      <List
+        dataSource={dataSource}
+        bordered
+        loading={isLoading}
+      >
+        <Column title='タイトル' dataIndex='title' />
+        <Column
+          title='発注日時'
+          render={({ ordered }) => {
+            const s = ordered.split('-')
+            return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
+          }}
+        />
+        <Column
+          title='キーワード'
+          render={({ keyword }) => (
+            keyword.map((tag: string, i: number) => (
+              <Tag key={i}>{tag}</Tag>
+            ))
+          )}
+        />
+        {
+          position === 'writer' ? (
+            <Column
+              title='受注'
+              render={({ id }) => (
+                <Popconfirm
+                  title='本当に受注しますか？'
+                  onConfirm={() => editArticle({id})}
+                >
+                  <Button size='small'>受注する</Button>
+                </Popconfirm>
+              )}
+            />
+          ) : null
+        }
+      </List>
+    </div>
+  )
+}
 
 export default RecruitingArticles

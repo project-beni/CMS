@@ -9,8 +9,8 @@ import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
 import { message, Button } from 'antd';
 
 type State = {
-  dataSource: any
-  isLoading: boolean
+  dataSource?: any
+  isLoading?: boolean
 }
 
 type StateUpdates = {
