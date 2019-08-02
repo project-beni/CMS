@@ -43,8 +43,6 @@ const RecruitingArticles: React.SFC<any> = ({
   position,
   amountOfArticles
 }) => {
-  console.log(dataSource)
-  
   return (
     <div>
       <h1>募集中の記事</h1>
