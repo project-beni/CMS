@@ -12,18 +12,21 @@ type State = {
   dataSource: any
   isLoading: boolean
   position: string
+  amountOfArticles: number
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
   receivePosition: ({ position }: any) => State
+  receiveAmount: ({ position }: any) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     dataSource: [],
     isLoading: true,
-    position: ''
+    position: '',
+    amountOfArticles: 0
   },
   {
     receiveData: (props) => (dataSource: any) => ({
@@ -31,7 +34,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
       dataSource,
       isLoading: false
     }),
-    receivePosition: (props) => ({ position }) => ({ ...props, position })
+    receivePosition: (props) => ({ position }) => ({ ...props, position }),
+    receiveAmount: (props) => ({ amountOfArticles }) => ({ ...props, amountOfArticles })
   }
 )
 
@@ -47,7 +51,21 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const position = (await read(`/users/${uid}/position`)).val()
     receivePosition({ position })
   },
-  fetchData: ({ receiveData }: any) => () => {
+  fetchData: ({ receiveData, receiveAmount }: any) => async () => {
+
+    // amount of writer's own articles
+    listenStart(`/users/${await getUid()}/articles`, (myArticles: any) => {
+      let myArticleAmount = 0
+      Object.keys(myArticles).forEach((articleType: string) => {
+        if (articleType !== 'wrotes') {
+          myArticleAmount += Object.keys(myArticles[articleType]).length
+        }
+      })
+      receiveAmount({ amountOfArticles: myArticleAmount })
+    })
+    
+    
+    
     listenStart('/articles', (val: any) => {
       if (val) {
         let dataSource: any = []

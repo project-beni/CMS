@@ -40,10 +40,9 @@ const RecruitingArticles: React.SFC<any> = ({
   dataSource,
   editArticle,
   isLoading,
-  position
+  position,
+  amountOfArticles
 }) => {
-  console.log(position)
-  
   return (
     <div>
       <h1>募集中の記事</h1>
@@ -70,17 +69,19 @@ const RecruitingArticles: React.SFC<any> = ({
         />
         {
           position === 'writer' ? (
-            <Column
-              title='受注'
-              render={({ id }) => (
-                <Popconfirm
-                  title='本当に受注しますか？'
-                  onConfirm={() => editArticle({id})}
-                >
-                  <Button size='small'>受注する</Button>
-                </Popconfirm>
-              )}
-            />
+            amountOfArticles <= 2 ? (
+              <Column
+                title='受注'
+                render={({ id }) => (
+                  <Popconfirm
+                    title='本当に受注しますか？'
+                    onConfirm={() => editArticle({id})}
+                  >
+                    <Button size='small'>受注する</Button>
+                  </Popconfirm>
+                )}
+              />
+            ) : null
           ) : null
         }
       </List>
