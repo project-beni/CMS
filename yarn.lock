@@ -3497,6 +3497,11 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+google-trends-api@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/google-trends-api/-/google-trends-api-4.9.0.tgz#907ad9f02df6c10596dfe887f5e16517b8510f60"
+  integrity sha512-ujOLHM98bE7Igy8YA4Lrb5naDpaY1wGt215zgHXPznCDwHmMjMK1FW8yW//dHQ9CKyG/HzaNBDfF7jEAUk8Kkw==
+
 got@^6.7.1:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/got/-/got-6.7.1.tgz#240cd05785a9a18e561dc1b44b41c763ef1e8db0"

@@ -4,7 +4,7 @@ const {
   editorStateFromRaw,
   editorStateToJSON
 } = require('megadraft')
-import { get } from 'immutable'
+const { relatedQueries } = require('google-trends-api')
 
 import { push, read, set, remove } from '../firebase/database'
 
@@ -23,6 +23,7 @@ type Body = {
     height: number
   }[]
   countAll: number
+  relatedQueries: string[]
 }
 
 export type State = Body
@@ -33,6 +34,7 @@ export type StateUpdates = {
   toggleDrawer: ({ isDrawerVisible }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
+  setRelatedQueries: ({ relatedQueries }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -40,14 +42,16 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     body: editorStateFromRaw(null),
     isDrawerVisible: false,
     counts: [],
-    countAll: 0
+    countAll: 0,
+    relatedQueries: []
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body}),
     toggleDrawer: (props) => () => ({ ...props, isDrawerVisible: !props.isDrawerVisible }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
-    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll })
+    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
+    setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries})
   }
 )
 
@@ -61,10 +65,22 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
         
-        const { contents: { body }} = snapshot.val()
-
+        const { contents: { body, keyword }} = snapshot.val()
 
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        
+        relatedQueries({
+          keyword: keyword[0],
+          geo: 'JP',
+          hl: 'ja'
+        })
+          .then((result: any) => {
+            console.log(result)
+            
+          })
+          .catch((err: Error) => {
+            console.log(err)
+          })
         
         const changed = JSON.parse(body).blocks
         

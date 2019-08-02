@@ -29,6 +29,7 @@
     "copy-to-clipboard": "^3.2.0",
     "firebase": "^6.0.2",
     "formik": "^1.5.4",
+    "google-trends-api": "^4.9.0",
     "i": "^0.3.6",
     "immutable": "^4.0.0-rc.12",
     "megadraft": "^0.6.5",
