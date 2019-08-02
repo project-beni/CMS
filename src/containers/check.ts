@@ -47,9 +47,13 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           if (val[key].status === 'pending') {
             const {
               contents: { keyword, tags, title, countAll, categories },
-              dates: { ordered, pending },
+              dates: { ordered, pending, writingStart },
               writer
             } = val[key]
+
+            const diff = 7 - Number(moment().diff(moment(writingStart.split('-').slice(0, 3).join('-')), 'days'))
+            const countdown = diff < 0 ? 0 : diff
+
             dataSource.push({
               key: i,
               id: key,
@@ -60,6 +64,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               title,
               countAll,
               categories,
+              countdown,
               writer: users[writer].profiles ? users[writer].profiles.nickname : '' 
             }) 
           }

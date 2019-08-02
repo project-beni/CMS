@@ -57,6 +57,16 @@ const RecruitingArticles: React.SFC<any> = ({
         }}
       />
       <Column
+        title='執筆日数'
+        render={({ days }) => {
+          if (days >= 7) {
+            return (<p style={{color:'#d32f2f'}}>{`${days}日`}</p>)
+          } else {
+            return `${days}日`
+          }
+        }}
+      />
+      <Column
         title='文字数'
         dataIndex='countAll'
       />

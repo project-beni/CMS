@@ -45,8 +45,13 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           Object.keys(val).map(async (key, i) => {
             const {
               contents: { keyword, tags, title, countAll },
-              dates: { accepted }
+              dates: { accepted, writingStart }
             } = (await read(`/articles/${val[key]}`)).val()
+
+            const startBeauty = writingStart.split('-').slice(0, 3).join('-')
+            const acceptedBeauty = accepted ? accepted.split('-').slice(0, 3).join('-') : ''
+            const diff = Number(moment(acceptedBeauty).diff(moment(startBeauty), 'days'))
+
             dataSource.push({
               key: i,
               id: val[key],
@@ -54,7 +59,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               keyword,
               tags,
               title,
-              countAll
+              countAll,
+              days: diff
             }) 
           })
         )

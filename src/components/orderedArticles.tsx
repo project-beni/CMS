@@ -57,6 +57,18 @@ const RecruitingArticles: React.SFC<any> = ({
         }}
       />
       <Column
+        title='残り日数'
+        render={({ countdown }) => {
+          if (countdown === 0) {
+            return (<p style={{color:'#d32f2f'}}>{`${countdown}日`}</p>)
+          } else if (countdown < 4) {
+            return (<p style={{color:'#fb8c00'}}>{`${countdown}日`}</p>)
+          }else {
+            return `${countdown}日`
+          }
+        }}
+      />
+      <Column
         title='キーワード'
         render={({ keyword }) => (
           keyword.map((tag: string, i: number) => (

@@ -5,6 +5,7 @@ import { listenStart, read, set } from '../firebase/database'
 
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
+import * as moment from 'moment'
 
 type State = {
   dataSource?: any
@@ -49,9 +50,15 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
 
             const {
               contents: { keyword, tags, title, countAll, categories },
-              dates: { ordered, pending, accepted },
+              dates: { ordered, pending, accepted, writingStart },
               writer
             } = val[key]
+
+            console.log(accepted, writingStart)
+            
+            const startBeauty = writingStart.split('-').slice(0, 3).join('-')
+            const acceptedBeauty = accepted ? accepted.split('-').slice(0, 3).join('-') : ''
+            const diff = Number(moment(acceptedBeauty).diff(moment(startBeauty), 'days'))
 
             const nickname = users[writer].profiles ? (
               users[writer].profiles.nickname ? users[writer].profiles.nickname : ''
@@ -68,7 +75,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               title,
               countAll,
               categories,
-              writer: nickname
+              writer: nickname,
+              days: diff
             })
 
             // generate writer filter
@@ -93,8 +101,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           }
         })
         dataSource.filters = { writerFilters, dateFilters }
-        console.log(dataSource)
-        
         
         receiveData(dataSource)
       } else {
