@@ -15,6 +15,7 @@ const baseActions = require('megadraft/lib/actions/default')
 
 import './index.css'
 import SearchImages from '../../containers/searchImages'
+import { backgroundColor } from 'styled-system';
 
 const editArticles: React.SFC<any> = ({
   onChange,
@@ -25,7 +26,9 @@ const editArticles: React.SFC<any> = ({
   toggleDrawer,
   counts,
   countAll,
-  myBlockStyle
+  myBlockStyle,
+  relatedQueries,
+  keyword
 }) => {
   const actions = [
     {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
@@ -127,7 +130,7 @@ const editArticles: React.SFC<any> = ({
           }
         </Col>
         <Col span={1}></Col>
-        <Col sm={20}>
+        <Col sm={15}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
@@ -142,41 +145,88 @@ const editArticles: React.SFC<any> = ({
             }}
           />
         </Col>
+        <Col span={1}></Col>
+        <Col span={4}>
+          {/* <div
+            style={{
+              height: 'auto',
+              width: '200px',
+              position: 'fixed',
+              bottom: 80,
+              right: 30,
+              opacity: .9,
+              border: 'solid 1px #ccc',
+              borderRadius: '.3em',
+              backgroundColor: 'rgba(250, 250, 250, .8)',
+              zIndex: 1000
+            }}>
+          </div> */}
+        </Col>
       </Row>
+      
       <div
         style={{
+          height: 'auto',
+          width: '250px',
           position: 'fixed',
-          bottom: 30,
-          left: 300,
-          width: 600,
-          zIndex: 1000,
-          backgroundColor: '#eee',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
-        }}>
-          <Row style={{ margin: 10 }}>
-            <Col span={6}>
-              <Button onClick={save} >
-                <Icon type='save' /> 保存
+          top: 80,
+          right: 30,
+          opacity: .9,
+          border: 'solid 1px #ccc',
+          borderRadius: '.3em',
+          backgroundColor: 'rgba(250, 250, 250, .8)',
+          zIndex: 1000
+        }}
+      >
+        <div
+          style={{
+            margin: '1em'
+          }}
+        >
+          <h3>キーワード</h3>
+          <ul
+            style={{
+              margin: '0 1em 0 0',
+              paddingLeft: '1.5em'
+            }}
+          >
+            {
+              keyword.map((k: string, i: number) => <li key={i}>{k}</li>)
+            }
+          </ul>
+          <h4 style={{marginTop: '1em'}}>関連キーワード</h4>
+          <ul
+            style={{
+              margin: '0 1em 0 0',
+              paddingLeft: '1.5em'
+            }}
+          >
+            {
+              relatedQueries.length !== 0 ? (
+                relatedQueries.map((query: string, i: number) => {
+                  return (
+                    <li key={i} style={{fontSize: '.8em'}}>{query}</li>
+                  )
+                })
+              ) : <Icon type='loading' />
+            }
+          </ul>
+          <div id='tools'>
+            <Button onClick={save} >
+              <Icon type='save' /> 保存
+            </Button>
+            <Popconfirm
+              title='本当に提出しますか'
+              onConfirm={submit}
+            >
+              <Button type='danger'>
+                <Icon type='check' /> 提出
               </Button>
-            </Col>
-            <Col span={6}>
-              <Popconfirm
-                title='本当に提出しますか'
-                onConfirm={submit}
-              >
-                <Button type='danger'>
-                  <Icon type='check' /> 提出
-                </Button>
-              </Popconfirm>
-            </Col>
-            <Col span={6}>
-              <Button onClick={toggleDrawer} >
-                <Icon type='file-image' /> 画像の検索
-              </Button>
-            </Col>
-            <Col span={6}>
-              <p>執筆文字数：{countAll}</p>
-            </Col>
+            </Popconfirm>
+            <Button onClick={toggleDrawer} >
+              <Icon type='file-image' /> 画像の検索
+            </Button>
+            <p style={{width: '5em'}}> 執筆文字数：{countAll}</p>
             <Drawer
               visible={isDrawerVisible}
               onClose={toggleDrawer}
@@ -184,7 +234,8 @@ const editArticles: React.SFC<any> = ({
             >
               <SearchImages />
             </Drawer>
-          </Row>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -4,7 +4,6 @@ const {
   editorStateFromRaw,
   editorStateToJSON
 } = require('megadraft')
-const { relatedQueries } = require('google-trends-api')
 
 import { push, read, set, remove } from '../firebase/database'
 
@@ -24,6 +23,7 @@ type Body = {
   }[]
   countAll: number
   relatedQueries: string[]
+  keyword: string[]
 }
 
 export type State = Body
@@ -35,6 +35,7 @@ export type StateUpdates = {
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
   setRelatedQueries: ({ relatedQueries }: State) => State
+  setKeyword: ({ keyword }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -43,7 +44,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     isDrawerVisible: false,
     counts: [],
     countAll: 0,
-    relatedQueries: []
+    relatedQueries: [],
+    keyword: []
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
@@ -51,7 +53,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     toggleDrawer: (props) => () => ({ ...props, isDrawerVisible: !props.isDrawerVisible }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
     setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
-    setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries})
+    setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries}),
+    setKeyword: (props) => ({ keyword }) => ({ ...props, keyword })
   }
 )
 
@@ -61,26 +64,29 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData, setCountAll, setCounts, match }) => () => {
+  fetchData: ({ receiveData, setCountAll, setCounts, setRelatedQueries, setKeyword, match }) => () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
         
         const { contents: { body, keyword }} = snapshot.val()
 
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        setKeyword({ keyword: keyword })
         
-        relatedQueries({
-          keyword: keyword[0],
-          geo: 'JP',
-          hl: 'ja'
+        const { get } = require('axios')
+        let searchWord: string = ''
+        keyword.forEach((w: string) => {
+          searchWord += `${w} `
         })
-          .then((result: any) => {
-            console.log(result)
-            
+        
+        get(`https://bizual-keywords-generat.herokuapp.com/api/v1/${searchWord}`)
+          .then(({ data: { keywords }}: any) => {
+            setRelatedQueries({ relatedQueries: keywords })
           })
           .catch((err: Error) => {
-            console.log(err)
+            message.error(`関連キーワードの取得に失敗しました：${err}`)
           })
+
         
         const changed = JSON.parse(body).blocks
         
