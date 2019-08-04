@@ -18,6 +18,8 @@ type State = {
     height: number
   }[]
   countAll: number
+  title: string
+  writer: string
 }
 
 export type StateUpdates = {
@@ -25,19 +27,23 @@ export type StateUpdates = {
   receiveData: ({ body }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
+  setHead: ({ writer, title}: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     body: editorStateFromRaw(null),
     counts: [],
-    countAll: 0
+    countAll: 0,
+    title: '',
+    writer: ''
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
-    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll })
+    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
+    setHead: (props => ({ writer, title }) => ({ ...props, writer, title }))
   }
 )
 
@@ -47,14 +53,15 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, setCountAll, receiveData, match }) => async () => {
+  fetchData: ({ setCounts, setCountAll, setHead, receiveData, match }) => async () => {
     read(`/articles/${match.params.id}`)
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         
-        const { contents: { body }} = snapshot.val()
-        
+        const { contents: { body, title }, writer } = snapshot.val()
         
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        const writerName = (await read(`/users/${writer}/profiles/nickname`)).val()
+        setHead({ title, writer: writerName })
         
         const changed = JSON.parse(body).blocks
         
