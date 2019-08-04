@@ -60,7 +60,7 @@ const editArticles: React.SFC<any> = ({
                     position: 'absolute',
                     top: content.top + 10
                   }}
-                  >150文字程度</p>
+                  >150文字以下</p>
                   )
                   break
                 case 'header-two':
@@ -71,7 +71,7 @@ const editArticles: React.SFC<any> = ({
                       position: 'absolute',
                       top: content.top + 5
                     }}
-                      >250文字程度</p>
+                      >250文字以下</p>
                   )
                   break
                 case 'header-three':
@@ -83,7 +83,7 @@ const editArticles: React.SFC<any> = ({
                         position: 'absolute',
                         top: content.top
                       }}
-                    >250文字程度</p>
+                    >250文字以下</p>
                   )
                   break
                 case 'header-six':
@@ -109,7 +109,7 @@ const editArticles: React.SFC<any> = ({
                         position: 'absolute',
                         top: content.top
                       }}
-                    >100文字程度</div>
+                    >100文字以下</div>
                   )
                   break
                 case 'unordered-list-item':
