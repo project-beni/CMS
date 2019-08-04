@@ -2,14 +2,13 @@ import * as React from 'react'
 import {
   InsertLink,
   FormatListBulleted,
-  FormatListNumbered,
   FormatQuote,
   FormatBold,
   FormatItalic,
   FormatColorFill,
   Comment
 } from '@material-ui/icons'
-import { Button, Popconfirm, Row, Col } from 'antd'
+import { Button, Popconfirm, Row, Col, Icon } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import './index.css'
@@ -42,14 +41,16 @@ const actions = [
 ];
 
 const editArticles: React.SFC<any> = ({
-  recieve,
   reject,
+  recieve,
   onChange,
   body,
   save,
   counts,
   countAll,
-  myBlockStyle
+  myBlockStyle,
+  relatedQueries,
+  keyword
 }) => {
   return (
     <div style={{
@@ -138,7 +139,7 @@ const editArticles: React.SFC<any> = ({
           }
         </Col>
         <Col sm={1}></Col>  
-        <Col sm={20}>
+        <Col sm={15}>
           <MegadraftEditor
             editorState={body}
             onChange={onChange}
@@ -153,52 +154,99 @@ const editArticles: React.SFC<any> = ({
             }}
           />
         </Col>
+        <Col span={1}></Col>
+        <Col span={4}></Col>
       </Row>
       <div
         style={{
+          height: 'auto',
+          width: '200px',
           position: 'fixed',
-          bottom: 30,
-          left: 300,
-          width: 600,
-          zIndex: 1000,
-          backgroundColor: '#eee',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+          top: 80,
+          right: 30,
+          opacity: .9,
+          border: 'solid 1px #ccc',
+          borderRadius: '.3em',
+          backgroundColor: 'rgba(250, 250, 250, .95)',
+          zIndex: 1000
         }}
       >
-        <Row>
-          <Col span={6}>
-            <Button
-              onClick={save}
-              style={{margin: '15px'}}
-            >保存</Button>
-          </Col>
-          <Col span={6}>
-            <Popconfirm
-              title='本当に受理しますか？'
-              onConfirm={recieve}
-            >
-              <Button
-                type='primary'
-                style={{ margin: '0 15px'}}
-              >受理</Button>
-            </Popconfirm>
-          </Col>
-          <Col span={6}>
-            <Popconfirm
-              title='本当に差し戻しますか？'
-              onConfirm={reject}
-            >
-              <Button
-                type='danger'
-                style={{ margin: '0 15px'}}
-              >差し戻す</Button>
-            </Popconfirm>
-          </Col>
-          <Col span={6}>
-            <p>執筆文字数：{countAll}</p>
-          </Col>
-        </Row>
-        
+        <div
+          style={{
+            margin: '1em'
+          }}
+        >
+          <h3>キーワード</h3>
+          <ul
+            style={{
+              margin: '0 1em 0 0',
+              paddingLeft: '1.5em'
+            }}
+          >
+            {
+              keyword.map((k: string, i: number) => <li key={i}>{k}</li>)
+            }
+          </ul>
+          <h4 style={{marginTop: '1em'}}>関連キーワード</h4>
+          <ul
+            style={{
+              margin: '0 .5em 1em 0',
+              paddingLeft: '1.5em'
+            }}
+          >
+            {
+              relatedQueries.length !== 0 ? (
+                relatedQueries.length !== 1 ? (
+                  relatedQueries.map((query: string, i: number) => {
+                    return (
+                      <li key={i} style={{fontSize: '.8em'}}>{query}</li>
+                    )
+                  })
+                ) : (
+                  relatedQueries.map((query: string, i: number) => {
+                    return (
+                      <li key={i} style={{fontSize: '.8em'}}>
+                        <a href={`https://www.google.com/search?q=${query}`} target='_blank'>
+                          こちらから確認してください
+                        </a>
+                      </li>
+                    )
+                  })
+                )
+              ) : <Icon type='loading' />
+            }
+          </ul>
+          <Row id='tools'>
+            <Col span={12} >
+              <Button onClick={save} style={{margin: '.5em 0'}}>
+                <Icon type='save' /> 保存
+              </Button>
+            </Col>
+            <Col span={12}>
+              <Popconfirm
+                title='本当に受理しますか'
+                onConfirm={recieve}
+              >
+                <Button type='primary' style={{margin: '.5em 0'}}>
+                  <Icon type='check' /> 受理
+                </Button>
+              </Popconfirm>
+            </Col>
+            <Col span={24}>
+              <Popconfirm
+                title='本当に差し戻しますか'
+                onConfirm={reject}
+              >
+                <Button type='danger' style={{margin: '.5em 0'}}>
+                  <Icon type='check' /> 差し戻し
+                </Button>
+              </Popconfirm>
+            </Col>
+            <Col span={24}>
+              <p style={{width: '100%'}}> 執筆文字数：{countAll}</p>
+            </Col>
+          </Row>
+        </div>
       </div>
     </div>
   )

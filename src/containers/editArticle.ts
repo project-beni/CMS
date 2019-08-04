@@ -80,13 +80,16 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         })
         
         get(`https://bizual-keywords-generat.herokuapp.com/api/v1/${searchWord}`)
-          .then(({ data: { keywords }}: any) => {
+          .then(({ data: { keywords } }: any) => {
+            if (!keywords.length) {
+              keywords.push(searchWord)
+            }
             setRelatedQueries({ relatedQueries: keywords })
           })
           .catch((err: Error) => {
             message.error(`関連キーワードの取得に失敗しました：${err}`)
+            setRelatedQueries({ relatedQueries: [searchWord] })
           })
-
         
         const changed = JSON.parse(body).blocks
         

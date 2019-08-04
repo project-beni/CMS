@@ -146,28 +146,13 @@ const editArticles: React.SFC<any> = ({
           />
         </Col>
         <Col span={1}></Col>
-        <Col span={4}>
-          {/* <div
-            style={{
-              height: 'auto',
-              width: '200px',
-              position: 'fixed',
-              bottom: 80,
-              right: 30,
-              opacity: .9,
-              border: 'solid 1px #ccc',
-              borderRadius: '.3em',
-              backgroundColor: 'rgba(250, 250, 250, .8)',
-              zIndex: 1000
-            }}>
-          </div> */}
-        </Col>
+        <Col span={4}></Col>
       </Row>
       
       <div
         style={{
           height: 'auto',
-          width: '250px',
+          width: '200px',
           position: 'fixed',
           top: 80,
           right: 30,
@@ -197,7 +182,7 @@ const editArticles: React.SFC<any> = ({
           <h4 style={{marginTop: '1em'}}>関連キーワード</h4>
           <ul
             style={{
-              margin: '0 1em 0 0',
+              margin: '0 .5em 1em 0',
               paddingLeft: '1.5em'
             }}
           >
@@ -211,22 +196,26 @@ const editArticles: React.SFC<any> = ({
               ) : <Icon type='loading' />
             }
           </ul>
-          <div id='tools'>
-            <Button onClick={save} >
-              <Icon type='save' /> 保存
-            </Button>
-            <Popconfirm
-              title='本当に提出しますか'
-              onConfirm={submit}
-            >
-              <Button type='danger'>
-                <Icon type='check' /> 提出
+          <Row id='tools'>
+            <Col span={12} >
+              <Button onClick={save} style={{margin: '.5em 0'}}>
+                <Icon type='save' /> 保存
               </Button>
-            </Popconfirm>
-            <Button onClick={toggleDrawer} >
+            </Col>
+            <Col span={12}>
+              <Popconfirm
+                title='本当に提出しますか'
+                onConfirm={submit}
+              >
+                <Button type='danger' style={{margin: '.5em 0'}}>
+                  <Icon type='check' /> 提出
+                </Button>
+              </Popconfirm>
+            </Col>
+            <Button onClick={toggleDrawer} style={{margin: '.5em 0'}}>
               <Icon type='file-image' /> 画像の検索
             </Button>
-            <p style={{width: '5em'}}> 執筆文字数：{countAll}</p>
+            <p style={{width: '100%'}}> 執筆文字数：{countAll}</p>
             <Drawer
               visible={isDrawerVisible}
               onClose={toggleDrawer}
@@ -234,7 +223,7 @@ const editArticles: React.SFC<any> = ({
             >
               <SearchImages />
             </Drawer>
-          </div>
+          </Row>
         </div>
       </div>
     </div>
