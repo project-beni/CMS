@@ -4,7 +4,6 @@ const {
   editorStateFromRaw,
   editorStateToJSON
 } = require('megadraft')
-import { get } from 'immutable'
 
 import { push, read, set, remove } from '../firebase/database'
 
@@ -23,6 +22,8 @@ type Body = {
     height: number
   }[]
   countAll: number
+  relatedQueries: string[]
+  keyword: string[]
 }
 
 export type State = Body
@@ -33,6 +34,8 @@ export type StateUpdates = {
   toggleDrawer: ({ isDrawerVisible }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
+  setRelatedQueries: ({ relatedQueries }: State) => State
+  setKeyword: ({ keyword }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -40,14 +43,18 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     body: editorStateFromRaw(null),
     isDrawerVisible: false,
     counts: [],
-    countAll: 0
+    countAll: 0,
+    relatedQueries: [],
+    keyword: []
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body}),
     toggleDrawer: (props) => () => ({ ...props, isDrawerVisible: !props.isDrawerVisible }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
-    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll })
+    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
+    setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries}),
+    setKeyword: (props) => ({ keyword }) => ({ ...props, keyword })
   }
 )
 
@@ -57,14 +64,32 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData, setCountAll, setCounts, match }) => () => {
+  fetchData: ({ receiveData, setCountAll, setCounts, setRelatedQueries, setKeyword, match }) => () => {
     read(`/articles/${match.params.id}`)
       .then((snapshot) => {
         
-        const { contents: { body }} = snapshot.val()
-
+        const { contents: { body, keyword }} = snapshot.val()
 
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        setKeyword({ keyword: keyword })
+        
+        const { get } = require('axios')
+        let searchWord: string = ''
+        keyword.forEach((w: string) => {
+          searchWord += `${w} `
+        })
+        
+        get(`https://bizual-keywords-generat.herokuapp.com/api/v1/${searchWord}`)
+          .then(({ data: { keywords } }: any) => {
+            if (!keywords.length) {
+              keywords.push(searchWord)
+            }
+            setRelatedQueries({ relatedQueries: keywords })
+          })
+          .catch((err: Error) => {
+            message.error(`関連キーワードの取得に失敗しました：${err}`)
+            setRelatedQueries({ relatedQueries: [searchWord] })
+          })
         
         const changed = JSON.parse(body).blocks
         
