@@ -60,6 +60,11 @@ const sidebar: React.SFC<any> = ({
             <span>納品済み</span>
             <Link to='/articles/accepted' />
           </Item>
+          <Item key='7' disabled={position!=='writer'}>
+            <Icon type='check-circle' />
+            <span>お手本記事</span>
+            <Link to='/articles/viewer/-LlSDr0f5g9x3-GfvMv8' />
+          </Item>
           <Item key='11' disabled={!isAuth}>
             <Icon type='logout' />
             <span>ログアウト</span>
