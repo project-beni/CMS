@@ -63,7 +63,7 @@ const sidebar: React.SFC<any> = ({
           <Item key='7' disabled={position!=='writer'}>
             <Icon type='check-circle' />
             <span>お手本記事</span>
-            <Link to='/articles/viewer/-LlSDr0f5g9x3-GfvMv8' />
+            <Link to='/articles/models' />
           </Item>
           <Item key='11' disabled={!isAuth}>
             <Icon type='logout' />
@@ -111,7 +111,12 @@ const sidebar: React.SFC<any> = ({
             <span>ライターステータス</span>
             <Link to='/usersList' />
           </Item>
-          <Item key='11' disabled={!isAuth}>
+          <Item key='11' disabled={position!=='director'}>
+            <Icon type='check-circle' />
+            <span>お手本記事</span>
+            <Link to='/articles/models' />
+          </Item>
+          <Item key='12' disabled={!isAuth}>
             <Icon type='logout' />
             <span>ログアウト</span>
             <Link to='/logout' />

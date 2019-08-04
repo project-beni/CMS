@@ -8,7 +8,7 @@ import {
   FormatColorFill,
   Comment
 } from '@material-ui/icons'
-import { Button, Row, Col } from 'antd'
+import { Button, Icon, Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import './editArticle/index.css'
@@ -46,7 +46,9 @@ const AcceptedViewer: React.SFC<any> = ({
   save,
   counts,
   countAll,
-  myBlockStyle
+  myBlockStyle,
+  type,
+  updateType
 }) => {
   return (
     <div style={{
@@ -163,15 +165,30 @@ const AcceptedViewer: React.SFC<any> = ({
         }}
       >
         <Row>
-          <Col span={12}>
+          <Col span={8}>
             <Button
               onClick={save}
               style={{margin: '15px'}}
             >保存</Button>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <p style={{margin: 15}}>執筆文字数：{countAll}</p>
           </Col>
+          <Col span={8}>
+              <Button
+                onClick={() => {
+                  type === 'normal' ? updateType({ type: 'model' }) : updateType({ type: 'normal'})
+                }}
+                disabled={!type}
+                style={{margin: '15px'}}
+              >
+                {
+                  type === 'normal' ? 'モデル記事に設定する' : (
+                    type === 'model' ? 'モデル記事から解除する': <Icon type='loading'/>
+                  )
+                }
+              </Button>
+            </Col>
         </Row>
         
       </div>
