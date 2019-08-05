@@ -53,8 +53,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               dates: { ordered, pending, accepted, writingStart },
               writer
             } = val[key]
-
-            console.log(accepted, writingStart)
             
             const startBeauty = writingStart.split('-').slice(0, 3).join('-')
             const acceptedBeauty = accepted ? accepted.split('-').slice(0, 3).join('-') : ''

@@ -14,6 +14,7 @@ type State = {
     count: number
     height: number
   }[]
+  type: '' | 'normal' | 'model'
   countAll: number
 }
 
@@ -22,35 +23,46 @@ export type StateUpdates = {
   receiveData: ({ body }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
+  setType: ({ type}: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     body: editorStateFromRaw(null),
     counts: [],
-    countAll: 0
+    countAll: 0,
+    type: ''
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
-    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll })
+    setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
+    setType: (props) => ({ type }) => ({ ...props, type })
   }
 )
 
 type ActionProps = {
   fetchData: () => void
   onChange: (updated: any) => void
+  updateType: ({type}: State) => void
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, setCountAll, receiveData, match }) => async () => {
+  fetchData: ({
+    setCounts,
+    setCountAll,
+    receiveData,
+    setType,
+    match
+  }) => async () => {
     read(`/articles/${match.params.articleId}`)
       .then((snapshot) => {
         
         
-        const { contents: { body }} = snapshot.val()
+        const { contents: { body }, type } = snapshot.val()
         
+        setType({ type: type ? type : 'normal' })
         
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
         
@@ -165,6 +177,21 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       })
       .catch((err) => {
         message.error(err.message)
+      })
+  },
+  updateType: ({ match, setType }) => ({ type }) => {
+    const articleId = match.params.articleId
+    set({path: `/articles/${articleId}`, data: { type }})
+      .then(() => {
+        if (type === 'normal') {
+          message.success('モデル記事から削除しました')
+        } else {
+          message.success('モデル記事に設定しました')
+        }
+        setType({ type })
+      })
+      .catch((err) => {
+        message.error(`サーバーとの通信中にエラーが発生しました．：${err}`)
       })
   }
 })
