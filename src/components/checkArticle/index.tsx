@@ -49,6 +49,8 @@ const editArticles: React.SFC<any> = ({
   counts,
   countAll,
   myBlockStyle,
+  title,
+  writer,
   relatedQueries,
   keyword
 }) => {
@@ -56,6 +58,13 @@ const editArticles: React.SFC<any> = ({
     <div style={{
       margin: '100px 50px'
     }}>
+      <Row>
+        <Col span={4}></Col>
+        <Col span={20}>
+          <h1 style={{fontSize: '1.5em'}}>{title}</h1>
+          <p>{writer}</p>
+        </Col>
+      </Row>
       <Row>
         <Col span={3}>
           {

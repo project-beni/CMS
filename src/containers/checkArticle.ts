@@ -18,6 +18,8 @@ type State = {
     height: number
   }[]
   countAll: number
+  title: string
+  writer: string
   relatedQueries: string[]
   keyword: string[]
 }
@@ -27,6 +29,7 @@ export type StateUpdates = {
   receiveData: ({ body }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
+  setHead: ({ writer, title}: State) => State
   setRelatedQueries: ({ relatedQueries }: State) => State
   setKeyword: ({ keyword }: State) => State
 }
@@ -36,6 +39,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     body: editorStateFromRaw(null),
     counts: [],
     countAll: 0,
+    title: '',
+    writer: '',
     relatedQueries: [],
     keyword: []
   },
@@ -44,6 +49,7 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     receiveData: (props) => ({ body }) => ({ ...props, body }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
     setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
+    setHead: (props => ({ writer, title }) => ({ ...props, writer, title })),
     setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries}),
     setKeyword: (props) => ({ keyword }) => ({ ...props, keyword })
   }
@@ -55,11 +61,11 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, setCountAll, setKeyword, setRelatedQueries, receiveData, match }) => async () => {
+  fetchData: ({ setCounts, setCountAll, setKeyword, setRelatedQueries, setHead, receiveData, match }) => async () => {
     read(`/articles/${match.params.id}`)
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         
-        const { contents: { body, keyword }} = snapshot.val()
+        const { contents: { body, keyword, title }, writer } = snapshot.val()
 
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
         setKeyword({ keyword: keyword })
@@ -82,8 +88,9 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
             setRelatedQueries({ relatedQueries: [searchWord] })
           })
         
-        
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        const writerName = (await read(`/users/${writer}/profiles/nickname`)).val()
+        setHead({ title, writer: writerName })
         
         const changed = JSON.parse(body).blocks
         
