@@ -36,7 +36,7 @@ const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
           <Item>
           <Button
             type="primary"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
             disabled={isLoading}
             loading={isLoading}
           >

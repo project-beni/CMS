@@ -109,7 +109,7 @@ const RecruitingArticles: React.SFC<any> = ({ isLoading, onSubmit, tags, categor
           <Item　{...tailFormItemLayout}>
             <Button
               type="primary"
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               loading={isLoading}
               disabled={isLoading}
             >発注</Button>

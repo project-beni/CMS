@@ -73,7 +73,7 @@ const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
             />
           </Item>
           <Item　{...tailFormItemLayout}>
-            <Button type="primary" onClick={handleSubmit} disabled={isLoading} loading={isLoading}>作成</Button>
+            <Button type="primary" onClick={() => handleSubmit()} disabled={isLoading} loading={isLoading}>作成</Button>
           </Item>
         </Form>
         
