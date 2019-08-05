@@ -20,6 +20,8 @@ type State = {
   countAll: number
   title: string
   writer: string
+  relatedQueries: string[]
+  keyword: string[]
 }
 
 export type StateUpdates = {
@@ -28,6 +30,8 @@ export type StateUpdates = {
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
   setHead: ({ writer, title}: State) => State
+  setRelatedQueries: ({ relatedQueries }: State) => State
+  setKeyword: ({ keyword }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -36,14 +40,18 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     counts: [],
     countAll: 0,
     title: '',
-    writer: ''
+    writer: '',
+    relatedQueries: [],
+    keyword: []
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
     receiveData: (props) => ({ body }) => ({ ...props, body }),
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
     setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
-    setHead: (props => ({ writer, title }) => ({ ...props, writer, title }))
+    setHead: (props => ({ writer, title }) => ({ ...props, writer, title })),
+    setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries}),
+    setKeyword: (props) => ({ keyword }) => ({ ...props, keyword })
   }
 )
 
@@ -53,11 +61,32 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ setCounts, setCountAll, setHead, receiveData, match }) => async () => {
+  fetchData: ({ setCounts, setCountAll, setKeyword, setRelatedQueries, setHead, receiveData, match }) => async () => {
     read(`/articles/${match.params.id}`)
       .then(async (snapshot) => {
         
-        const { contents: { body, title }, writer } = snapshot.val()
+        const { contents: { body, keyword, title }, writer } = snapshot.val()
+
+        receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+        setKeyword({ keyword: keyword })
+        
+        const { get } = require('axios')
+        let searchWord: string = ''
+        keyword.forEach((w: string) => {
+          searchWord += `${w}`
+        })
+        
+        get(`https://bizual-keywords-generat.herokuapp.com/api/v1/${searchWord}`)
+          .then(({ data: { keywords } }: any) => {
+            if (!keywords.length) {
+              keywords.push(searchWord)
+            }
+            setRelatedQueries({ relatedQueries: keywords })
+          })
+          .catch((err: Error) => {
+            message.error(`関連キーワードの取得に失敗しました：${err}`)
+            setRelatedQueries({ relatedQueries: [searchWord] })
+          })
         
         receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
         const writerName = (await read(`/users/${writer}/profiles/nickname`)).val()
