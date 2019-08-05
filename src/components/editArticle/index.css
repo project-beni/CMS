@@ -14,6 +14,23 @@
   border-left: solid 5px #f55;
 }
 
+.header-three > div > span {
+  position: relative;
+  padding: 0.2em 0.3em;
+  margin: .5em 0 .1em 0 !important;
+  background: #fee;
+  border-left: 3px solid #f55 ;
+  /* border-bottom: 2px solid #f55 ; */
+  color: #555;
+  font-weight: bold;
+  font-size: .9em !important;
+} 
+
+.header-three > div > span:before {
+  content: '>';
+  color: #f55;
+  margin-right: .3em;
+}
 .paragraph {
   border-left: 1px solid #f99;
   margin-bottom: 1em !important;

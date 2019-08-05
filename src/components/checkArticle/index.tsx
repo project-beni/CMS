@@ -11,7 +11,7 @@ import {
 import { Button, Popconfirm, Row, Col, Icon } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
-import './index.css'
+import '../editArticle/index.css'
 
 const actions = [
   {type: "block", label: "H6", style: "header-six", icon: Comment},
