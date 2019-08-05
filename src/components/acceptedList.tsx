@@ -56,6 +56,19 @@ const AcceptedList: React.SFC<any> = ({
           return beauty.indexOf(value) === 0
         }}
         key='acceptedDate'
+        sorter={(a: any, b: any) => {
+          let r = 0
+          let f = true
+          Array.prototype.forEach.call(a.accepted, (str: any, i: number) => {
+            if (str.charCodeAt() !== b.accepted[i].charCodeAt() && f) {
+              r = Number(str.charCodeAt()) - Number(b.accepted[i].charCodeAt())
+              f = false
+            }
+          })
+          return r
+        }}
+        sortDirections={['descend', 'ascend']}
+        defaultSortOrder='descend'
       />
       <Column
         title='日数'

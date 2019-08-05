@@ -68,6 +68,19 @@ const RecruitingArticles: React.SFC<any> = ({
           const s = pending ? pending.split('-') : null
           return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
+        sorter={(a: any, b: any) => {
+          let r = 0
+          let f = true
+          Array.prototype.forEach.call(a.pending, (str: any, i: number) => {
+            if (str.charCodeAt() !== b.pending[i].charCodeAt() && f) {
+              r = Number(str.charCodeAt()) - Number(b.pending[i].charCodeAt())
+              f = false
+            }
+          })
+          return r
+        }}
+        sortDirections={['descend', 'ascend']}
+        defaultSortOrder='descend'
       />
       <Column
         title='残り日数'
