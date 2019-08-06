@@ -24,6 +24,8 @@ type Body = {
   countAll: number
   relatedQueries: string[]
   keyword: string[]
+  isChecking: boolean
+  checks: number
 }
 
 export type State = Body
@@ -36,6 +38,8 @@ export type StateUpdates = {
   setCountAll: ({ countAll }: State) => State
   setRelatedQueries: ({ relatedQueries }: State) => State
   setKeyword: ({ keyword }: State) => State
+  toggleChecking: ({ isChecking }: State) => State
+  updateCheck: (checks: string[]) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
@@ -45,7 +49,9 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     counts: [],
     countAll: 0,
     relatedQueries: [],
-    keyword: []
+    keyword: [],
+    isChecking: false,
+    checks: 0
   },
   {
     updateBody: (props) => ({ body }) => ({ ...props, body }),
@@ -54,7 +60,9 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     setCounts: (props) => ({ counts }) => ({ ...props, counts }),
     setCountAll: (props) => ({ countAll }) => ({ ...props, countAll }),
     setRelatedQueries: (props) => ({ relatedQueries }) => ({ ...props, relatedQueries}),
-    setKeyword: (props) => ({ keyword }) => ({ ...props, keyword })
+    setKeyword: (props) => ({ keyword }) => ({ ...props, keyword }),
+    toggleChecking: (props) => () => ({ ...props, isChecking: !props.isChecking }),
+    updateCheck: (props) => (checks) => ({ ...props, checks: checks.length })
   }
 )
 
