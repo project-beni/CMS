@@ -1,6 +1,6 @@
 import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
-import { Button, Drawer, Popconfirm, Icon, Row, Col } from 'antd'
+import { Button, Drawer, Popconfirm, Icon, Row, Col, Checkbox } from 'antd'
 import {
   FormatUnderlined,
   FormatListBulleted,
@@ -28,7 +28,11 @@ const editArticles: React.SFC<any> = ({
   countAll,
   myBlockStyle,
   relatedQueries,
-  keyword
+  keyword,
+  toggleChecking,
+  isChecking,
+  updateCheck,
+  checks
 }) => {
   const actions = [
     {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
@@ -154,7 +158,7 @@ const editArticles: React.SFC<any> = ({
           height: 'auto',
           width: '200px',
           position: 'fixed',
-          top: 80,
+          top: 70,
           right: 30,
           opacity: .9,
           border: 'solid 1px #ccc',
@@ -182,7 +186,7 @@ const editArticles: React.SFC<any> = ({
           <h4 style={{marginTop: '1em'}}>関連キーワード</h4>
           <ul
             style={{
-              margin: '0 .5em 1em 0',
+              margin: '0 .5em .4em 0',
               paddingLeft: '1.5em'
             }}
           >
@@ -197,22 +201,21 @@ const editArticles: React.SFC<any> = ({
             }
           </ul>
           <Row id='tools'>
-            <Col span={12} >
-              <Button onClick={save} style={{margin: '.5em 0'}}>
+            <Col span={24} >
+              <Button onClick={save} style={{margin: '.4em 0'}}>
                 <Icon type='save' /> 保存
               </Button>
             </Col>
-            <Col span={12}>
-              <Popconfirm
-                title='本当に提出しますか'
-                onConfirm={submit}
+            <Col span={24}>
+              <Button
+                type='default'
+                onClick={toggleChecking}
+                style={{margin: '.4em 0'}}
               >
-                <Button type='danger' style={{margin: '.5em 0'}}>
-                  <Icon type='check' /> 提出
-                </Button>
-              </Popconfirm>
+                <Icon type='check' /> 提出チェック
+              </Button>
             </Col>
-            <Button onClick={toggleDrawer} style={{margin: '.5em 0'}}>
+            <Button onClick={toggleDrawer} style={{margin: '.3em 0'}}>
               <Icon type='file-image' /> 画像の検索
             </Button>
             <p style={{width: '100%'}}> 執筆文字数：{countAll}</p>
@@ -225,6 +228,50 @@ const editArticles: React.SFC<any> = ({
             </Drawer>
           </Row>
         </div>
+      </div>
+      <div
+        style={{
+          height: 'auto',
+          width: 600,
+          position: 'fixed',
+          bottom: 20,
+          right: isChecking ? 20 : -600,
+          border: 'solid 1px #ccc',
+          borderRadius: '.3em',
+          backgroundColor: 'rgba(250, 250, 250, .9)',
+          zIndex: 1000
+        }}
+      >
+        <Checkbox.Group
+          options={[
+            'キーワード、関連キーワードは文中に多く含まれていますか？',
+            '見出しごとの文字数の目安は守れていますか？',
+            'テキストは2,3行で改行され、空行はありませんか？',
+            '大事なポイントは太字、特に重要なポイントは太字+マーカーにしていますか？',
+            '誤字脱字、変換ミスはありませんか？',
+            'コピペはしていませんか？'
+          ]}
+          style={{
+            fontSize: '.6em',
+            margin: 15
+          }}
+          onChange={updateCheck}
+        />
+        <Popconfirm
+          title='本当に提出しますか'
+          onConfirm={submit}
+          disabled={checks!==6}
+        >
+          <Button
+            style={{
+              margin: '0 0 15px 15px',
+            }}
+            disabled={checks!==6}
+            type='danger'
+          >
+            提出する
+          </Button>
+        </Popconfirm>
       </div>
     </div>
   )
