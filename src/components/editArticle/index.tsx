@@ -2,14 +2,11 @@ import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
 import { Button, Drawer, Popconfirm, Icon, Row, Col, Checkbox } from 'antd'
 import {
-  FormatUnderlined,
   FormatListBulleted,
-  FormatListNumbered,
-  FormatQuote,
   FormatBold,
   FormatItalic,
   FormatColorFill
-} from '@material-ui/icons';
+} from '@material-ui/icons'
 const { MegadraftEditor } = require('megadraft')
 const baseActions = require('megadraft/lib/actions/default')
 
