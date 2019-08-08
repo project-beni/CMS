@@ -2,20 +2,17 @@ import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
 import { Button, Drawer, Popconfirm, Icon, Row, Col, Checkbox } from 'antd'
 import {
-  FormatUnderlined,
   FormatListBulleted,
-  FormatListNumbered,
-  FormatQuote,
   FormatBold,
   FormatItalic,
   FormatColorFill
 } from '@material-ui/icons';
 const { MegadraftEditor } = require('megadraft')
-const baseActions = require('megadraft/lib/actions/default')
 
 import './index.css'
 import SearchImages from '../../containers/searchImages'
-import { backgroundColor } from 'styled-system';
+import tablePlugin from '../../plugins/table'
+import imagePlugin from '../../plugins/image'
 
 const editArticles: React.SFC<any> = ({
   onChange,
@@ -38,11 +35,8 @@ const editArticles: React.SFC<any> = ({
     {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
     {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
     {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
-    // {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
     {type: "separator"},
     {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-    // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
-    // {type: "separator"},
     {type: "block", label: "P", style: "paragraph", icon: () => (
       <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
     )}
@@ -147,6 +141,7 @@ const editArticles: React.SFC<any> = ({
                 borderRadius: '1px'
               }
             }}
+            plugins={[ imagePlugin, tablePlugin ]}
           />
         </Col>
         <Col span={1}></Col>

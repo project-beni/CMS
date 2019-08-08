@@ -1,13 +1,13 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 import * as moment from 'moment'
 
-import { listenStart, push, read, set, remove } from '../firebase/database'
+import { push, read, set, remove } from '../firebase/database'
 
 import CheckArticle from '../components/checkArticle'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { getUid, isEmailConfirmed } from '../firebase/auth'
+import { message } from 'antd'
 
 type State = {
   body?: any
