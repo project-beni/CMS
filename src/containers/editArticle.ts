@@ -146,7 +146,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   onChange: ({ updateBody, setCounts, body, setCountAll }) => (updated: any) => {
     const current = updated.getCurrentContent().getBlocksAsArray()
     const base = body.getCurrentContent().getBlocksAsArray()
-    
 
     const changedLen = current.length
     const baseLen = base.length

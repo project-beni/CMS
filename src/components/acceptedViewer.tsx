@@ -11,6 +11,8 @@ import {
 import { Button, Icon, Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
+import tablePlugin from '../plugins/table'
+import imagePlugin from '../plugins/image'
 import './editArticle/index.css'
 
 const actions = [
@@ -150,6 +152,7 @@ const AcceptedViewer: React.SFC<any> = ({
                 borderRadius: '1px'
               }
             }}
+            plugins={[ tablePlugin, imagePlugin ]}
           />
         </Col>
       </Row>

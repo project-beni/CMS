@@ -11,6 +11,9 @@ import {
 import { Button, Popconfirm, Row, Col, Icon } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
+
+import tablePlugin from '../../plugins/table'
+import imagePlugin from '../../plugins/image'
 import '../editArticle/index.css'
 
 const actions = [
@@ -24,7 +27,6 @@ const actions = [
 
   {type: "separator"},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-  // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
     <h1 style={{color: '#fff', lineHeight: '0.7em'}}>大<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h1>
@@ -161,6 +163,7 @@ const editArticles: React.SFC<any> = ({
                 borderRadius: '1px'
               }
             }}
+            plugins={[ tablePlugin, imagePlugin ]}
           />
         </Col>
         <Col span={1}></Col>
