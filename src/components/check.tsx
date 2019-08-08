@@ -8,34 +8,6 @@ const List = styled(Table)`
   margin: 20px
 `
 
-const columns: any = [
-  {
-    title: 'name',
-    dataIndex: 'title',
-    filters: [
-      {
-        text: 'aaa',
-        value: 'aaa'
-      },
-      {
-        text: 'bbb',
-        value: 'bbb'
-      }
-    ],
-    onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
-    sorter: (a: any, b: any) => a.name.length - b.name.length,
-    sortDirections: ['descend']
-  },
-  {
-    title: 'order date',
-    dataIndex: 'ordered'
-  },
-  {
-    title: 'keyword',
-    dataIndex: 'keyword'
-  }
-]
-
 const RecruitingArticles: React.SFC<any> = ({
   dataSource,
   checkArticle,

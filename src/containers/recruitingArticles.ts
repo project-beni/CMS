@@ -55,8 +55,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
 
     // amount of writer's own articles
     listenStart(`/users/${await getUid()}`, (user: any) => {
-      if (user.articles) {
-        if (Object.keys(user.articles).length) {
+      const hasArticles = user.articles ? Object.keys(user.articles).length : false
+        if (hasArticles) {
           let myArticleAmount = 0
           Object.keys(user.articles).forEach((articleType: string) => {
             if (articleType !== 'wrotes') {
@@ -65,7 +65,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           })
           receiveAmount({ amountOfArticles: myArticleAmount })
         }
-      }
     })
     
     

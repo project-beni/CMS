@@ -9,31 +9,40 @@ import DateSummary from '../components/dateSummary'
 type State = {
   articleData: any
   isLoading: boolean
+  compareDate: any
 }
 
 type StateUpdates = {
   receiveData: (articleData: any) => State
+  updateDate: ({ compareDate }: State) => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
-    articleData: {},
-    isLoading: true
+    articleData: [],
+    isLoading: true,
+    compareDate: moment()
   },
   {
-    receiveData: () => ({ articleData }) => ({
+    receiveData: (props) => ({ articleData }) => ({
+      ...props,
       articleData,
       isLoading: false
+    }),
+    updateDate: (props) => ({ compareDate }) => ({
+      ...props,
+      compareDate
     })
   }
 )
 
 type ActionProps = {
   fetchData: () => void
+  changeDate: (date: any) => void
 }
 
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData }: any) => async () => {
+  fetchData: ({ receiveData, date }: any) => async () => {
     const users = (await read('/users')).val()
     const articles = (await read('/articles')).val()    
     let today: any = { ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0 }
@@ -41,14 +50,30 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     Object.keys(articles).forEach((key) => {
       Object.keys(articles[key].dates).forEach((date) => {
         const beautied = articles[key].dates[date].slice(0, 10)
-        if (Number(moment(beautied).diff(moment(), 'days')) === -1) {
+        if (Number(moment(beautied).diff(moment(), 'days')) === 0) {
           today[date] += 1
         }
       })
     })
-    
-    receiveData({ articleData: today })
-    
+    receiveData({ articleData: [ today ] })
+  },
+  changeDate: ({ updateDate, receiveData }) => async (compareDate) => {
+    updateDate({ compareDate })
+    const articles = (await read('/articles')).val()    
+    let today: any = { ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0 }
+
+    Object.keys(articles).forEach((key) => {
+      Object.keys(articles[key].dates).forEach((date) => {
+        const beautied = articles[key].dates[date].slice(0, 10)
+        if (
+          Number(moment(beautied).diff(moment(), 'days')) ===
+          Number(moment(compareDate.format('YYYY-MM-DD')).diff(moment(), 'days'))
+        ) {
+          today[date] += 1
+        }
+      })
+    })
+    receiveData({ articleData: [ today ] })
   }
 })
 
