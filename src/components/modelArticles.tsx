@@ -19,6 +19,7 @@ const ModelArticles: React.SFC<any> = ({
       <Column
         title='タイトル'
         render={({ title }) => <p>『{title}』</p> }
+        key='title'
       />
       <Column
         title='カテゴリー'
@@ -27,6 +28,7 @@ const ModelArticles: React.SFC<any> = ({
             <Tag key={i}>{categorie}</Tag>
           ))
         )}
+        key='category'
       />
       <Column
         title='タグ'
@@ -35,6 +37,7 @@ const ModelArticles: React.SFC<any> = ({
             <Tag key={i}>{tag}</Tag>
           ))
         )}
+        key='tags'
       />
       <Column title='文字数' dataIndex='countAll' />
       <Column
@@ -46,6 +49,7 @@ const ModelArticles: React.SFC<any> = ({
             type='primary'
           >する</Button>
         )}
+        key='action'
       />
     </List>
   </div>

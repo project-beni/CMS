@@ -1,12 +1,11 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import * as moment from 'moment'
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, read, set } from '../firebase/database'
 
 import Check from '../components/check'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { getUid, isEmailConfirmed } from '../firebase/auth'
 
 type State = {
   dataSource?: any
@@ -38,7 +37,6 @@ type ActionProps = {
 const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
     const users = (await read('/users')).val()
-    console.log(users)
     
     listenStart('/articles', (val: any) => {
       if (val) {
