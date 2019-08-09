@@ -5,11 +5,7 @@ const UsersList: React.SFC<any> = ({
   users,
   checkArticle
 }) => {
-  // console.log(users);
-  
   const expandedRowRender = (a: any, i: number) => {
-    console.log(a);
-    
     return (
       <React.Fragment>
         <p>ユーザーID:{a.writerId}</p>

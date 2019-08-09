@@ -54,14 +54,17 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData, receiveAmount }: any) => async () => {
 
     // amount of writer's own articles
-    listenStart(`/users/${await getUid()}/articles`, (myArticles: any) => {
-      let myArticleAmount = 0
-      Object.keys(myArticles).forEach((articleType: string) => {
-        if (articleType !== 'wrotes') {
-          myArticleAmount += Object.keys(myArticles[articleType]).length
+    listenStart(`/users/${await getUid()}`, (user: any) => {
+      const hasArticles = user.articles ? Object.keys(user.articles).length : false
+        if (hasArticles) {
+          let myArticleAmount = 0
+          Object.keys(user.articles).forEach((articleType: string) => {
+            if (articleType !== 'wrotes') {
+              myArticleAmount += Object.keys(user.articles[articleType]).length
+            }
+          })
+          receiveAmount({ amountOfArticles: myArticleAmount })
         }
-      })
-      receiveAmount({ amountOfArticles: myArticleAmount })
     })
     
     
