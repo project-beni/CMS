@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Table, Tag, Button, Popconfirm } from 'antd'
 import styled from 'styled-components'
-
+ 
 const { Column } = Table
 
 const List = styled(Table)`
@@ -22,6 +22,44 @@ const RecruitingArticles: React.SFC<any> = ({
         dataSource={dataSource}
         bordered
         loading={isLoading}
+        expandedRowRender={({ summary }) => {
+          return summary.map(({ type, text }: any) => {
+            switch (type) {
+              case 'header-one':
+                return (
+                  <h1
+                    style={{
+                      fontSize: '1.5em',
+                      margin: 0,
+                    }}
+                  >○ {text}</h1>
+                )
+                break
+              case 'header-two':
+                return (
+                  <h2
+                    style={{
+                      fontSize: '1em',
+                      marginLeft: '2em'
+                    }}
+                  >● {text}</h2>
+                )
+                break
+              case 'header-three':
+                return (
+                  <h3
+                    style={{
+                      fontSize: '1em',
+                      marginLeft: '4em'
+                    }}
+                  >・ {text}</h3>
+                )
+                break
+              default:
+                return null
+            }
+          })
+        }}
       >
         <Column title='タイトル' dataIndex='title' />
         <Column
