@@ -232,7 +232,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     // set counts
     const newData = JSON.parse(editorStateToJSON(updated)).blocks
     const counts = newData.map((content: any) => {
-      
       if (content.data.type === 'table') {
         
         let tableCount = 0
