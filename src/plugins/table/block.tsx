@@ -4,7 +4,6 @@ import {
   Add,
   Remove
 } from '@material-ui/icons'
-const { MegadraftPlugin } = require("megadraft")
 
 export default class Block extends React.Component<any> {
   constructor(props: any) {
@@ -69,62 +68,69 @@ export default class Block extends React.Component<any> {
         <Row>
           <Col span={23}>
             <table style={{ width: '100%' }}>
-              {
-                tableData.map((row: string[], i: number) => (
-                  <tr
-                    key={i}
-                    style={{
-                      border: 'solid 1px #ccc'
-                    }}
-                  >
-                    {
-                      row.map((element: string, j: number) => {
-                        if (i === 0) {
-                          return (
-                            <th
-                              key={j}
-                              style={{
-                                borderRight: row.length !== j + 1 ? 'solid 1px #ccc' : 'none'
-                              }}
-                            >
-                              <Input
-                                placeholder={i===0 ? 'ヘッダー' : 'コンテンツ' }
-                                value={element}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  this._handleCaptionChange(e, tableData, i, j)
-                                }}
+              <tbody>
+                {
+                  tableData.map((row: string[], i: number) => (
+                    <tr
+                      key={i}
+                      style={{
+                        border: 'solid 1px #ccc'
+                      }}
+                    >
+                      {
+                        row.map((element: string, j: number) => {
+                          if (i === 0) {
+                            return (
+                              <th
+                                key={j}
                                 style={{
-                                  border: 'none'
+                                  borderRight: row.length !== j + 1 ? 'solid 1px #ccc' : 'none',
+                                  padding: 0
                                 }}
-                              />
-                            </th>
-                          )
-                        } else {
-                          return (
-                            <td
-                              key={j}
-                              style={{
-                                borderRight: row.length !== j + 1 ? 'solid 1px #ccc' : 'none'
-                              }}
-                            >
-                              <Input
-                                placeholder={i===0 ? 'ヘッダー' : 'コンテンツ' }
-                                value={element}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  this._handleCaptionChange(e, tableData, i, j)
-                                }}
+                              >
+                                <Input
+                                  placeholder='ヘッダー'
+                                  value={element}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    this._handleCaptionChange(e, tableData, i, j)
+                                  }}
+                                  style={{
+                                    border: 'none',
+                                    backgroundColor: '#eee',
+                                    borderRadius: 0
+                                  }}
+                                />
+                              </th>
+                            )
+                          } else {
+                            return (
+                              <td
+                                key={j}
                                 style={{
-                                  border: 'none'
+                                  borderRight: row.length !== j + 1 ? 'solid 1px #ccc' : 'none',
+                                  padding: 0
                                 }}
-                              />
-                            </td>
-                          )
-                        }
-                      })
-                    }
-                  </tr>
-                ))
-              }
+                              >
+                                <Input
+                                  placeholder='コンテンツ'
+                                  value={element}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    this._handleCaptionChange(e, tableData, i, j)
+                                  }}
+                                  style={{
+                                    border: 'none',
+                                    borderRadius: 0
+                                  }}
+                                />
+                              </td>
+                            )
+                          }
+                        })
+                      }
+                    </tr>
+                  ))
+                }
+              </tbody>
             </table>
           </Col>
           <Col span={1}>
