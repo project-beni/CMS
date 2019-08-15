@@ -117,30 +117,32 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         })
         setCountAll({ countAll })
 
-        const asdf = document.getElementsByClassName('public-DraftEditor-content')
-        const contents = asdf[0].childNodes[0].childNodes
-        let styles: any = []
-        let countIndex = 0
-        Array.prototype.forEach.call(contents, (content: any) => {
-          if (content.className === 'public-DraftStyleDefault-ul') {
-            Array.prototype.forEach.call(content.childNodes, (li: any) => {
+        setTimeout(() => {
+          const asdf = document.getElementsByClassName('public-DraftEditor-content')
+          const contents = asdf[0].childNodes[0].childNodes
+          let styles: any = []
+          let countIndex = 0
+          Array.prototype.forEach.call(contents, (content: any) => {
+            if (content.className === 'public-DraftStyleDefault-ul') {
+              Array.prototype.forEach.call(content.childNodes, (li: any) => {
+                styles[countIndex] = {
+                  count: counts[countIndex].count,
+                  type: counts[countIndex].type,
+                  top: li.offsetTop
+                }
+                countIndex++  
+              })
+            } else {
               styles[countIndex] = {
                 count: counts[countIndex].count,
                 type: counts[countIndex].type,
-                top: li.offsetTop
+                top: content.offsetTop
               }
-              countIndex++  
-            })
-          } else {
-            styles[countIndex] = {
-              count: counts[countIndex].count,
-              type: counts[countIndex].type,
-              top: content.offsetTop
+              countIndex++
             }
-            countIndex++
-          }
-        })
-        setCounts({ counts: styles })
+          })
+          setCounts({ counts: styles })
+        }, 1000)
       })
   },
   onChange: ({ updateBody, setCounts, body, setCountAll }) => (updated: any) => {
