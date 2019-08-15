@@ -108,8 +108,7 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           } else {
             wroteData = []
           }
-          console.log('writings', writingData)
-          
+
           data.push({
             nickname: users[key].profiles.nickname,
             mail: users[key].profiles.mail,

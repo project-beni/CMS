@@ -6,7 +6,7 @@ import {
   FormatBold,
   FormatItalic,
   FormatColorFill
-} from '@material-ui/icons';
+} from '@material-ui/icons'
 const { MegadraftEditor } = require('megadraft')
 
 import './index.css'

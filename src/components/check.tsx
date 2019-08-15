@@ -8,34 +8,6 @@ const List = styled(Table)`
   margin: 20px
 `
 
-const columns: any = [
-  {
-    title: 'name',
-    dataIndex: 'title',
-    filters: [
-      {
-        text: 'aaa',
-        value: 'aaa'
-      },
-      {
-        text: 'bbb',
-        value: 'bbb'
-      }
-    ],
-    onFilter: (value: any, record: any) => record.name.indexOf(value) === 0,
-    sorter: (a: any, b: any) => a.name.length - b.name.length,
-    sortDirections: ['descend']
-  },
-  {
-    title: 'order date',
-    dataIndex: 'ordered'
-  },
-  {
-    title: 'keyword',
-    dataIndex: 'keyword'
-  }
-]
-
 const RecruitingArticles: React.SFC<any> = ({
   dataSource,
   checkArticle,
@@ -54,6 +26,7 @@ const RecruitingArticles: React.SFC<any> = ({
             </React.Fragment>
           )
         }}
+        key='writerAndTitle'
       />
       <Column
         title='発注日時'
@@ -61,6 +34,7 @@ const RecruitingArticles: React.SFC<any> = ({
           const s = ordered ? ordered.split('-') : null
           return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
+        key='orderedDate'
       />
       <Column
         title='提出日時'
@@ -81,6 +55,7 @@ const RecruitingArticles: React.SFC<any> = ({
         }}
         sortDirections={['descend', 'ascend']}
         defaultSortOrder='descend'
+        key='submitDate'
       />
       <Column
         title='残り日数'
@@ -93,6 +68,7 @@ const RecruitingArticles: React.SFC<any> = ({
             return `${countdown}日`
           }
         }}
+        key='limitDate'
       />
       <Column
         title='カテゴリー'
@@ -101,6 +77,7 @@ const RecruitingArticles: React.SFC<any> = ({
             <Tag key={i}>{categorie}</Tag>
           ))
         )}
+        key='category'
       />
       <Column
         title='タグ'
@@ -109,6 +86,7 @@ const RecruitingArticles: React.SFC<any> = ({
             <Tag key={i}>{tag}</Tag>
           ))
         )}
+        key='tags'
       />
       <Column title='文字数' dataIndex='countAll' />
       <Column
@@ -120,6 +98,7 @@ const RecruitingArticles: React.SFC<any> = ({
             type='primary'
           >する</Button>
         )}
+        key='action'
       />
     </List>
   </div>

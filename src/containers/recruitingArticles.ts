@@ -1,18 +1,20 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import * as moment from 'moment'
+const {　editorStateToJSON　} = require('megadraft')
 
 import { listenStart, push, read, set } from '../firebase/database'
 
 import RecruitingArticles from '../components/recruitingArticles'
-import { signOut, getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
+import { message } from 'antd'
 
 type State = {
+  amountOfArticles: number
   dataSource: any
   isLoading: boolean
   position: string
-  amountOfArticles: number
+  summary: string[]
 }
 
 type StateUpdates = {
@@ -26,7 +28,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
     dataSource: [],
     isLoading: true,
     position: '',
-    amountOfArticles: 0
+    amountOfArticles: 0,
+    summary: []
   },
   {
     receiveData: (props) => (dataSource: any) => ({
@@ -54,14 +57,17 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData, receiveAmount }: any) => async () => {
 
     // amount of writer's own articles
-    listenStart(`/users/${await getUid()}/articles`, (myArticles: any) => {
-      let myArticleAmount = 0
-      Object.keys(myArticles).forEach((articleType: string) => {
-        if (articleType !== 'wrotes') {
-          myArticleAmount += Object.keys(myArticles[articleType]).length
+    listenStart(`/users/${await getUid()}`, (user: any) => {
+      const hasArticles = user.articles ? Object.keys(user.articles).length : false
+        if (hasArticles) {
+          let myArticleAmount = 0
+          Object.keys(user.articles).forEach((articleType: string) => {
+            if (articleType !== 'wrotes') {
+              myArticleAmount += Object.keys(user.articles[articleType]).length
+            }
+          })
+          receiveAmount({ amountOfArticles: myArticleAmount })
         }
-      })
-      receiveAmount({ amountOfArticles: myArticleAmount })
     })
     
     
@@ -72,16 +78,26 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'ordered') {
             const {
-              contents: { keyword, tags, title },
+              contents: { keyword, tags, title, body },
               dates: { ordered }
             } = val[key]
+            
+            let summary: any = []
+            JSON.parse(body).blocks.forEach(({ type, text }: any) => {
+              if (type === 'header-one' || type === 'header-two' || type === 'header-three') {
+                summary.push({ type, text })
+              }
+            })
+            
+
             dataSource.push({
               key: i,
               id: key,
               ordered,
               keyword,
               tags,
-              title
+              title,
+              summary
             }) 
           }
         })
