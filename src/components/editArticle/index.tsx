@@ -8,11 +8,11 @@ import {
   FormatColorFill
 } from '@material-ui/icons'
 const { MegadraftEditor } = require('megadraft')
-const baseActions = require('megadraft/lib/actions/default')
 
 import './index.css'
 import SearchImages from '../../containers/searchImages'
-import { backgroundColor } from 'styled-system';
+import tablePlugin from '../../plugins/table'
+import imagePlugin from '../../plugins/image'
 
 const editArticles: React.SFC<any> = ({
   onChange,
@@ -35,11 +35,8 @@ const editArticles: React.SFC<any> = ({
     {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
     {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
     {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
-    // {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
     {type: "separator"},
     {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-    // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
-    // {type: "separator"},
     {type: "block", label: "P", style: "paragraph", icon: () => (
       <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
     )}
@@ -124,6 +121,17 @@ const editArticles: React.SFC<any> = ({
                     >{content.count}</div>
                   )
                   break
+                case 'table':
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        position: 'absolute',
+                        top: content.top + 10
+                      }}
+                    >{content.count}</div>
+                  )
+                  break
                 default:
                   return null
               }
@@ -144,6 +152,7 @@ const editArticles: React.SFC<any> = ({
                 borderRadius: '1px'
               }
             }}
+            plugins={[ imagePlugin, tablePlugin ]}
           />
         </Col>
         <Col span={1}></Col>

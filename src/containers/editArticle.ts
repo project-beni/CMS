@@ -101,57 +101,70 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         
         const changed = JSON.parse(body).blocks
         
-        const counts = changed.map((content: any) => {
-          return {
-            count: content.text.length,
-            type: content.type,
-            top: content.offsetTop
+        const counts = changed.map((content: any, i: number) => {
+          if (content.data.type === 'table') {
+            let tableCount = 0
+            content.data.table.forEach((row: string[]) => {
+              row.forEach((cell) => tableCount += cell.length)
+            })
+            return {
+              count: tableCount,
+              type: 'table',
+            }
+          } else {
+            return {
+              count: content.text.length,
+              type: content.type,
+            }
           }
         })
 
         let countAll = 0
         counts.forEach(({count, type}: any) => {
-          if (type === 'paragraph' || type === 'unordered-list-item') {
+          if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
             countAll += count
           }
         })
         setCountAll({ countAll })
 
-        const asdf = document.getElementsByClassName('public-DraftEditor-content')
-        const contents = asdf[0].childNodes[0].childNodes
-        let styles: any = []
-        let countIndex = 0
-        Array.prototype.forEach.call(contents, (content: any) => {
-          if (content.className === 'public-DraftStyleDefault-ul') {
-            Array.prototype.forEach.call(content.childNodes, (li: any) => {
+        setTimeout(() => {
+          const asdf: HTMLCollection = document.getElementsByClassName('public-DraftEditor-content')
+          const contents = asdf[0].childNodes[0].childNodes
+          
+          let styles: any = []
+          let countIndex = 0
+          Array.prototype.forEach.call(contents, (content: any) => {
+            if (content.className === 'public-DraftStyleDefault-ul') {
+              Array.prototype.forEach.call(content.childNodes, (li: HTMLDataListElement) => {
+                styles[countIndex] = {
+                  count: counts[countIndex].count,
+                  type: counts[countIndex].type,
+                  top: li.offsetTop
+                }
+              })
+            } else {
               styles[countIndex] = {
                 count: counts[countIndex].count,
                 type: counts[countIndex].type,
-                top: li.offsetTop
+                top: content.offsetTop
               }
-              countIndex++  
-            })
-          } else {
-            styles[countIndex] = {
-              count: counts[countIndex].count,
-              type: counts[countIndex].type,
-              top: content.offsetTop
             }
-            countIndex++
-          }
-        })
-        setCounts({ counts: styles })
+            countIndex++  
+          })
+          
+          setCounts({ counts: styles })
+        }, 1000)
       })
   },
   onChange: ({ updateBody, setCounts, body, setCountAll }) => (updated: any) => {
     const current = updated.getCurrentContent().getBlocksAsArray()
     const base = body.getCurrentContent().getBlocksAsArray()
-    
 
     const changedLen = current.length
     const baseLen = base.length
 
     updateBody({ body: updated })
+    
     
     if (baseLen < changedLen) { // 要素の追加
       // let hasAlreadyChanged = false
@@ -217,11 +230,23 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     }
 
     // set counts
-    const counts = current.map((content: any) => {
-      return {
-        count: content.text.length || 0,
-        type: content.type,
-        top: content.offsetTop
+    const newData = JSON.parse(editorStateToJSON(updated)).blocks
+    const counts = newData.map((content: any) => {
+      if (content.data.type === 'table') {
+        
+        let tableCount = 0
+        content.data.table.forEach((row: string[]) => {
+          row.forEach((cell) => tableCount += cell.length)
+        })
+        return {
+          count: tableCount,
+          type: 'table',
+        }
+      } else {
+        return {
+          count: content.text.length,
+          type: content.type,
+        }
       }
     })    
     const asdf = document.getElementsByClassName('public-DraftEditor-content')
@@ -236,7 +261,6 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
             type: counts[countIndex].type,
             top: li.offsetTop
           }
-          countIndex++  
         })
       } else {
         styles[countIndex] = {
@@ -244,14 +268,15 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           type: counts[countIndex].type,
           top: content.offsetTop
         }
-        countIndex++
       }
+      countIndex++  
     })
+
     setCounts({ counts: styles })
 
     let countAll = 0
     counts.forEach(({count, type}: any) => {
-      if (type === 'paragraph' || type === 'unordered-list-item') {
+      if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
         countAll += count
       }
     })

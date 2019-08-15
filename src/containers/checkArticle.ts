@@ -1,13 +1,13 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 import * as moment from 'moment'
 
-import { listenStart, push, read, set, remove } from '../firebase/database'
+import { push, read, set, remove } from '../firebase/database'
 
 import CheckArticle from '../components/checkArticle'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { getUid, isEmailConfirmed } from '../firebase/auth'
+import { message } from 'antd'
 
 type State = {
   body?: any
@@ -95,17 +95,27 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         const changed = JSON.parse(body).blocks
         
         const counts = changed.map((content: any) => {
-          return {
-            count: content.text.length,
-            type: content.type,
-            top: content.offsetTop
+          if (content.data.type === 'table') {
+            let tableCount = 0
+            content.data.table.forEach((row: string[]) => {
+              row.forEach((cell) => tableCount += cell.length)
+            })
+            return {
+              count: tableCount,
+              type: 'table',
+            }
+          } else {
+            return {
+              count: content.text.length,
+              type: content.type,
+            }
           }
         })
 
         let countAll = 0
         
         counts.forEach(({count, type}: any) => {
-          if (type === 'paragraph' || type === 'unordered-list-item') {
+          if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
             countAll += count
           }
         })
@@ -150,11 +160,22 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     
 
     // set counts
-    const counts = current.map((content: any) => {
-      return {
-        count: content.text.length || 0,
-        type: content.type,
-        top: content.offsetTop
+    const newData = JSON.parse(editorStateToJSON(updated)).blocks
+    const counts = newData.map((content: any) => {
+      if (content.data.type === 'table') {
+        let tableCount = 0
+        content.data.table.forEach((row: string[]) => {
+          row.forEach((cell) => tableCount += cell.length)
+        })
+        return {
+          count: tableCount,
+          type: 'table',
+        }
+      } else {
+        return {
+          count: content.text.length,
+          type: content.type,
+        }
       }
     })    
     const asdf = document.getElementsByClassName('public-DraftEditor-content')
@@ -184,7 +205,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
 
     let countAll = 0
     counts.forEach(({count, type}: any) => {
-      if (type === 'paragraph' || type === 'unordered-list-item') {
+      if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
         countAll += count
       }
     })

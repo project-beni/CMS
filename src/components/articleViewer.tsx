@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
+import tablePlugin from '../plugins/table'
+import imagePlugin from '../plugins/image'
 import './editArticle/index.css'
 
 const ArticleViewer: React.SFC<any> = ({
@@ -103,6 +105,7 @@ const ArticleViewer: React.SFC<any> = ({
             placeholder='ここから本文'
             blockStyleFn={myBlockStyle}
             readOnly={true}
+            plugins={[ tablePlugin, imagePlugin ]}
           />
         </Col>
       </Row>
