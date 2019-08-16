@@ -45,22 +45,37 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData, date }: any) => async () => {
     const users = (await read('/users')).val()
     const articles = (await read('/articles')).val()    
-    let today: any = { ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0 }
+    let todayNew: any = { head: '新規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'new' }
+    let todayRegular: any = { head: '正規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'regular' }
 
     Object.keys(articles).forEach((key) => {
       Object.keys(articles[key].dates).forEach((date) => {
         const beautied = articles[key].dates[date].slice(0, 10)
         if (Number(moment(beautied).diff(moment(), 'days')) === 0) {
-          today[date] += 1
+          
+          let writerPosition = ''
+          try {
+            writerPosition = users[articles[key].writer].writerPosition
+          } catch (err) {
+            writerPosition = 'new'
+          }
+          if (writerPosition === 'regular') {
+            console.log(articles[key])
+            todayRegular[date] += 1
+          } else {
+            todayNew[date] += 1
+          }
         }
       })
     })
-    receiveData({ articleData: [ today ] })
+    receiveData({ articleData: [ todayNew, todayRegular ] })
   },
   changeDate: ({ updateDate, receiveData }) => async (compareDate) => {
     updateDate({ compareDate })
+    const users = (await read('/users')).val()
     const articles = (await read('/articles')).val()    
-    let today: any = { ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0 }
+    let todayNew: any = { head: '新規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'new' }
+    let todayRegular: any = { head: '正規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'regular' }
 
     Object.keys(articles).forEach((key) => {
       Object.keys(articles[key].dates).forEach((date) => {
@@ -69,11 +84,23 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           Number(moment(beautied).diff(moment(), 'days')) ===
           Number(moment(compareDate.format('YYYY-MM-DD')).diff(moment(), 'days'))
         ) {
-          today[date] += 1
+          
+          let writerPosition = ''
+          try {
+            writerPosition = users[articles[key].writer].writerPosition
+          } catch (err) {
+            writerPosition = 'new'
+          }
+          if (writerPosition === 'regular') {
+            console.log(articles[key])
+            todayRegular[date] += 1
+          } else {
+            todayNew[date] += 1
+          }
         }
       })
     })
-    receiveData({ articleData: [ today ] })
+    receiveData({ articleData: [ todayNew, todayRegular ] })
   }
 })
 

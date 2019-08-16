@@ -23,6 +23,7 @@ const RecruitingArticles: React.SFC<any> = ({
       size='small'
       rowKey='today'
     >
+      <Column title='役職' dataIndex='head' />
       <Column title='発注' dataIndex='ordered' />
       <Column title='受注' dataIndex='writingStart' />
       <Column title='提出' dataIndex='pending' />
