@@ -50,6 +50,64 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     } catch (err) {
       message.error(`サーバーとの通信中にエラーが発生しました：${err}`)
     }
+  },
+  deleteWriter: ({ match, history }) => async () => {
+    const UID = match.params.id
+    const { writings, rejects, pendings } = (await read(`/users/${UID}/articles`)).val()
+
+    let disableArticles: string[] = []
+    console.log([writings, rejects, pendings]);
+    [writings, rejects, pendings].forEach((a) => {
+      if (a) {
+        Object.keys(a).forEach((articleId) => {
+          disableArticles.push(a[articleId])
+        })
+      }
+    })
+
+    disableArticles.forEach((articleId) => {
+      read(`/articles/${articleId}`)
+        .then(async (snapshot) => {
+          const data = snapshot.val()
+          const body = data.contents.baseBody || data.contents.body
+
+          try {
+            await set({
+              path: `/articles/${articleId}/contents`,
+              data: { body }
+            })
+            await set({
+              path: `/articles/${articleId}`,
+              data: {
+                status: 'ordered',
+                writer: ''
+              }
+            })
+              .then(() => message.success('記事のリセットが完了しました'))
+          } catch (err) {
+            message.error(`記事のリセット中にエラーが発生しました：${err}`)
+          }
+          
+        })
+    })
+    
+    set({
+      path: `/users/${UID}`,
+      data: { status: 'disable' }
+    })
+    set({
+      path: `/users/${UID}/articles`,
+      data: { rejects: {}, writings: {}, pendings: {} }
+    })
+      .then(() => {
+        message.success('ライターを削除しました．ライターステータスページに遷移します．')
+        setTimeout(() => {
+          history.push('/usersList')
+        }, 2000)
+      })
+      .catch((err) => {
+        message.error(`ライターを削除できませんでした：${err}`)
+      })
   }
 })
 

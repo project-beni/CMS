@@ -11,10 +11,16 @@ const EditWriter: React.SFC<any> = ({
     <Input
       value={nickname}
       onChange={changeNickname}
+      style={{
+        margin: 50
+      }}
     />
     <Button
       type='primary'
       onClick={submit}
+      style={{
+        margin: '10px 50px'
+      }}
     >
       保存
     </Button>
@@ -25,8 +31,11 @@ const EditWriter: React.SFC<any> = ({
     >
       <Button
         type='danger'
+        style={{
+          margin: '10px 50px'
+        }}
       >
-        削除
+        アカウントの削除
       </Button>
     </Popconfirm>
   </React.Fragment>

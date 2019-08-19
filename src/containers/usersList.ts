@@ -109,16 +109,19 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
             wroteData = []
           }
 
-          data.push({
-            nickname: users[key].profiles.nickname,
-            mail: users[key].profiles.mail,
-            writerId: key,
-            writings: writingData,
-            pendings: pendingData,
-            rejects: rejectData,
-            accepted: wroteData,
-            key: i
-          }) 
+          const isEnable = users[key].status === 'disable' ? false : true
+          if (isEnable) {
+            data.push({
+              nickname: users[key].profiles.nickname,
+              mail: users[key].profiles.mail,
+              writerId: key,
+              writings: writingData,
+              pendings: pendingData,
+              rejects: rejectData,
+              accepted: wroteData,
+              key: i
+            }) 
+          }
         }
       })
       
