@@ -78,7 +78,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     const articles = (await read('/articles')).val()    
     let todayNew: any = { head: '新規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'new' }
     let todayRegular: any = { head: '正規', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'regular' }
-    let todayAll: any = { head: '合計', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'regular' }
+    let todayAll: any = { head: '合計', ordered: 0, writingStart: 0, pending: 0, rejected: 0, accepted: 0, key: 'result' }
 
     Object.keys(articles).forEach((key) => {
       Object.keys(articles[key].dates).forEach((date) => {
