@@ -32,7 +32,6 @@ const editArticles: React.SFC<any> = ({
   checks
 }) => {
   const actions = [
-    // {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
     {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
     {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
     {type: "separator"},
