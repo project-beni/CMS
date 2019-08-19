@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd'
 
 const UsersList: React.SFC<any> = ({
   users,
-  checkArticle
+  checkArticle,
+  editWriter
 }) => {
   const expandedRowRender = (a: any, i: number) => {
     return (
@@ -248,6 +249,19 @@ const UsersList: React.SFC<any> = ({
           key: 'accepted',
           render: ({ accepted }) => <p>{accepted.length}</p>
         },
+        {
+          title: '編集',
+          key: 'edit',
+          render: ({ writerId }) => (
+            <Button
+              onClick={() => editWriter({ writerId })}
+              type='primary'
+              size='small'
+            >
+              編集
+            </Button>
+          )
+        }
       ]}
       style={{margin: 50}}
       size='small'

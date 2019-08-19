@@ -23,6 +23,7 @@ import Check from './containers/check'
 import CategoriesAndTags from './containers/categoriesAndTags'
 import UsersList from './containers/usersList'
 import DateSummary from './containers/dateSummary'
+import EditWriter from './containers/editWriter'
 
 // Articles
 import recruitingArticles from './containers/recruitingArticles'
@@ -69,6 +70,7 @@ const Routes: React.SFC<any> = () => (
                   <Route path={'/categoriesAndTags'} exact={true} component={CategoriesAndTags} />
                   <Route path={'/usersList'} exact={true} component={UsersList} />
                   <Route path={'/summary'} exact={true} component={DateSummary} />
+                  <Route path={'/editWriter/:id'} exact={true} component={EditWriter} />
                 </Auth>
               </Switch>
             </Content>

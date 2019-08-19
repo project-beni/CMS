@@ -135,6 +135,7 @@ type WithHandlersProps = RouteComponentProps<{id: string}> & StateUpdates
 type ActionProps = {
   fetchData: () => void
   checkArticle: ({ articleId }: { articleId: string}) => void
+  editWriter: ({ writerId }: { writerId: string}) => void
 }
 
 const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
@@ -146,6 +147,9 @@ const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
   },
   checkArticle: ({ history }) => ({ articleId }) => {
     history.push(`/checkList/${articleId}`)
+  },
+  editWriter: ({ history }) => ({ writerId }) => {
+    history.push(`/editWriter/${writerId}`)
   }
 })
 
