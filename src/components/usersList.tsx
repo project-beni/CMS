@@ -52,6 +52,18 @@ const UsersList: React.SFC<any> = ({
                     }
                   }
                 },
+                {
+                  title: '編集',
+                  key: 'edit',
+                  render: ({ articleId }) => (
+                    <Button
+                      onClick={() => checkArticle({articleId})}
+                      size='small'
+                      type='primary'
+                    >編集する</Button>
+                  )
+                  
+                }
               ]}
               style={{ margin: 10}}
               size='small'
