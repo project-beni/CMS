@@ -82,6 +82,18 @@ const ArticleViewer: React.SFC<any> = ({
                     >100文字程度</div>
                   )
                   break
+                case 'outside-link':
+                  return (
+                    <div
+                      key={i}
+                      className='outside-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >外</div>
+                  )
+                  break
                 case 'unordered-list-item':
                   return (
                     <div

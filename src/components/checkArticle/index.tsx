@@ -3,10 +3,10 @@ import {
   InsertLink,
   FormatListBulleted,
   FormatQuote,
-  FormatBold,
   FormatItalic,
   FormatColorFill,
-  Comment
+  Comment,
+  OpenInNewTwoTone
 } from '@material-ui/icons'
 import { Button, Popconfirm, Row, Col, Icon } from 'antd'
 const { MegadraftEditor } = require('megadraft')
@@ -25,7 +25,8 @@ const actions = [
 
   {type: "separator"},
   {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
-  {type: "block", label: "twitter", style: "twitter-link", icon: () => (<Icon type='twitter' />)},
+  {type: "block", label: "twitter-link", style: "twitter-link", icon: () => (<Icon type='twitter' />)},
+  {type: "block", label: "outside-link", style: "outside-link", icon: OpenInNewTwoTone},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
@@ -131,6 +132,18 @@ const editArticles: React.SFC<any> = ({
                         borderLeft: 'solid 3px #00acee'
                       }}
                     >100文字以下</div>
+                  )
+                  break
+                case 'outside-link':
+                  return (
+                    <div
+                      key={i}
+                      className='outside-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >外</div>
                   )
                   break
                 case 'unordered-list-item':
