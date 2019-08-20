@@ -92,8 +92,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           if (
             type === 'paragraph' ||
             type === 'unordered-list-item' ||
-            type === 'table' ||
-            type === 'blockquote'
+            type === 'table'
           ) {
             countAll += count
           }
@@ -187,8 +186,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       if (
         type === 'paragraph' ||
         type === 'unordered-list-item' ||
-        type === 'table' ||
-        type === 'blockquote'
+        type === 'table'
       ) {
         countAll += count
       }
