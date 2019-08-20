@@ -18,7 +18,6 @@ import './editArticle/index.css'
 const actions = [
   {type: "block", label: "H6", style: "header-six", icon: Comment},
   {type: "separator"},
-  {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
   {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
   {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
@@ -26,7 +25,6 @@ const actions = [
 
   {type: "separator"},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-  // {type: "block", label: "OL", style: "ordered-list-item", icon: FormatListNumbered},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
     <h1 style={{color: '#fff', lineHeight: '0.7em'}}>大<br/><span style={{fontSize: '0.1em', lineHeight: '0.1em'}}>見出し</span></h1>
@@ -160,7 +158,8 @@ const AcceptedViewer: React.SFC<any> = ({
             customStyleMap={{
               'BACK': {
                 background: 'linear-gradient(transparent 25%, #fbd 35%)',
-                borderRadius: '1px'
+                borderRadius: '1px',
+                fontWeight: 800
               }
             }}
             plugins={[ tablePlugin, imagePlugin ]}
