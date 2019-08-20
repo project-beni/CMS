@@ -18,6 +18,7 @@ const RecruitingArticles: React.SFC<any> = ({
   return (
     <div>
       <h1>募集中の記事</h1>
+      <p style={{ margin: 20 }}>「受注中」の記事が3つ以上の場合は新たに受注できません．（検品中・差し戻しの記事はカウントしません）</p>
       <List
         dataSource={dataSource}
         bordered

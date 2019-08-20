@@ -115,7 +115,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         let countAll = 0
         
         counts.forEach(({count, type}: any) => {
-          if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
+          if (
+            type === 'paragraph' ||
+            type === 'unordered-list-item' ||
+            type === 'table'
+          ) {
             countAll += count
           }
         })
@@ -205,7 +209,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
 
     let countAll = 0
     counts.forEach(({count, type}: any) => {
-      if (type === 'paragraph' || type === 'unordered-list-item' || type === 'table') {
+      if (
+        type === 'paragraph' ||
+        type === 'unordered-list-item' ||
+        type === 'table'
+      ) {
         countAll += count
       }
     })

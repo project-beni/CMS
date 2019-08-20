@@ -62,7 +62,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
         if (hasArticles) {
           let myArticleAmount = 0
           Object.keys(user.articles).forEach((articleType: string) => {
-            if (articleType !== 'wrotes') {
+            if (articleType === 'writings') {
               myArticleAmount += Object.keys(user.articles[articleType]).length
             }
           })

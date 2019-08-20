@@ -19,7 +19,6 @@ import '../editArticle/index.css'
 const actions = [
   {type: "block", label: "H6", style: "header-six", icon: Comment},
   {type: "separator"},
-  {type: "inline", label: "B", style: "BOLD", icon: FormatBold},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
   {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
   {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
@@ -171,7 +170,8 @@ const editArticles: React.SFC<any> = ({
             customStyleMap={{
               'BACK': {
                 background: 'linear-gradient(transparent 25%, #fbd 35%)',
-                borderRadius: '1px'
+                borderRadius: '1px',
+                fontWeight: 800
               }
             }}
             plugins={[ tablePlugin, imagePlugin ]}
