@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Button, Table, Tag, Select, Modal } from 'antd';
+import { Button, Table, Tag, Select, Modal } from 'antd'
 
 const UsersList: React.SFC<any> = ({
   users,
   checkArticle,
-  changePisition,
+  editWriter,
+  changePosition,
   isModalVisible,
   toggleModal
 }) => {
@@ -252,13 +253,26 @@ const UsersList: React.SFC<any> = ({
           render: ({ accepted }) => <p>{accepted.length}</p>
         },
         {
+          title: '編集',
+          key: 'edit',
+          render: ({ writerId }) => (
+            <Button
+              onClick={() => editWriter({ writerId })}
+              type='primary'
+              size='small'
+            >
+              編集
+            </Button>
+          )
+        },
+        {
           title: '役職',
           key: 'writerPosition',
           render: ({ writerPosition, writerId, nickname }) => (
             <Select
               defaultValue={writerPosition || 'new'}
               onChange={(value: string) => {
-                changePisition({
+                changePosition({
                   writerPosition: value,
                   writerId,
                   nickname

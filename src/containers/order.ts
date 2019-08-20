@@ -152,9 +152,11 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         loop++
       }
     })
+    const body = editorStateToJSON(editorStateFromRaw(defaultBody))
     const article = {
       contents: {
-        body: editorStateToJSON(editorStateFromRaw(defaultBody)),
+        body ,
+        baseBody: body,
         title,
         keyword: keyword.split('\n').map((key) => key),
         tags: tagNames,

@@ -113,17 +113,20 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
             wroteData = []
           }
 
-          data.push({
-            nickname: users[key].profiles.nickname,
-            mail: users[key].profiles.mail,
-            writerPosition: users[key].writerPosition,
-            writerId: key,
-            writings: writingData,
-            pendings: pendingData,
-            rejects: rejectData,
-            accepted: wroteData,
-            key: i
-          }) 
+          const isEnable = users[key].status === 'disable' ? false : true
+          if (isEnable) {
+            data.push({
+              nickname: users[key].profiles.nickname,
+              mail: users[key].profiles.mail,
+              writerPosition: users[key].writerPosition,
+              writerId: key,
+              writings: writingData,
+              pendings: pendingData,
+              rejects: rejectData,
+              accepted: wroteData,
+              key: i
+            }) 
+          }
         }
       })
       
@@ -141,7 +144,8 @@ type WithHandlersProps = RouteComponentProps<{id: string}> & StateUpdates
 type ActionProps = {
   fetchData: () => void
   checkArticle: ({ articleId }: { articleId: string}) => void
-  changePisition: ({ writerPosition, writerId }: any) => void
+  editWriter: ({ writerId }: { writerId: string}) => void
+  changePosition: ({ writerPosition, writerId }: any) => void
 }
 
 const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
@@ -156,7 +160,10 @@ const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
   checkArticle: ({ history }) => ({ articleId }) => {
     history.push(`/checkList/${articleId}`)
   },
-  changePisition: () => async ({ writerPosition, writerId, nickname }) => {
+  editWriter: ({ history }) => ({ writerId }) => {
+    history.push(`/editWriter/${writerId}`)
+  },
+  changePosition: () => async ({ writerPosition, writerId, nickname }) => {
     try {
       await set({ path: `/users/${writerId}`, data: { writerPosition } })
       message.success(`${nickname}の役職を${writerPosition == 'regular' ? '正規' : '新規'}に変更しました`)
