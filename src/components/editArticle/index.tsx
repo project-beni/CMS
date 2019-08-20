@@ -106,7 +106,8 @@ const editArticles: React.SFC<any> = ({
                       className='twitter-link'
                       style={{
                         position: 'absolute',
-                        top: content.top
+                        top: content.top,
+                        borderLeft: 'solid 3px #00acee'
                       }}
                     >100文字以下</div>
                   )

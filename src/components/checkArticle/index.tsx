@@ -21,10 +21,11 @@ const actions = [
   {type: "separator"},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
   {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
-  {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
   {type: "entity", label: "Link", style: "link", entity: "LINK", icon: InsertLink},
 
   {type: "separator"},
+  {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
+  {type: "block", label: "twitter", style: "twitter-link", icon: () => (<Icon type='twitter' />)},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
@@ -126,7 +127,8 @@ const editArticles: React.SFC<any> = ({
                       className='twitter-link'
                       style={{
                         position: 'absolute',
-                        top: content.top
+                        top: content.top,
+                        borderLeft: 'solid 3px #00acee'
                       }}
                     >100文字以下</div>
                   )
