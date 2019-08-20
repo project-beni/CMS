@@ -92,6 +92,17 @@ const ArticleViewer: React.SFC<any> = ({
                     >{content.count}</div>
                   )
                   break
+                case 'table':
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          position: 'absolute',
+                          top: content.top + 10
+                        }}
+                      >{content.count}</div>
+                    )
+                    break
                 default:
                   return null
               }
