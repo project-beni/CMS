@@ -5,10 +5,11 @@ const {
   editorStateToJSON
 } = require('megadraft')
 
-import { read, set } from '../firebase/database'
+import { read, set, listenStart } from '../firebase/database'
 
 import UsersList from '../components/usersList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
+import { message } from 'antd';
 
 type Users = {
   [key: string]: {
@@ -28,15 +29,18 @@ type Users = {
 
 type State = {
   users: Users
+  isModalVisible: boolean
 }
 
 export type StateUpdates = {
   setUsersInfo: (users: any, articles: any) => State
+  toggleModal: () => State
 }
 
 const stateHandlers = withStateHandlers <State, StateUpdates> (
   {
     users: [],
+    isModalVisible: false
   },
   {
     setUsersInfo: (props) => (users, allArticles) => {
@@ -112,6 +116,7 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
           data.push({
             nickname: users[key].profiles.nickname,
             mail: users[key].profiles.mail,
+            writerPosition: users[key].writerPosition,
             writerId: key,
             writings: writingData,
             pendings: pendingData,
@@ -126,7 +131,8 @@ const stateHandlers = withStateHandlers <State, StateUpdates> (
         ...props,
         users: data,
       }
-    }
+    },
+    toggleModal: (props) => () => ({ ...props, isModalVisible: !props.isModalVisible })
   }
 )
 
@@ -135,17 +141,28 @@ type WithHandlersProps = RouteComponentProps<{id: string}> & StateUpdates
 type ActionProps = {
   fetchData: () => void
   checkArticle: ({ articleId }: { articleId: string}) => void
+  changePisition: ({ writerPosition, writerId }: any) => void
 }
 
 const WithHandlers = withHandlers <WithHandlersProps, ActionProps>({
   fetchData: ({ setUsersInfo, match }) => async () => {
     const users = (await read('/users')).val()
-    const allArticles = (await read('/articles')).val()
-    setUsersInfo(users, allArticles)
+    // const allArticles = (await read('/articles')).val()
+    listenStart('/articles', (allArticles: any) => {
+      setUsersInfo(users, allArticles)
+    })
 
   },
   checkArticle: ({ history }) => ({ articleId }) => {
     history.push(`/checkList/${articleId}`)
+  },
+  changePisition: () => async ({ writerPosition, writerId, nickname }) => {
+    try {
+      await set({ path: `/users/${writerId}`, data: { writerPosition } })
+      message.success(`${nickname}の役職を${writerPosition == 'regular' ? '正規' : '新規'}に変更しました`)
+    } catch (err) {
+      message.error(`役職変更する際にエラーが発生しました：${err}`)
+    }
   }
 })
 
