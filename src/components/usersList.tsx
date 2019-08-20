@@ -1,9 +1,12 @@
 import * as React from 'react'
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Select, Modal } from 'antd';
 
 const UsersList: React.SFC<any> = ({
   users,
-  checkArticle
+  checkArticle,
+  changePisition,
+  isModalVisible,
+  toggleModal
 }) => {
   const expandedRowRender = (a: any, i: number) => {
     return (
@@ -248,6 +251,25 @@ const UsersList: React.SFC<any> = ({
           key: 'accepted',
           render: ({ accepted }) => <p>{accepted.length}</p>
         },
+        {
+          title: '役職',
+          key: 'writerPosition',
+          render: ({ writerPosition, writerId, nickname }) => (
+            <Select
+              defaultValue={writerPosition || 'new'}
+              onChange={(value: string) => {
+                changePisition({
+                  writerPosition: value,
+                  writerId,
+                  nickname
+                })
+              }}
+            >
+              <Select.Option value='new' key='0'>新規</Select.Option>
+              <Select.Option value='regular' key='1'>正規</Select.Option>
+            </Select>
+          )
+        }
       ]}
       style={{margin: 50}}
       size='small'

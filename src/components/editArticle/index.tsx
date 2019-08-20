@@ -5,7 +5,8 @@ import {
   FormatListBulleted,
   FormatBold,
   FormatItalic,
-  FormatColorFill
+  FormatColorFill,
+  FormatQuote
 } from '@material-ui/icons'
 const { MegadraftEditor } = require('megadraft')
 
@@ -36,6 +37,7 @@ const editArticles: React.SFC<any> = ({
     {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
     {type: "separator"},
     {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
+    {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
     {type: "block", label: "P", style: "paragraph", icon: () => (
       <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
     )}
