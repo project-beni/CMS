@@ -3,10 +3,10 @@ import {
   InsertLink,
   FormatListBulleted,
   FormatQuote,
-  FormatBold,
   FormatItalic,
   FormatColorFill,
-  Comment
+  Comment,
+  OpenInNewTwoTone
 } from '@material-ui/icons'
 import { Button, Icon, Row, Col } from 'antd'
 const { MegadraftEditor } = require('megadraft')
@@ -20,10 +20,12 @@ const actions = [
   {type: "separator"},
   {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
   {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
-  {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
   {type: "entity", label: "Link", style: "link", entity: "LINK", icon: InsertLink},
 
   {type: "separator"},
+  {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
+  {type: "block", label: "twitter-link", style: "twitter-link", icon: () => (<Icon type='twitter' />)},
+  {type: "block", label: "outside-link", style: "outside-link", icon: OpenInNewTwoTone},
   {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
   {type: "separator"},
   {type: "block", label: "H1", style: "header-one", icon: () => (
@@ -114,9 +116,22 @@ const AcceptedViewer: React.SFC<any> = ({
                       className='twitter-link'
                       style={{
                         position: 'absolute',
-                        top: content.top
+                        top: content.top,
+                        borderLeft: 'solid 3px #00acee'
                       }}
                     >100文字程度</div>
+                  )
+                  break
+                case 'outside-link':
+                  return (
+                    <div
+                      key={i}
+                      className='outside-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >外</div>
                   )
                   break
                 case 'unordered-list-item':

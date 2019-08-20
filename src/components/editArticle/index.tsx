@@ -106,9 +106,22 @@ const editArticles: React.SFC<any> = ({
                       className='twitter-link'
                       style={{
                         position: 'absolute',
-                        top: content.top
+                        top: content.top,
+                        borderLeft: 'solid 3px #00acee'
                       }}
                     >100文字以下</div>
+                  )
+                  break
+                case 'outside-link':
+                  return (
+                    <div
+                      key={i}
+                      className='outside-link'
+                      style={{
+                        position: 'absolute',
+                        top: content.top
+                      }}
+                    >外</div>
                   )
                   break
                 case 'unordered-list-item':
