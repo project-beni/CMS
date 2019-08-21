@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 const { editorStateFromRaw } = require('megadraft')
 
-import ArticleViewer from '../components/articleViewer'
+import ArticleViewer from '../components/articles/viewer'
 import { read } from '../firebase/database'
 
 type State = {

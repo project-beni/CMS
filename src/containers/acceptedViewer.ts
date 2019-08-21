@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 
-import AcceptedViewer from '../components/acceptedViewer'
+import AcceptedViewer from '../components/articles/acceptedViewer'
 import { read, set } from '../firebase/database'
 import { message } from 'antd'
 

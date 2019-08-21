@@ -7,7 +7,7 @@ const {
 
 import { push, read, set, remove } from '../firebase/database'
 
-import RecruitingArticles from '../components/editArticle'
+import RecruitingArticles from '../components/articles/edit'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 import { message } from 'antd'
 import * as moment from 'moment'

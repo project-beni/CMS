@@ -5,7 +5,7 @@ import * as moment from 'moment'
 
 import { push, read, set, remove } from '../firebase/database'
 
-import CheckArticle from '../components/checkArticle'
+import CheckArticle from '../components/articles/check'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 import { message } from 'antd'
 
