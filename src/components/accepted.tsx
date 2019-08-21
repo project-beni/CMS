@@ -12,16 +12,16 @@ const RecruitingArticles: React.SFC<any> = ({ dataSource, isLoading }) => (
   <div>
     <h1>納品済みの記事</h1>
     <List dataSource={dataSource} bordered loading={isLoading}>
-      <Column title="タイトル" dataIndex="title" />
+      <Column title='タイトル' dataIndex='title' />
       <Column
-        title="納品日時"
+        title='納品日時'
         render={({ accepted }) => {
           const s = accepted ? accepted.split('-') : null
           return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
       />
       <Column
-        title="執筆日数"
+        title='執筆日数'
         render={({ days }) => {
           if (days >= 7) {
             return <p style={{ color: '#d32f2f' }}>{`${days}日`}</p>
@@ -30,9 +30,9 @@ const RecruitingArticles: React.SFC<any> = ({ dataSource, isLoading }) => (
           }
         }}
       />
-      <Column title="文字数" dataIndex="countAll" />
+      <Column title='文字数' dataIndex='countAll' />
       <Column
-        title="キーワード"
+        title='キーワード'
         render={({ keyword }) =>
           keyword.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
         }

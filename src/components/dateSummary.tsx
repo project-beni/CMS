@@ -23,12 +23,12 @@ const RecruitingArticles: React.SFC<any> = ({
     <div>
       <h1>１日のまとめ</h1>
       <p style={{ margin: 20 }}>発注：{order}</p>
-      <List dataSource={articleData} bordered loading={isLoading} size="small">
-        <Column title="役職" dataIndex="head" />
-        <Column title="受注" dataIndex="writingStart" />
-        <Column title="提出" dataIndex="pending" />
-        <Column title="差し戻し" dataIndex="rejected" />
-        <Column title="受理" dataIndex="accepted" />
+      <List dataSource={articleData} bordered loading={isLoading} size='small'>
+        <Column title='役職' dataIndex='head' />
+        <Column title='受注' dataIndex='writingStart' />
+        <Column title='提出' dataIndex='pending' />
+        <Column title='差し戻し' dataIndex='rejected' />
+        <Column title='受理' dataIndex='accepted' />
       </List>
       <DatePicker
         defaultValue={moment()}

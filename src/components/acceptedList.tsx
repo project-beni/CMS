@@ -17,37 +17,37 @@ const AcceptedList: React.SFC<any> = ({
 }) => (
   <div>
     <h1>受理した記事の一覧</h1>
-    <List dataSource={list} bordered loading={isLoading} size="small">
+    <List dataSource={list} bordered loading={isLoading} size='small'>
       <Column
-        title="名前"
+        title='名前'
         render={({ writer }) => <p>{writer}</p>}
         filters={writerFilters}
         onFilter={(value, record: any) => record.writer.indexOf(value) === 0}
-        key="name"
+        key='name'
       />
       <Column
-        title="タイトル"
+        title='タイトル'
         render={({ title }) => <p>{title}</p>}
-        key="title"
+        key='title'
       />
       <Column
-        title="発注日時"
+        title='発注日時'
         render={({ ordered }) => {
           const s = ordered ? ordered.split('-') : null
           return s ? `${s[0]}年${s[1]}/${s[2]}` : null
         }}
-        key="orderDate"
+        key='orderDate'
       />
       <Column
-        title="提出日時"
+        title='提出日時'
         render={({ pending }) => {
           const s = pending ? pending.split('-') : null
           return s ? `${s[0]}年${s[1]}/${s[2]}` : null
         }}
-        key="submitDate"
+        key='submitDate'
       />
       <Column
-        title="受理日時"
+        title='受理日時'
         render={({ accepted }) => {
           const s = accepted ? accepted.split('-') : null
           return s ? `${s[0]}年${s[1]}/${s[2]}` : null
@@ -58,7 +58,7 @@ const AcceptedList: React.SFC<any> = ({
           const beauty = s ? `${s[0]}年${s[1]}/${s[2]}` : ''
           return beauty.indexOf(value) === 0
         }}
-        key="acceptedDate"
+        key='acceptedDate'
         sorter={(a: any, b: any) => {
           let r = 0
           let f = true
@@ -71,10 +71,10 @@ const AcceptedList: React.SFC<any> = ({
           return r
         }}
         sortDirections={['descend', 'ascend']}
-        defaultSortOrder="descend"
+        defaultSortOrder='descend'
       />
       <Column
-        title="日数"
+        title='日数'
         render={({ days }) => {
           if (days >= 7) {
             return <p style={{ color: '#d32f2f' }}>{`${days}日`}</p>
@@ -84,34 +84,34 @@ const AcceptedList: React.SFC<any> = ({
         }}
       />
       <Column
-        title="カテゴリー"
+        title='カテゴリー'
         render={({ categories }) =>
           categories.map((categorie: string, i: number) => (
             <Tag key={i}>{categorie}</Tag>
           ))
         }
-        key="categories"
+        key='categories'
       />
       <Column
-        title="タグ"
+        title='タグ'
         render={({ tags }) =>
           tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
         }
-        key="tags"
+        key='tags'
       />
-      <Column title="文字数" dataIndex="countAll" key="countAll" />
+      <Column title='文字数' dataIndex='countAll' key='countAll' />
       <Column
-        title=""
+        title=''
         render={({ id }) => (
           <Button
-            size="small"
+            size='small'
             onClick={() => checkArticle({ id })}
-            type="primary"
+            type='primary'
           >
             閲覧
           </Button>
         )}
-        key="check"
+        key='check'
       />
     </List>
   </div>

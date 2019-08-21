@@ -42,27 +42,27 @@ const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
       onSubmit={onSubmit}
       render={({ handleChange, handleSubmit, values: { nickname } }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label="ペンネーム">
+          <Item label='ペンネーム'>
             <Input
-              name="nickname"
+              name='nickname'
               onChange={handleChange}
               value={nickname}
               disabled={isLoading}
             />
           </Item>
-          <Item label="メールアドレス">
-            <Input name="mail" onChange={handleChange} disabled={isLoading} />
+          <Item label='メールアドレス'>
+            <Input name='mail' onChange={handleChange} disabled={isLoading} />
           </Item>
-          <Item label="パスワード">
+          <Item label='パスワード'>
             <Input.Password
-              name="pass"
+              name='pass'
               onChange={handleChange}
               disabled={isLoading}
             />
           </Item>
           <Item {...tailFormItemLayout}>
             <Button
-              type="primary"
+              type='primary'
               onClick={() => handleSubmit()}
               disabled={isLoading}
               loading={isLoading}

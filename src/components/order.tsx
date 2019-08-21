@@ -48,19 +48,19 @@ const RecruitingArticles: React.SFC<any> = ({
         setFieldValue,
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label="キーワード（１つごとに改行）">
+          <Item label='キーワード（１つごとに改行）'>
             <TextArea
-              name="keyword"
+              name='keyword'
               onChange={handleChange}
               value={keyword}
               rows={3}
             />
           </Item>
-          <Item label="タグ">
+          <Item label='タグ'>
             <Select
-              mode="multiple"
+              mode='multiple'
               style={{ width: '100%' }}
-              placeholder="Please select"
+              placeholder='Please select'
               onChange={(
                 tagNames: string // type for tags
               ) => setFieldValue('tagNames', tagNames)}
@@ -73,14 +73,14 @@ const RecruitingArticles: React.SFC<any> = ({
               ))}
             </Select>
           </Item>
-          <Item label="タイトル">
-            <Input name="title" onChange={handleChange} value={title} />
+          <Item label='タイトル'>
+            <Input name='title' onChange={handleChange} value={title} />
           </Item>
-          <Item label="カテゴリ">
+          <Item label='カテゴリ'>
             <Select
-              mode="multiple"
+              mode='multiple'
               style={{ width: '100%' }}
-              placeholder="Please select"
+              placeholder='Please select'
               onChange={(
                 categories: string // type for tags
               ) => setFieldValue('categories', categories)}
@@ -93,9 +93,9 @@ const RecruitingArticles: React.SFC<any> = ({
               ))}
             </Select>
           </Item>
-          <Item label="見出し">
+          <Item label='見出し'>
             <TextArea
-              name="headings"
+              name='headings'
               onChange={handleChange}
               value={headings}
               rows={15}
@@ -103,7 +103,7 @@ const RecruitingArticles: React.SFC<any> = ({
           </Item>
           <Item {...tailFormItemLayout}>
             <Button
-              type="primary"
+              type='primary'
               onClick={() => handleSubmit()}
               loading={isLoading}
               disabled={isLoading}

@@ -1,4 +1,4 @@
 export default {
-  PLUGIN_NAME: "outside-link",
-  PLUGIN_TYPE: "outside-link"
+  PLUGIN_NAME: 'outside-link',
+  PLUGIN_TYPE: 'outside-link'
 }

@@ -12,8 +12,8 @@ const SearchImages: React.SFC<any> = ({
 }) => (
   <React.Fragment>
     <Search
-      placeholder="検索ワード"
-      enterButton="検索"
+      placeholder='検索ワード'
+      enterButton='検索'
       onSearch={search}
       style={{ marginTop: 30 }}
     />

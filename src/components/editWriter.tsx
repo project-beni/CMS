@@ -16,7 +16,7 @@ const EditWriter: React.SFC<any> = ({
       }}
     />
     <Button
-      type="primary"
+      type='primary'
       onClick={submit}
       style={{
         margin: '10px 50px',
@@ -25,12 +25,12 @@ const EditWriter: React.SFC<any> = ({
       保存
     </Button>
     <Popconfirm
-      title="本当に削除しますか？"
+      title='本当に削除しますか？'
       onConfirm={deleteWriter}
-      okType="danger"
+      okType='danger'
     >
       <Button
-        type="danger"
+        type='danger'
         style={{
           margin: '10px 50px',
         }}

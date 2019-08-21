@@ -55,8 +55,8 @@ const UsersList: React.SFC<any> = ({
                 render: ({ articleId }) => (
                   <Button
                     onClick={() => checkArticle({ articleId })}
-                    size="small"
-                    type="primary"
+                    size='small'
+                    type='primary'
                   >
                     編集する
                   </Button>
@@ -64,7 +64,7 @@ const UsersList: React.SFC<any> = ({
               },
             ]}
             style={{ margin: 10 }}
-            size="small"
+            size='small'
           />
         ) : null}
         {a.pendings.length ? (
@@ -111,8 +111,8 @@ const UsersList: React.SFC<any> = ({
                 render: ({ articleId }) => (
                   <Button
                     onClick={() => checkArticle({ articleId })}
-                    size="small"
-                    type="primary"
+                    size='small'
+                    type='primary'
                   >
                     検品する
                   </Button>
@@ -120,7 +120,7 @@ const UsersList: React.SFC<any> = ({
               },
             ]}
             style={{ margin: 10 }}
-            size="small"
+            size='small'
           />
         ) : null}
         {a.rejects.length ? (
@@ -165,7 +165,7 @@ const UsersList: React.SFC<any> = ({
               },
             ]}
             style={{ margin: 10 }}
-            size="small"
+            size='small'
           />
         ) : null}
         {a.accepted.length ? (
@@ -210,7 +210,7 @@ const UsersList: React.SFC<any> = ({
               },
             ]}
             style={{ margin: 10 }}
-            size="small"
+            size='small'
           />
         ) : null}
       </React.Fragment>
@@ -251,8 +251,8 @@ const UsersList: React.SFC<any> = ({
           render: ({ writerId }) => (
             <Button
               onClick={() => editWriter({ writerId })}
-              type="primary"
-              size="small"
+              type='primary'
+              size='small'
             >
               編集
             </Button>
@@ -272,10 +272,10 @@ const UsersList: React.SFC<any> = ({
                 })
               }}
             >
-              <Select.Option value="new" key="0">
+              <Select.Option value='new' key='0'>
                 新規
               </Select.Option>
-              <Select.Option value="regular" key="1">
+              <Select.Option value='regular' key='1'>
                 正規
               </Select.Option>
             </Select>
@@ -283,7 +283,7 @@ const UsersList: React.SFC<any> = ({
         },
       ]}
       style={{ margin: 50 }}
-      size="small"
+      size='small'
     />
   )
 }

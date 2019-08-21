@@ -10,17 +10,17 @@ const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
     onSubmit={onLogin}
     render={({ handleChange, handleSubmit, values: { pass, mail } }) => (
       <Form onSubmit={handleSubmit}>
-        <Item label="メールアドレス">
+        <Item label='メールアドレス'>
           <Input
-            name="mail"
+            name='mail'
             onChange={handleChange}
             value={mail}
             disabled={isLoading}
           />
         </Item>
-        <Item label="パスワード">
+        <Item label='パスワード'>
           <Input.Password
-            name="pass"
+            name='pass'
             onChange={handleChange}
             value={pass}
             disabled={isLoading}
@@ -28,7 +28,7 @@ const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
         </Item>
         <Item>
           <Button
-            type="primary"
+            type='primary'
             onClick={() => handleSubmit()}
             disabled={isLoading}
             loading={isLoading}

@@ -70,16 +70,16 @@ const RecruitingArticles: React.SFC<any> = ({
           })
         }}
       >
-        <Column title="タイトル" dataIndex="title" />
+        <Column title='タイトル' dataIndex='title' />
         <Column
-          title="発注日時"
+          title='発注日時'
           render={({ ordered }) => {
             const s = ordered.split('-')
             return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
           }}
         />
         <Column
-          title="キーワード"
+          title='キーワード'
           render={({ keyword }) =>
             keyword.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
           }
@@ -87,13 +87,13 @@ const RecruitingArticles: React.SFC<any> = ({
         {position === 'writer' ? (
           amountOfArticles <= 2 ? (
             <Column
-              title="受注"
+              title='受注'
               render={({ id }) => (
                 <Popconfirm
-                  title="本当に受注しますか？"
+                  title='本当に受注しますか？'
                   onConfirm={() => editArticle({ id })}
                 >
-                  <Button size="small">受注する</Button>
+                  <Button size='small'>受注する</Button>
                 </Popconfirm>
               )}
             />

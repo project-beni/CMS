@@ -15,9 +15,9 @@ const RecruitingArticles: React.SFC<any> = ({
 }) => (
   <div>
     <h1>検品待ちの記事</h1>
-    <List dataSource={dataSource} bordered loading={isLoading} size="small">
+    <List dataSource={dataSource} bordered loading={isLoading} size='small'>
       <Column
-        title="ライター / タイトル"
+        title='ライター / タイトル'
         render={({ writer, title }) => {
           return (
             <React.Fragment>
@@ -26,18 +26,18 @@ const RecruitingArticles: React.SFC<any> = ({
             </React.Fragment>
           )
         }}
-        key="writerAndTitle"
+        key='writerAndTitle'
       />
       <Column
-        title="発注日時"
+        title='発注日時'
         render={({ ordered }) => {
           const s = ordered ? ordered.split('-') : null
           return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
         }}
-        key="orderedDate"
+        key='orderedDate'
       />
       <Column
-        title="提出日時"
+        title='提出日時'
         render={({ pending }) => {
           const s = pending ? pending.split('-') : null
           return s ? `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}` : null
@@ -54,11 +54,11 @@ const RecruitingArticles: React.SFC<any> = ({
           return r
         }}
         sortDirections={['descend', 'ascend']}
-        defaultSortOrder="descend"
-        key="submitDate"
+        defaultSortOrder='descend'
+        key='submitDate'
       />
       <Column
-        title="残り日数"
+        title='残り日数'
         render={({ countdown }) => {
           if (countdown === 0) {
             return <p style={{ color: '#d32f2f' }}>{`${countdown}日`}</p>
@@ -68,37 +68,37 @@ const RecruitingArticles: React.SFC<any> = ({
             return `${countdown}日`
           }
         }}
-        key="limitDate"
+        key='limitDate'
       />
       <Column
-        title="カテゴリー"
+        title='カテゴリー'
         render={({ categories }) =>
           categories.map((categorie: string, i: number) => (
             <Tag key={i}>{categorie}</Tag>
           ))
         }
-        key="category"
+        key='category'
       />
       <Column
-        title="タグ"
+        title='タグ'
         render={({ tags }) =>
           tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
         }
-        key="tags"
+        key='tags'
       />
-      <Column title="文字数" dataIndex="countAll" />
+      <Column title='文字数' dataIndex='countAll' />
       <Column
-        title="検品"
+        title='検品'
         render={({ id }) => (
           <Button
-            size="small"
+            size='small'
             onClick={() => checkArticle({ id })}
-            type="primary"
+            type='primary'
           >
             する
           </Button>
         )}
-        key="action"
+        key='action'
       />
     </List>
   </div>
