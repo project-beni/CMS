@@ -2,7 +2,6 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
 import { listenStart, read, set } from '../firebase/database'
-
 import ModelArticles from '../components/modelArticles'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -15,16 +14,16 @@ type StateUpdates = {
   receiveData: (dataSource: any) => State
 }
 
-const stateHandlers = withStateHandlers <State, StateUpdates> (
+const stateHandlers = withStateHandlers<State, StateUpdates>(
   {
     dataSource: [],
-    isLoading: true
+    isLoading: true,
   },
   {
     receiveData: () => (dataSource: any) => ({
       dataSource,
-      isLoading: false
-    })
+      isLoading: false,
+    }),
   }
 )
 
@@ -33,16 +32,15 @@ type ActionProps = {
   checkArticle: ({ id }: { id: string }) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
+const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
-
     listenStart('/articles', (val: any) => {
       if (val) {
-        let dataSource: any = []
+        const dataSource: any = []
         Object.keys(val).forEach((key, i) => {
           if (val[key].type === 'model') {
             const {
-              contents: { keyword, tags, title, countAll, categories }
+              contents: { keyword, tags, title, countAll, categories },
             } = val[key]
 
             dataSource.push({
@@ -52,8 +50,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               tags,
               title,
               countAll,
-              categories
-            }) 
+              categories,
+            })
           }
         })
         receiveData(dataSource)
@@ -64,34 +62,36 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   },
   checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/viewer/${id}`)
-  }
+  },
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
-const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
-  async componentDidMount () {
+const Lifecycle = lifecycle<LifecycleProps, {}, any>({
+  async componentDidMount() {
     const { fetchData, history } = this.props
     const userId = await getUid()
-    
+
     if (!userId) history.push('/login')
 
     const confirmationPath = `/users/${userId}`
-    const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()
+    const isConfirmedOnDB = (await read(
+      `${confirmationPath}/mailConfirmation`
+    )).val()
     const isMailConfirmed = isEmailConfirmed()
-    
+
     if (isMailConfirmed && isConfirmedOnDB) {
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
-        data: { mailConfirmation: true }
+        data: { mailConfirmation: true },
       })
       fetchData()
     } else {
       history.push('/mailConfirmation')
     }
-  }
+  },
 })
 export default compose(
   stateHandlers,
