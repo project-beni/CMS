@@ -1,7 +1,9 @@
 import * as React from 'react'
 import { Table, DatePicker } from 'antd'
 import styled from 'styled-components'
-import * as moment from 'moment'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 const { Column } = Table
 

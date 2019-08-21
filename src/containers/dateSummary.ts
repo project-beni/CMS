@@ -1,9 +1,11 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
-import * as moment from 'moment'
 
 import { read } from '../firebase/database'
 import DateSummary from '../components/dateSummary'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   articleData: any

@@ -1,14 +1,17 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { message } from 'antd'
-import * as moment from 'moment'
 
 import { push, read, set, remove } from '../firebase/database'
 import RecruitingArticles from '../components/articles/edit'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { get } = require('axios')
 
 type Body = {
   body: any
@@ -100,7 +103,6 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
       setKeyword({ keyword: keyword })
 
-      const { get } = require('axios')
       let searchWord = ''
       keyword.forEach((w: string) => {
         searchWord += `${w} `

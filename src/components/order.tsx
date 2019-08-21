@@ -66,9 +66,9 @@ const RecruitingArticles: React.SFC<any> = ({
               ) => setFieldValue('tagNames', tagNames)}
               // defaultValue={}
             >
-              {tags.map((val: string, index: number) => (
-                <Option key={index} value={tags[index]}>
-                  {tags[index]}
+              {tags.map((tag: string, index: number) => (
+                <Option key={index} value={tag}>
+                  {tag}
                 </Option>
               ))}
             </Select>
@@ -86,9 +86,9 @@ const RecruitingArticles: React.SFC<any> = ({
               ) => setFieldValue('categories', categories)}
               // defaultValue={}
             >
-              {categories.map((val: string, index: number) => (
-                <Option key={index} value={categories[index]}>
-                  {categories[index]}
+              {categories.map((category: string, index: number) => (
+                <Option key={index} value={category}>
+                  {category}
                 </Option>
               ))}
             </Select>

@@ -1,10 +1,12 @@
 import { compose, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { message } from 'antd'
-import * as copy from 'copy-to-clipboard'
 import Unsplash, { toJson } from 'unsplash-js'
 
 import Order from '../components/searchImages'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const copy = require('copy-to-clipboard')
 
 const unsplash = new Unsplash({
   applicationId:

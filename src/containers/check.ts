@@ -1,10 +1,12 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
-import * as moment from 'moment'
 
 import { listenStart, read, set } from '../firebase/database'
 import Check from '../components/check'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   dataSource?: any

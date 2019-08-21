@@ -1,11 +1,13 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
-import * as moment from 'moment'
 import { message } from 'antd'
 
 import { listenStart, push, read, set } from '../firebase/database'
 import RecruitingArticles from '../components/recruitingArticles'
 import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   amountOfArticles: number

@@ -1,12 +1,13 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
-import * as moment from 'moment'
 import { message } from 'antd'
 
 import { push, read, set, remove } from '../firebase/database'
 import CheckArticle from '../components/articles/check'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
