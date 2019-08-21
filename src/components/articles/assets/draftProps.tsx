@@ -10,15 +10,16 @@ import {
 import { Icon } from 'antd'
 
 type BlockLabel = 'H1' | 'H2' | 'H3' | 'H6' | 'P' | 'QT' | 'UL' | 'twitter-link' | 'outside-link'
-type BlockStyle = 'header-one' | 'header-two' | 'header-three' | 'header-six' | 'paragraph' | 'blockquote' | 'unordered-list-item'
+type BlockStyle = 'header-one' | 'header-two' | 'header-three' | 'header-six' | 'paragraph' | 'blockquote' | 'unordered-list-item' | 'table'
 
 type InlineLabel = 'Link' | 'Back'
 type InlineStyle = 'link' | 'twitter-link' | 'outside-link' | 'inside-link' | 'BACK'
 
+export type Styles = BlockStyle | InlineStyle
 type Actions = {
   type: 'inline' | 'block' | 'separator' | 'entity'
   label?:  BlockLabel | InlineLabel
-  style?: BlockStyle | InlineStyle
+  style?: Styles
   icon?: any
   entity?: 'LINK'
 }

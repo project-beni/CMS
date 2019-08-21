@@ -5,6 +5,7 @@ const { MegadraftEditor } = require('megadraft')
 import Plugins from '../../plugins'
 import './assets/index.css'
 import { directorActions, CustomStyleMap } from './assets/draftProps'
+import EachLineInfo from './assets/eachLineInfo'
 
 const AcceptedViewer: React.SFC<any> = ({
   onChange,
@@ -22,109 +23,7 @@ const AcceptedViewer: React.SFC<any> = ({
     }}>
       <Row>
         <Col span={3}>
-          {
-            counts.map((content: any, i: number) => {
-              switch (content.type) {
-                case 'header-one':
-                  return (
-                  <p
-                  key={i}
-                  style={{
-                    position: 'absolute',
-                    top: content.top + 10
-                  }}
-                  >150文字程度</p>
-                  )
-                  break
-                case 'header-two':
-                  return (
-                    <p
-                    key={i}
-                    style={{
-                      position: 'absolute',
-                      top: content.top + 5
-                    }}
-                      >250文字程度</p>
-                  )
-                  break
-                case 'header-three':
-                  return (
-                    <p
-                      key={i}
-                      className='header-three'
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >250文字程度</p>
-                  )
-                  break
-                case 'header-six':
-                  return null
-                  break
-                case 'paragraph':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                case 'twitter-link':
-                  return (
-                    <div
-                      key={i}
-                      className='twitter-link'
-                      style={{
-                        position: 'absolute',
-                        top: content.top,
-                        borderLeft: 'solid 3px #00acee'
-                      }}
-                    >100文字程度</div>
-                  )
-                  break
-                case 'outside-link':
-                  return (
-                    <div
-                      key={i}
-                      className='outside-link'
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >外</div>
-                  )
-                  break
-                case 'unordered-list-item':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top + 10
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                case 'table':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top + 10
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                default:
-                  return null
-              }
-            })
-          }
+          <EachLineInfo counts={counts} />
         </Col>
         <Col sm={1}></Col>  
         <Col sm={20}>
