@@ -60,7 +60,6 @@ const WithHandlers = withHandlers<any, ActionProps>({
   },
   submit: ({ match, category, tags }) => () => {
     const articleId = match.params.id
-    console.log({categories: category, tags})
     
     try {
       set({
