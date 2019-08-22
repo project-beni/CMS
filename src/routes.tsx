@@ -37,6 +37,8 @@ import AcceptedList from './containers/acceptedList'
 import AcceptedViewer from './containers/acceptedViewer'
 import ModelArticles from './containers/modelArticles'
 import ArticleViewer from './containers/articleViewer'
+import AllArticles from './containers/allArticleList'
+import ArticleInfo from './containers/articleInfo'
 
 const Routes: React.SFC<any> = () => (
   <Provider store={store}>
@@ -64,6 +66,8 @@ const Routes: React.SFC<any> = () => (
                   <Route path={'/articles/acceptedList/:articleId'} exact={true} component={AcceptedViewer} />
                   <Route path={'/articles/models'} exact={true} component={ModelArticles} />
                   <Route path={'/articles/viewer/:articleId'} exact={true} component={ArticleViewer} />
+                  <Route path={'/articles'} exact={true} component={AllArticles} />
+                  <Route path={'/articles/info/:id'} exact={true} component={ArticleInfo} />
                   <Route path={'/order'} exact={true} component={Order} />
                   <Route path={'/checkList'} exact={true} component={Check} />
                   <Route path={'/checkList/:id'} exact={true} component={CheckArticle} />

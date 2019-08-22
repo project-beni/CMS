@@ -17,6 +17,7 @@ import {
   TodayTwoTone,
   Warning,
   WatchLaterTwoTone,
+  FolderOpenTwoTone
 } from '@material-ui//icons'
 
 const { Sider } = Layout
@@ -134,7 +135,12 @@ const sidebar: React.SFC<any> = ({
           <span>TODAY</span>
           <Link to='/summary' />
         </Item>
-        <Item key='13' disabled={!isAuth}>
+        <Item key='13' disabled={position !== 'director'}>
+          <Icon component={() => <FolderOpenTwoTone />} />
+          <span>全記事一覧</span>
+          <Link to='/articles' />
+        </Item>
+        <Item key='14' disabled={!isAuth}>
           <Icon component={() => <InputTwoTone />} />
           <span>ログアウト</span>
           <Link to='/logout' />
