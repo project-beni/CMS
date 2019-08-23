@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Styles } from './draftProps'
 
-type Content = {
+export type Content = {
   type: Styles
   top: number
   count: number
