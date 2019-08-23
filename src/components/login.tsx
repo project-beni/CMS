@@ -6,47 +6,39 @@ const { Item } = Form
 
 const Login: React.SFC<any> = ({ onLogin, isLoading }) => (
   <Formik
-      initialValues={{mail: '', pass: ''}}
-      onSubmit={onLogin}
-      render={({
-        handleChange,
-        handleSubmit,
-        isSubmitting,
-        initialValues,
-        values: { pass, mail },
-        setFieldValue
-      }) => (
-        <Form onSubmit={handleSubmit} >
-          <Item label='メールアドレス'>
-            <Input
-              name='mail'
-              onChange={handleChange}
-              value={mail}
-              disabled={isLoading}
-            />
-          </Item>
-          <Item label='パスワード'>
-            <Input.Password
-              name='pass'
-              onChange={handleChange}
-              value={pass}
-              disabled={isLoading}
-            />
-          </Item>
-          <Item>
+    initialValues={{ mail: '', pass: '' }}
+    onSubmit={onLogin}
+    render={({ handleChange, handleSubmit, values: { pass, mail } }) => (
+      <Form onSubmit={handleSubmit}>
+        <Item label='メールアドレス'>
+          <Input
+            name='mail'
+            onChange={handleChange}
+            value={mail}
+            disabled={isLoading}
+          />
+        </Item>
+        <Item label='パスワード'>
+          <Input.Password
+            name='pass'
+            onChange={handleChange}
+            value={pass}
+            disabled={isLoading}
+          />
+        </Item>
+        <Item>
           <Button
-            type="primary"
+            type='primary'
             onClick={() => handleSubmit()}
             disabled={isLoading}
             loading={isLoading}
           >
             ログイン
           </Button>
-          </Item>
-        </Form>
-        
-      )}
-    />
+        </Item>
+      </Form>
+    )}
+  />
 )
 
 export default Login

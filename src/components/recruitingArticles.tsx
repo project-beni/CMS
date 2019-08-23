@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Table, Tag, Button, Popconfirm } from 'antd'
 import styled from 'styled-components'
- 
+
 const { Column } = Table
 
 const List = styled(Table)`
-  margin: 20px
+  margin: 20px;
 `
 
 const RecruitingArticles: React.SFC<any> = ({
@@ -13,12 +13,14 @@ const RecruitingArticles: React.SFC<any> = ({
   editArticle,
   isLoading,
   position,
-  amountOfArticles
+  amountOfArticles,
 }) => {
   return (
     <div>
       <h1>募集中の記事</h1>
-      <p style={{ margin: 20 }}>「受注中」の記事が3つ以上の場合は新たに受注できません．（検品中・差し戻しの記事はカウントしません）</p>
+      <p style={{ margin: 20 }}>
+        「受注中」の記事が3つ以上の場合は新たに受注できません．（検品中・差し戻しの記事はカウントしません）
+      </p>
       <List
         dataSource={dataSource}
         bordered
@@ -33,7 +35,9 @@ const RecruitingArticles: React.SFC<any> = ({
                       fontSize: '1.5em',
                       margin: 0,
                     }}
-                  >○ {text}</h1>
+                  >
+                    ○ {text}
+                  </h1>
                 )
                 break
               case 'header-two':
@@ -41,9 +45,11 @@ const RecruitingArticles: React.SFC<any> = ({
                   <h2
                     style={{
                       fontSize: '1em',
-                      marginLeft: '2em'
+                      marginLeft: '2em',
                     }}
-                  >● {text}</h2>
+                  >
+                    ● {text}
+                  </h2>
                 )
                 break
               case 'header-three':
@@ -51,9 +57,11 @@ const RecruitingArticles: React.SFC<any> = ({
                   <h3
                     style={{
                       fontSize: '1em',
-                      marginLeft: '4em'
+                      marginLeft: '4em',
                     }}
-                  >・ {text}</h3>
+                  >
+                    ・ {text}
+                  </h3>
                 )
                 break
               default:
@@ -72,29 +80,25 @@ const RecruitingArticles: React.SFC<any> = ({
         />
         <Column
           title='キーワード'
-          render={({ keyword }) => (
-            keyword.map((tag: string, i: number) => (
-              <Tag key={i}>{tag}</Tag>
-            ))
-          )}
+          render={({ keyword }) =>
+            keyword.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
+          }
         />
-        {
-          position === 'writer' ? (
-            amountOfArticles <= 2 ? (
-              <Column
-                title='受注'
-                render={({ id }) => (
-                  <Popconfirm
-                    title='本当に受注しますか？'
-                    onConfirm={() => editArticle({id})}
-                  >
-                    <Button size='small'>受注する</Button>
-                  </Popconfirm>
-                )}
-              />
-            ) : null
+        {position === 'writer' ? (
+          amountOfArticles <= 2 ? (
+            <Column
+              title='受注'
+              render={({ id }) => (
+                <Popconfirm
+                  title='本当に受注しますか？'
+                  onConfirm={() => editArticle({ id })}
+                >
+                  <Button size='small'>受注する</Button>
+                </Popconfirm>
+              )}
+            />
           ) : null
-        }
+        ) : null}
       </List>
     </div>
   )

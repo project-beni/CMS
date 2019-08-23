@@ -6,13 +6,13 @@ const initialState = {
 
 const auth = (state = initialState, action: any) => {
   switch (action.type) {
-    case "LOGIN_SUCCEED":
+    case 'LOGIN_SUCCEED':
       return Object.assign({}, state, {
         uid: action.payload.uid,
         displayName: action.payload.displayName,
         email: action.payload.email
       })
-    case "LOOUT":
+    case 'LOOUT':
       return Object.assign({}, state, {
         uid: null,
         displayName: null,

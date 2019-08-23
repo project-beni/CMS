@@ -1,12 +1,12 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import * as moment from 'moment'
+import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, push, read, set } from '../firebase/database'
-
+import { listenStart, read, set } from '../firebase/database'
 import RecruitingArticles from '../components/orderedArticles'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth';
-import { message, Button } from 'antd';
+import { getUid, isEmailConfirmed } from '../firebase/auth'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   dataSource: any
@@ -17,16 +17,16 @@ type StateUpdates = {
   receiveData: (dataSource: any) => State
 }
 
-const stateHandlers = withStateHandlers <State, StateUpdates> (
+const stateHandlers = withStateHandlers<State, StateUpdates>(
   {
     dataSource: [],
-    isLoading: true
+    isLoading: true,
   },
   {
     receiveData: () => (dataSource: any) => ({
       dataSource,
-      isLoading: false
-    })
+      isLoading: false,
+    }),
   }
 )
 
@@ -35,19 +35,31 @@ type ActionProps = {
   editArticle: ({ id }: { id: string }) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
+const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
     const userId = await getUid()
     listenStart(`/users/${userId}/articles/writings`, async (val: any) => {
       if (val) {
-        let dataSource: any = []
+        const dataSource: any = []
         await Promise.all(
           Object.keys(val).map(async (key, i) => {
             const {
               contents: { keyword, tags, title },
-              dates: { ordered, writingStart }
+              dates: { ordered, writingStart },
             } = (await read(`/articles/${val[key]}`)).val()
-            const diff = 7 - Number(moment().diff(moment(writingStart.split('-').slice(0, 3).join('-')), 'days'))
+            const diff =
+              7 -
+              Number(
+                moment().diff(
+                  moment(
+                    writingStart
+                      .split('-')
+                      .slice(0, 3)
+                      .join('-')
+                  ),
+                  'days'
+                )
+              )
             const countdown = diff < 0 ? 0 : diff
 
             dataSource.push({
@@ -57,8 +69,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               keyword,
               tags,
               title,
-              countdown
-            }) 
+              countdown,
+            })
           })
         )
         receiveData(dataSource)
@@ -67,34 +79,36 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
   },
-  editArticle: ({ history, dataSource }) => async ({ id }) => {
+  editArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/edit/${id}`)
-  }
+  },
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
-const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
-  async componentDidMount () {
+const Lifecycle = lifecycle<LifecycleProps, {}, any>({
+  async componentDidMount() {
     const { fetchData, history } = this.props
     const userId = await getUid()
 
     const confirmationPath = `/users/${userId}`
-    const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()
+    const isConfirmedOnDB = (await read(
+      `${confirmationPath}/mailConfirmation`
+    )).val()
     const isMailConfirmed = isEmailConfirmed()
-    
+
     if (isMailConfirmed && isConfirmedOnDB) {
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
-        data: { mailConfirmation: true }
+        data: { mailConfirmation: true },
       })
       fetchData()
     } else {
       history.push('/mailConfirmation')
     }
-  }
+  },
 })
 export default compose(
   stateHandlers,

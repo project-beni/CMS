@@ -1,13 +1,13 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
-import * as moment from 'moment'
-const {　editorStateToJSON　} = require('megadraft')
+import { message } from 'antd'
 
 import { listenStart, push, read, set } from '../firebase/database'
-
 import RecruitingArticles from '../components/recruitingArticles'
 import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
-import { message } from 'antd'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   amountOfArticles: number
@@ -23,22 +23,25 @@ type StateUpdates = {
   receiveAmount: ({ position }: any) => State
 }
 
-const stateHandlers = withStateHandlers <State, StateUpdates> (
+const stateHandlers = withStateHandlers<State, StateUpdates>(
   {
     dataSource: [],
     isLoading: true,
     position: '',
     amountOfArticles: 0,
-    summary: []
+    summary: [],
   },
   {
-    receiveData: (props) => (dataSource: any) => ({
+    receiveData: props => (dataSource: any) => ({
       ...props,
       dataSource,
-      isLoading: false
+      isLoading: false,
     }),
-    receivePosition: (props) => ({ position }) => ({ ...props, position }),
-    receiveAmount: (props) => ({ amountOfArticles }) => ({ ...props, amountOfArticles })
+    receivePosition: props => ({ position }) => ({ ...props, position }),
+    receiveAmount: props => ({ amountOfArticles }) => ({
+      ...props,
+      amountOfArticles,
+    }),
   }
 )
 
@@ -47,48 +50,50 @@ type ActionProps = {
   editArticle: ({ id }: { id: string }) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
+const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchPosition: ({ receivePosition }: any) => async () => {
     const uid = await getUid()
-    
+
     const position = (await read(`/users/${uid}/position`)).val()
     receivePosition({ position })
   },
   fetchData: ({ receiveData, receiveAmount }: any) => async () => {
-
     // amount of writer's own articles
     listenStart(`/users/${await getUid()}`, (user: any) => {
-      const hasArticles = user.articles ? Object.keys(user.articles).length : false
-        if (hasArticles) {
-          let myArticleAmount = 0
-          Object.keys(user.articles).forEach((articleType: string) => {
-            if (articleType === 'writings') {
-              myArticleAmount += Object.keys(user.articles[articleType]).length
-            }
-          })
-          receiveAmount({ amountOfArticles: myArticleAmount })
-        }
+      const hasArticles = user.articles
+        ? Object.keys(user.articles).length
+        : false
+      if (hasArticles) {
+        let myArticleAmount = 0
+        Object.keys(user.articles).forEach((articleType: string) => {
+          if (articleType === 'writings') {
+            myArticleAmount += Object.keys(user.articles[articleType]).length
+          }
+        })
+        receiveAmount({ amountOfArticles: myArticleAmount })
+      }
     })
-    
-    
-    
+
     listenStart('/articles', (val: any) => {
       if (val) {
-        let dataSource: any = []
+        const dataSource: any = []
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'ordered') {
             const {
               contents: { keyword, tags, title, body },
-              dates: { ordered }
+              dates: { ordered },
             } = val[key]
-            
-            let summary: any = []
+
+            const summary: any = []
             JSON.parse(body).blocks.forEach(({ type, text }: any) => {
-              if (type === 'header-one' || type === 'header-two' || type === 'header-three') {
+              if (
+                type === 'header-one' ||
+                type === 'header-two' ||
+                type === 'header-three'
+              ) {
                 summary.push({ type, text })
               }
             })
-            
 
             dataSource.push({
               key: i,
@@ -97,8 +102,8 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               keyword,
               tags,
               title,
-              summary
-            }) 
+              summary,
+            })
           }
         })
         receiveData(dataSource)
@@ -107,15 +112,15 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
   },
-  editArticle: ({ history, dataSource }) => async ({ id }) => {
+  editArticle: () => async ({ id }) => {
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const date = { writingStart: now }
     const histories = {
       [now]: {
         contents: { after: [''], before: [''], comment: 'writing start' },
         type: 'writingStart',
-        userId: await getUid()
-      }
+        userId: await getUid(),
+      },
     }
 
     const userId = await getUid()
@@ -124,44 +129,44 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
     await set({ path: `/articles/${id}/dates`, data: date })
     await set({ path: `/articles/${id}/histories`, data: histories })
     await set({ path: `/articles/${id}`, data: status })
-    push({ path: `/users/${userId}/articles/writings`, data: id })
-      .then(() => {
-        message.success('記事を受注しました．「受注中」の記事から執筆できます')
-      })
-
-  }
+    push({ path: `/users/${userId}/articles/writings`, data: id }).then(() => {
+      message.success('記事を受注しました．「受注中」の記事から執筆できます')
+    })
+  },
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
-const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
-  async componentDidMount () {
+const Lifecycle = lifecycle<LifecycleProps, {}, any>({
+  async componentDidMount() {
     const { fetchData, history, fetchPosition } = this.props
-    
+
     if (!(await isLogedIn())) {
       history.push('/login')
     }
-    
+
     const userId = await getUid()
-    
+
     const confirmationPath = `/users/${userId}`
-    const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()
+    const isConfirmedOnDB = (await read(
+      `${confirmationPath}/mailConfirmation`
+    )).val()
     const isMailConfirmed = isEmailConfirmed()
-    
+
     if (isMailConfirmed && isConfirmedOnDB) {
       fetchPosition()
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
-        data: { mailConfirmation: true }
+        data: { mailConfirmation: true },
       })
       fetchPosition()
       fetchData()
     } else {
       history.push('/mailConfirmation')
     }
-  }
+  },
 })
 export default compose(
   stateHandlers,

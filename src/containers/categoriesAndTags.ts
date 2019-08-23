@@ -1,13 +1,10 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
-import * as moment from 'moment'
-import * as sanitizeHTML from 'sanitize-html'
+import { RouteComponentProps } from 'react-router-dom'
+import { message } from 'antd'
 
 import { listenStart, push, read, set, remove } from '../firebase/database'
-
 import CatesAndTags from '../components/categoriesAndTags'
-import { signOut, getUid, isEmailConfirmed } from '../firebase/auth'
-import { message, Button } from 'antd'
+import { getUid, isEmailConfirmed } from '../firebase/auth'
 
 type State = {
   categories: string[]
@@ -23,18 +20,18 @@ export type StateUpdates = {
   toggleLoading: () => State
 }
 
-const stateHandlers = withStateHandlers <State, StateUpdates> (
+const stateHandlers = withStateHandlers<State, StateUpdates>(
   {
     body: '',
     categories: [],
     tags: [],
-    isLoading: true
+    isLoading: true,
   },
   {
-    receiveCategories: (props) => (categories) => ({ ...props, categories }),
-    receiveTags: (props) => (tags) => ({ ...props, tags }),
-    updateBody: (props) => ({ body }) => ({ ...props, body }),
-    toggleLoading: (props) => () => ({ ...props, isLoading: false })
+    receiveCategories: props => categories => ({ ...props, categories }),
+    receiveTags: props => tags => ({ ...props, tags }),
+    updateBody: props => ({ body }) => ({ ...props, body }),
+    toggleLoading: props => () => ({ ...props, isLoading: false }),
   }
 )
 
@@ -43,8 +40,8 @@ type ActionProps = {
   // deleteTag: (a: any) => Void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
-  addCategory: ({ categories }: any) => ({target: { value }}: any) => {
+const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
+  addCategory: ({ categories }: any) => ({ target: { value } }: any) => {
     let isExist = false
     categories.forEach((categorie: any) => {
       if (value === categorie.value) {
@@ -52,13 +49,14 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
     if (!isExist) {
-      push({ path: '/categories', data: value })
-        .then(() => message.success('カテゴリーを追加しました'))
+      push({ path: '/categories', data: value }).then(() =>
+        message.success('カテゴリーを追加しました')
+      )
     } else {
       message.warning('すでに存在するカテゴリーです')
     }
   },
-  addTag: ({ tags }: any) => ({target: { value }}: any) => {
+  addTag: ({ tags }: any) => ({ target: { value } }: any) => {
     let isExist = false
     tags.forEach((tag: any) => {
       if (value === tag.value) {
@@ -66,44 +64,40 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
       }
     })
     if (!isExist) {
-      push({ path: '/tags', data: value })
-        .then(() => message.success('タグを追加しました'))
+      push({ path: '/tags', data: value }).then(() =>
+        message.success('タグを追加しました')
+      )
     } else {
       message.warning('すでに存在するタグです')
     }
   },
   fetchData: ({ receiveCategories, receiveTags, toggleLoading }) => () => {
-    
-    listenStart(
-      '/categories',
-      (categories: any) => {
-        if (!categories) {
-          receiveCategories([])    
-        } else {
-          const result = Object.keys(categories).map((key: string) => {
-            return {
-              key,
-              value: categories[key]
-            }
-          })
-          receiveCategories(result)
-        }
+    listenStart('/categories', (categories: any) => {
+      if (!categories) {
+        receiveCategories([])
+      } else {
+        const result = Object.keys(categories).map((key: string) => {
+          return {
+            key,
+            value: categories[key],
+          }
+        })
+        receiveCategories(result)
+      }
       toggleLoading()
     })
-    listenStart(
-      '/tags',
-      (tags: any) => {
-        if (!tags) {
-          receiveTags([])
-        } else {
-          const result = Object.keys(tags).map((key: string) => {
-            return {
-              key,
-              value: tags[key]
-            }
-          })
-          receiveTags(result)
-        }
+    listenStart('/tags', (tags: any) => {
+      if (!tags) {
+        receiveTags([])
+      } else {
+        const result = Object.keys(tags).map((key: string) => {
+          return {
+            key,
+            value: tags[key],
+          }
+        })
+        receiveTags(result)
+      }
     })
   },
   deleteTag: () => (key: string) => {
@@ -126,49 +120,50 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
   },
   handleChange: ({ updateBody }) => (e: any) => {
     const body = e.target.value
-    updateBody({body})
-    
+    updateBody({ body })
   },
-  reject: ({ body, match, history }) => () => {
+  reject: ({ match, history }) => () => {
     const rootPath = `/articles/${match.params.id}`
     set({ path: `${rootPath}`, data: { status: 'rejected' } })
       .then(() => {
         history.push('/checkList')
       })
-      .catch((err) => {
+      .catch(err => {
         message.error(err.message)
       })
   },
-  recieve: ({ body, match }) => () => {
+  recieve: ({ match }) => () => {
     const rootPath = `/articles/${match.params.id}`
     // set({ path: `${rootPath}/contents`, data: { body } })
     set({ path: `${rootPath}`, data: { status: 'accepted' } })
-  }
+  },
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
-const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
-  async componentDidMount () {
+const Lifecycle = lifecycle<LifecycleProps, {}, any>({
+  async componentDidMount() {
     const { fetchData, history } = this.props
     const userId = await getUid()
 
     const confirmationPath = `/users/${userId}`
-    const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()
+    const isConfirmedOnDB = (await read(
+      `${confirmationPath}/mailConfirmation`
+    )).val()
     const isMailConfirmed = isEmailConfirmed()
-    
+
     if (isMailConfirmed && isConfirmedOnDB) {
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
-        data: { mailConfirmation: true }
+        data: { mailConfirmation: true },
       })
       fetchData()
     } else {
       history.push('/mailConfirmation')
     }
-  }
+  },
 })
 export default compose(
   stateHandlers,

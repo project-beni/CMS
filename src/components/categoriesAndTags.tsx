@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Icon, List, Input, Popconfirm, Row, Col } from 'antd'
-import { keyframes } from 'styled-components';
 
 const sidebar: React.SFC<any> = ({
   addCategory,
@@ -9,7 +8,7 @@ const sidebar: React.SFC<any> = ({
   tags,
   deleteTag,
   deleteCategorie,
-  isLoading
+  isLoading,
 }) => (
   <React.Fragment>
     <h1>カテゴリー・タグの編集</h1>
@@ -30,9 +29,10 @@ const sidebar: React.SFC<any> = ({
                   title='本当に削除しますか？'
                   onConfirm={() => deleteCategorie(item.key)}
                   placement='left'
+                  key={i}
                 >
                   <Icon type='delete' />
-                </Popconfirm>
+                </Popconfirm>,
               ]}
             >
               {item.value}
@@ -40,7 +40,7 @@ const sidebar: React.SFC<any> = ({
           )}
         />
         <Input
-          style={{ marginTop: 10}}
+          style={{ marginTop: 10 }}
           onPressEnter={addCategory}
           placeholder='新しく追加するカテゴリー'
         />
@@ -61,15 +61,18 @@ const sidebar: React.SFC<any> = ({
                   title='本当に削除しますか？'
                   onConfirm={() => deleteTag(item.key)}
                   placement='left'
+                  key={i}
                 >
                   <Icon type='delete' />
-                </Popconfirm>
+                </Popconfirm>,
               ]}
-            >{item.value}</List.Item>
+            >
+              {item.value}
+            </List.Item>
           )}
         />
         <Input
-          style={{ marginTop: 10}}
+          style={{ marginTop: 10 }}
           onPressEnter={addTag}
           placeholder='新しく追加するタグ'
         />

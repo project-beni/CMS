@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ImageRounded } from '@material-ui/icons'
-const { insertDataBlock } = require("megadraft")
+const { insertDataBlock } = require('megadraft')
 
 import constants from './constants'
 
@@ -27,7 +27,7 @@ export default class Table extends React.Component <any> {
     return (
       <button
         className={this.props.className}
-        type="button"
+        type='button'
         onClick={this.onClick}
         title={constants.PLUGIN_NAME}
       >

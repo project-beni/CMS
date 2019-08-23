@@ -1,35 +1,31 @@
 import * as React from 'react'
-import { Button, Form, Input, Select, Table } from 'antd'
-import styled from 'styled-components'
-import { Formik, FormikActions, FormikProps } from 'formik'
-const { Item } = Form
+import { Button, Form, Input } from 'antd'
+import { Formik } from 'formik'
 
-const List = styled(Table)`
-  margin: 20px
-`
+const { Item } = Form
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 }
+    sm: { span: 8 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 12 }
-  }
+    sm: { span: 12 },
+  },
 }
 
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
       span: 24,
-      offset: 0
+      offset: 0,
     },
     sm: {
       span: 16,
-      offset: 8
-    }
-  }
+      offset: 8,
+    },
+  },
 }
 
 const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
@@ -41,14 +37,10 @@ const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
         nickname: '',
         familyName: '',
         firstName: '',
-        pass: ''
+        pass: '',
       }}
       onSubmit={onSubmit}
-      render={({
-        handleChange,
-        handleSubmit,
-        values: { nickname },
-      }) => (
+      render={({ handleChange, handleSubmit, values: { nickname } }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
           <Item label='ペンネーム'>
             <Input
@@ -59,11 +51,7 @@ const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
             />
           </Item>
           <Item label='メールアドレス'>
-            <Input
-              name='mail'
-              onChange={handleChange}
-              disabled={isLoading}
-            />
+            <Input name='mail' onChange={handleChange} disabled={isLoading} />
           </Item>
           <Item label='パスワード'>
             <Input.Password
@@ -72,11 +60,17 @@ const Signup: React.SFC<any> = ({ onSubmit, isLoading }) => (
               disabled={isLoading}
             />
           </Item>
-          <Item　{...tailFormItemLayout}>
-            <Button type="primary" onClick={() => handleSubmit()} disabled={isLoading} loading={isLoading}>作成</Button>
+          <Item {...tailFormItemLayout}>
+            <Button
+              type='primary'
+              onClick={() => handleSubmit()}
+              disabled={isLoading}
+              loading={isLoading}
+            >
+              作成
+            </Button>
           </Item>
         </Form>
-        
       )}
     />
   </div>

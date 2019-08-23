@@ -1,13 +1,15 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { message } from 'antd'
-import * as moment from 'moment'
-const { editorStateToJSON, editorStateFromRaw } = require('megadraft')
 
 import Order from '../components/order'
-
 import { push, listenStart } from '../firebase/database'
-import { getUid, getPosition } from '../firebase/auth'
+import { getUid } from '../firebase/auth'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { editorStateToJSON, editorStateFromRaw } = require('megadraft')
 
 type State = {
   isLoading: boolean
@@ -21,18 +23,18 @@ type Handlers = {
   receiveTags: (tags: string[]) => State
 }
 
-const stateHandlers = withStateHandlers <State, Handlers> (
+const stateHandlers = withStateHandlers<State, Handlers>(
   {
     isLoading: false,
     tags: [],
-    categories: []
+    categories: [],
   },
   {
     toggleLoading: ({ isLoading }) => () => ({ isLoading: !isLoading }),
-    receiveCategories: (props) => (categories) => {
+    receiveCategories: props => categories => {
       return { ...props, categories }
     },
-    receiveTags: (props) => (tags) => {
+    receiveTags: props => tags => {
       return { ...props, tags }
     },
   }
@@ -40,32 +42,48 @@ const stateHandlers = withStateHandlers <State, Handlers> (
 
 export type Article = {
   contents: {
-    body: string,
-    keyword: string,
-    tags: string[],
-  },
+    body: string
+    keyword: string
+    tags: string[]
+  }
   dates: {
-    ordered: string,
-    writingStart?: string,
-    accepted?: string,
-    submit?: string,
-    pendings?: string[],
-    rejecteds?: string[],
-    publics?: string[],
+    ordered: string
+    writingStart?: string
+    accepted?: string
+    submit?: string
+    pendings?: string[]
+    rejecteds?: string[]
+    publics?: string[]
     privates?: string[]
-  },
-  histories: [{ 
-    [date: string]: {
-      type: 'ordered' | 'writing' | 'pending' | 'rejected' | 'accepted' | 'public' | 'private',
-      userId: string,
-      contents: {
-        before: string,
-        after: string,
-        comment: string
+  }
+  histories: [
+    {
+      [date: string]: {
+        type:
+          | 'ordered'
+          | 'writing'
+          | 'pending'
+          | 'rejected'
+          | 'accepted'
+          | 'public'
+          | 'private'
+        userId: string
+        contents: {
+          before: string
+          after: string
+          comment: string
+        }
       }
-    } 
-  }],
-  status: 'ordered' | 'writing' | 'pending' | 'rejected' | 'accepted' | 'public' | 'private',
+    }
+  ]
+  status:
+    | 'ordered'
+    | 'writing'
+    | 'pending'
+    | 'rejected'
+    | 'accepted'
+    | 'public'
+    | 'private'
 }
 
 type FormValues = {
@@ -76,23 +94,30 @@ type FormValues = {
   categories: []
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async({ headings,  keyword, tagNames, title, categories }: FormValues) => {
+const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
+  // TODO state types
+  onSubmit: ({ toggleLoading, history }) => async ({
+    headings,
+    keyword,
+    tagNames,
+    title,
+    categories,
+  }: FormValues) => {
     toggleLoading()
-    if (!headings || !keyword || !tagNames || !title || !categories ) {
+    if (!headings || !keyword || !tagNames || !title || !categories) {
       toggleLoading()
       message.error('全て入力してください')
       return
     }
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')
     const userId = await getUid()
-    
-    let defaultBody: any = {
+
+    const defaultBody: any = {
       entityMap: {},
-      blocks: []
+      blocks: [],
     }
     let loop = 0
-    headings.split('\n').forEach((line, i) => {
+    headings.split('\n').forEach(line => {
       const content = line.slice(2, line.length)
       if (true) {
         let tag = ''
@@ -141,13 +166,13 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         }
 
         defaultBody.blocks[loop] = {
-          "key": `content${loop}`,
-          "text": main,
-          "type": tag,
-          "depth": 0,
-          "inlineStyleRanges": [],
-          "entityRanges": [],
-          "data": {}
+          key: `content${loop}`,
+          text: main,
+          type: tag,
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
         }
         loop++
       }
@@ -155,28 +180,28 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
     const body = editorStateToJSON(editorStateFromRaw(defaultBody))
     const article = {
       contents: {
-        body ,
+        body,
         baseBody: body,
         title,
-        keyword: keyword.split('\n').map((key) => key),
+        keyword: keyword.split('\n').map(key => key),
         tags: tagNames,
-        categories
+        categories,
       },
       status: 'ordered',
       dates: {
         ordered: now,
       },
-      histories: { 
+      histories: {
         [now]: {
           type: 'order',
           userId,
           contents: {
             before: '',
             after: '',
-            comment: 'order new article'
-          }
-        } 
-      }
+            comment: 'order new article',
+          },
+        },
+      },
     }
     push({ path: '/articles', data: article })
       .then(() => {
@@ -187,30 +212,25 @@ const WithHandlers = withHandlers <RouteComponentProps | any, {}>({ // TODO stat
         message.error(err)
       })
   },
-  fetchData: ({ receiveCategories, receiveTags, tags, match }) => () => {
-    
-    listenStart(
-      '/categories',
-      (categories: any) => {  
-        const result = Object.keys(categories).map((key: string) => categories[key] )
+  fetchData: ({ receiveCategories, receiveTags }) => () => {
+    listenStart('/categories', (categories: any) => {
+      const result = Object.keys(categories).map(
+        (key: string) => categories[key]
+      )
       receiveCategories(result)
     })
-    listenStart(
-      '/tags',
-      (tags: any) => {  
-        const result = Object.keys(tags).map((key: string) => tags[key] )
-        receiveTags(result)
+    listenStart('/tags', (tags: any) => {
+      const result = Object.keys(tags).map((key: string) => tags[key])
+      receiveTags(result)
     })
   },
 })
 
-const Lifecyle = lifecycle <RouteComponentProps | any, {}, {}> ({
+const Lifecyle = lifecycle<RouteComponentProps | any, {}, {}>({
   async componentDidMount() {
     const { fetchData } = this.props
     fetchData()
-    const position = await getPosition()
-    
-  }
+  },
 })
 
 export default compose(

@@ -5,21 +5,21 @@ const EditWriter: React.SFC<any> = ({
   changeNickname,
   deleteWriter,
   nickname,
-  submit
+  submit,
 }) => (
   <React.Fragment>
     <Input
       value={nickname}
       onChange={changeNickname}
       style={{
-        margin: 50
+        margin: 50,
       }}
     />
     <Button
       type='primary'
       onClick={submit}
       style={{
-        margin: '10px 50px'
+        margin: '10px 50px',
       }}
     >
       保存
@@ -32,7 +32,7 @@ const EditWriter: React.SFC<any> = ({
       <Button
         type='danger'
         style={{
-          margin: '10px 50px'
+          margin: '10px 50px',
         }}
       >
         アカウントの削除

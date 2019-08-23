@@ -1,13 +1,10 @@
-import { connect } from 'react-redux'
-import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
+import { compose, withHandlers, withStateHandlers } from 'recompose'
 import { message } from 'antd'
+import { RouteComponentProps } from 'react-router'
 
 import Login from '../components/login'
-
 import { signIn, getUid } from '../firebase/auth'
-
-import { RouteComponentProps } from 'react-router';
-import { read } from '../firebase/database';
+import { read } from '../firebase/database'
 
 type Login = {
   mail: string
@@ -15,20 +12,20 @@ type Login = {
 }
 
 type Actions = {
-  onLogin: ({mail, pass}: Login) => void
+  onLogin: ({ mail, pass }: Login) => void
 }
 
-const WithStateHandlers = withStateHandlers <any, any> (
-    {
-      isLoading: false
-    },
-    {
-      toggleLoading: (props) => () => ({ isLoading: !props.isLoading })
-    }
-  )
+const WithStateHandlers = withStateHandlers<any, any>(
+  {
+    isLoading: false,
+  },
+  {
+    toggleLoading: props => () => ({ isLoading: !props.isLoading }),
+  }
+)
 
-const WithHandlers = withHandlers <RouteComponentProps | any, Actions> ({
-  onLogin: ({ history, toggleLoading }) => ({ mail, pass })=> {
+const WithHandlers = withHandlers<RouteComponentProps | any, Actions>({
+  onLogin: ({ history, toggleLoading }) => ({ mail, pass }) => {
     toggleLoading()
     signIn(mail, pass)
       .then(async () => {
@@ -46,16 +43,10 @@ const WithHandlers = withHandlers <RouteComponentProps | any, Actions> ({
         toggleLoading()
         message.error(err.message, 10)
       })
-  }
-})
-
-const Lifecycle = lifecycle <any, {}> ({
-  componentDidMount() {}
+  },
 })
 
 export default compose(
   WithStateHandlers,
-  WithHandlers,
-  Lifecycle
+  WithHandlers
 )(Login)
-

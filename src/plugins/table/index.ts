@@ -1,6 +1,6 @@
-import Button from "./Button"
-import Block from "./Block"
-import constants from "./constants"
+import Button from './Button'
+import Block from './Block'
+import constants from './constants'
 
 export default {
   title: constants.PLUGIN_NAME,

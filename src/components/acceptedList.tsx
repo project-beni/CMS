@@ -1,16 +1,19 @@
 import * as React from 'react'
-import { Table, Tag, Button, Popconfirm } from 'antd'
+import { Table, Tag, Button } from 'antd'
 import styled from 'styled-components'
 
 const { Column } = Table
 
 const List = styled(Table)`
-  margin: 20px
+  margin: 20px;
 `
 const AcceptedList: React.SFC<any> = ({
-  dataSource: { filters: { writerFilters, dateFilters }, list },
+  dataSource: {
+    filters: { writerFilters, dateFilters },
+    list,
+  },
   checkArticle,
-  isLoading
+  isLoading,
 }) => (
   <div>
     <h1>受理した記事の一覧</h1>
@@ -74,7 +77,7 @@ const AcceptedList: React.SFC<any> = ({
         title='日数'
         render={({ days }) => {
           if (days >= 7) {
-            return (<p style={{color:'#d32f2f'}}>{`${days}日`}</p>)
+            return <p style={{ color: '#d32f2f' }}>{`${days}日`}</p>
           } else {
             return `${days}日`
           }
@@ -82,20 +85,18 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='カテゴリー'
-        render={({ categories }) => (
+        render={({ categories }) =>
           categories.map((categorie: string, i: number) => (
             <Tag key={i}>{categorie}</Tag>
           ))
-        )}
+        }
         key='categories'
       />
       <Column
         title='タグ'
-        render={({ tags }) => (
-          tags.map((tag: string, i: number) => (
-            <Tag key={i}>{tag}</Tag>
-          ))
-        )}
+        render={({ tags }) =>
+          tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
+        }
         key='tags'
       />
       <Column title='文字数' dataIndex='countAll' key='countAll' />
@@ -106,7 +107,9 @@ const AcceptedList: React.SFC<any> = ({
             size='small'
             onClick={() => checkArticle({ id })}
             type='primary'
-          >閲覧</Button>
+          >
+            閲覧
+          </Button>
         )}
         key='check'
       />

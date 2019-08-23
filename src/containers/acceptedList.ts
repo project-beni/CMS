@@ -2,10 +2,11 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
 import { listenStart, read, set } from '../firebase/database'
-
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
-import * as moment from 'moment'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const moment = require('moment')
 
 type State = {
   dataSource?: any
@@ -16,16 +17,16 @@ type StateUpdates = {
   receiveData: (dataSource: any) => State
 }
 
-const stateHandlers = withStateHandlers <State, StateUpdates> (
+const stateHandlers = withStateHandlers<State, StateUpdates>(
   {
     dataSource: { filters: {} },
-    isLoading: true
+    isLoading: true,
   },
   {
     receiveData: () => (dataSource: any) => ({
       dataSource,
-      isLoading: false
-    })
+      isLoading: false,
+    }),
   }
 )
 
@@ -34,33 +35,43 @@ type ActionProps = {
   checkArticle: ({ id }: { id: string }) => void
 }
 
-const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
+const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
     const users = (await read('/users')).val()
-    
-    listenStart('/articles', (val: any) => {
-      let writerFilters: any = []
-      let dateFilters: any = []
-      
-      if (val) {
-        let dataSource: any = { list: [] }
-        Object.keys(val).forEach((key, i) => {
-          
-          if (val[key].status === 'accepted') {
 
+    listenStart('/articles', (val: any) => {
+      const writerFilters: any = []
+      const dateFilters: any = []
+
+      if (val) {
+        const dataSource: any = { list: [] }
+        Object.keys(val).forEach((key, i) => {
+          if (val[key].status === 'accepted') {
             const {
               contents: { keyword, tags, title, countAll, categories },
               dates: { ordered, pending, accepted, writingStart },
-              writer
+              writer,
             } = val[key]
-            
-            const startBeauty = writingStart.split('-').slice(0, 3).join('-')
-            const acceptedBeauty = accepted ? accepted.split('-').slice(0, 3).join('-') : ''
-            const diff = Number(moment(acceptedBeauty).diff(moment(startBeauty), 'days'))
 
-            const nickname = users[writer].profiles ? (
-              users[writer].profiles.nickname ? users[writer].profiles.nickname : ''
-            ) : '' 
+            const startBeauty = writingStart
+              .split('-')
+              .slice(0, 3)
+              .join('-')
+            const acceptedBeauty = accepted
+              ? accepted
+                  .split('-')
+                  .slice(0, 3)
+                  .join('-')
+              : ''
+            const diff = Number(
+              moment(acceptedBeauty).diff(moment(startBeauty), 'days')
+            )
+
+            const nickname = users[writer].profiles
+              ? users[writer].profiles.nickname
+                ? users[writer].profiles.nickname
+                : ''
+              : ''
 
             dataSource.list.push({
               key: i,
@@ -74,7 +85,7 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
               countAll,
               categories,
               writer: nickname,
-              days: diff
+              days: diff,
             })
 
             // generate writer filter
@@ -99,43 +110,45 @@ const WithHandlers = withHandlers <RouteComponentProps | any, ActionProps>({
           }
         })
         dataSource.filters = { writerFilters, dateFilters }
-        
+
         receiveData(dataSource)
       } else {
         receiveData({})
       }
     })
   },
-  checkArticle: ({ history, dataSource }) => async ({ id }) => {
+  checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/acceptedList/${id}`)
-  }
+  },
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
-const Lifecycle = lifecycle <LifecycleProps, {}, any> ({
-  async componentDidMount () {
+const Lifecycle = lifecycle<LifecycleProps, {}, any>({
+  async componentDidMount() {
     const { fetchData, history } = this.props
     const userId = await getUid()
-    
+
     if (!userId) history.push('/login')
 
     const confirmationPath = `/users/${userId}`
-    const isConfirmedOnDB = (await read(`${confirmationPath}/mailConfirmation`)).val()
+    const isConfirmedOnDB = (await read(
+      `${confirmationPath}/mailConfirmation`
+    )).val()
     const isMailConfirmed = isEmailConfirmed()
-    
+
     if (isMailConfirmed && isConfirmedOnDB) {
       fetchData()
     } else if (isMailConfirmed && !isConfirmedOnDB) {
       await set({
         path: confirmationPath,
-        data: { mailConfirmation: true }
+        data: { mailConfirmation: true },
       })
       fetchData()
     } else {
       history.push('/mailConfirmation')
     }
-  }
+  },
 })
 export default compose(
   stateHandlers,

@@ -1,19 +1,13 @@
 import * as React from 'react'
 import 'megadraft/dist/css/megadraft.css'
 import { Button, Drawer, Popconfirm, Icon, Row, Col, Checkbox } from 'antd'
-import {
-  FormatListBulleted,
-  FormatBold,
-  FormatItalic,
-  FormatColorFill,
-  FormatQuote
-} from '@material-ui/icons'
 const { MegadraftEditor } = require('megadraft')
 
-import './index.css'
+import './assets/index.css'
 import SearchImages from '../../containers/searchImages'
-import tablePlugin from '../../plugins/table'
-import imagePlugin from '../../plugins/image'
+import Plugins from '../../plugins'
+import { writerActions, CustomStyleMap } from './assets/draftProps'
+import EachLineInfo from './assets/eachLineInfo'
 
 const editArticles: React.SFC<any> = ({
   onChange,
@@ -32,125 +26,11 @@ const editArticles: React.SFC<any> = ({
   updateCheck,
   checks
 }) => {
-  const actions = [
-    {type: "inline", label: "I", style: "ITALIC", icon: FormatItalic},
-    {type: "inline", label: "BACK", style: "BACK", icon: FormatColorFill},
-    {type: "separator"},
-    {type: "block", label: "UL", style: "unordered-list-item", icon: FormatListBulleted},
-    {type: "block", label: "QT", style: "blockquote", icon: FormatQuote},
-    {type: "block", label: "P", style: "paragraph", icon: () => (
-      <p style={{color: '#fff', lineHeight: '0.925em'}}>本文</p>
-    )}
-  ];
-  
-  
   return (
     <div style={{ margin: '100px 50px' }} >
       <Row>
         <Col sm={3}>
-          {
-            counts.map((content: any, i: number) => {
-              switch (content.type) {
-                case 'header-one':
-                  return (
-                  <p
-                  key={i}
-                  style={{
-                    position: 'absolute',
-                    top: content.top + 10
-                  }}
-                  >150文字以下</p>
-                  )
-                  break
-                case 'header-two':
-                  return (
-                    <p
-                    key={i}
-                    style={{
-                      position: 'absolute',
-                      top: content.top + 5
-                    }}
-                      >250文字以下</p>
-                  )
-                  break
-                case 'header-three':
-                  return (
-                    <p
-                      key={i}
-                      className='header-three'
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >250文字以下</p>
-                  )
-                  break
-                case 'header-six':
-                  return null
-                  break
-                case 'paragraph':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                case 'twitter-link':
-                  return (
-                    <div
-                      key={i}
-                      className='twitter-link'
-                      style={{
-                        position: 'absolute',
-                        top: content.top,
-                        borderLeft: 'solid 3px #00acee'
-                      }}
-                    >100文字以下</div>
-                  )
-                  break
-                case 'outside-link':
-                  return (
-                    <div
-                      key={i}
-                      className='outside-link'
-                      style={{
-                        position: 'absolute',
-                        top: content.top
-                      }}
-                    >外</div>
-                  )
-                  break
-                case 'unordered-list-item':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top + 10
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                case 'table':
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        position: 'absolute',
-                        top: content.top + 10
-                      }}
-                    >{content.count}</div>
-                  )
-                  break
-                default:
-                  return null
-              }
-            })
-          }
+          <EachLineInfo counts={counts} />
         </Col>
         <Col span={1}></Col>
         <Col sm={15}>
@@ -158,16 +38,10 @@ const editArticles: React.SFC<any> = ({
             editorState={body}
             onChange={onChange}
             placeholder='ここから本文'
-            actions={actions}
+            actions={writerActions}
             blockStyleFn={myBlockStyle}
-            customStyleMap={{
-              'BACK': {
-                background: 'linear-gradient(transparent 25%, #fbd 35%)',
-                borderRadius: '1px',
-                fontWeight: 800
-              }
-            }}
-            plugins={[ imagePlugin, tablePlugin ]}
+            customStyleMap={CustomStyleMap}
+            plugins={Plugins}
           />
         </Col>
         <Col span={1}></Col>

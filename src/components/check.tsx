@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { Table, Tag, Button, Popconfirm } from 'antd'
+import { Table, Tag, Button } from 'antd'
 import styled from 'styled-components'
 
 const { Column } = Table
 
 const List = styled(Table)`
-  margin: 20px
+  margin: 20px;
 `
 
 const RecruitingArticles: React.SFC<any> = ({
   dataSource,
   checkArticle,
-  isLoading
+  isLoading,
 }) => (
   <div>
     <h1>検品待ちの記事</h1>
@@ -61,10 +61,10 @@ const RecruitingArticles: React.SFC<any> = ({
         title='残り日数'
         render={({ countdown }) => {
           if (countdown === 0) {
-            return (<p style={{color:'#d32f2f'}}>{`${countdown}日`}</p>)
+            return <p style={{ color: '#d32f2f' }}>{`${countdown}日`}</p>
           } else if (countdown < 4) {
-            return (<p style={{color:'#fb8c00'}}>{`${countdown}日`}</p>)
-          }else {
+            return <p style={{ color: '#fb8c00' }}>{`${countdown}日`}</p>
+          } else {
             return `${countdown}日`
           }
         }}
@@ -72,20 +72,18 @@ const RecruitingArticles: React.SFC<any> = ({
       />
       <Column
         title='カテゴリー'
-        render={({ categories }) => (
+        render={({ categories }) =>
           categories.map((categorie: string, i: number) => (
             <Tag key={i}>{categorie}</Tag>
           ))
-        )}
+        }
         key='category'
       />
       <Column
         title='タグ'
-        render={({ tags }) => (
-          tags.map((tag: string, i: number) => (
-            <Tag key={i}>{tag}</Tag>
-          ))
-        )}
+        render={({ tags }) =>
+          tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
+        }
         key='tags'
       />
       <Column title='文字数' dataIndex='countAll' />
@@ -96,7 +94,9 @@ const RecruitingArticles: React.SFC<any> = ({
             size='small'
             onClick={() => checkArticle({ id })}
             type='primary'
-          >する</Button>
+          >
+            する
+          </Button>
         )}
         key='action'
       />
