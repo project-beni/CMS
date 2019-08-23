@@ -111,7 +111,6 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       }, 1000)
     })
   },
-  myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps

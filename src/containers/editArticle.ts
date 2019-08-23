@@ -320,7 +320,6 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     })
     setCountAll({ countAll })
   },
-  myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
   save: ({ body, match, countAll }) => () => {
     const article = editorStateToJSON(body)
 
