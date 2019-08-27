@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Button, Popconfirm, Row, Col, Icon } from 'antd'
+import { Button, Popconfirm, Row, Col, Icon, Drawer } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import Plugins from '../../plugins'
 import './assets/index.css'
 import { directorActions, CustomStyleMap } from './assets/draftProps'
 import EachLineInfo from './assets/eachLineInfo'
+import SearchImages from '../../containers/searchImages'
 
 const editArticles: React.SFC<any> = ({
   reject,
@@ -19,7 +20,9 @@ const editArticles: React.SFC<any> = ({
   title,
   writer,
   relatedQueries,
-  keyword
+  keyword,
+  isDrawerVisible,
+  toggleDrawer
 }) => {
   return (
     <div style={{
@@ -111,9 +114,14 @@ const editArticles: React.SFC<any> = ({
             }
           </ul>
           <Row id='tools'>
-            <Col span={12} >
+            <Col span={24} >
               <Button onClick={save} style={{margin: '.5em 0'}}>
                 <Icon type='save' /> 保存
+              </Button>
+            </Col>
+            <Col span={24} >
+              <Button onClick={toggleDrawer} style={{margin: '.5em 0'}}>
+                <Icon type='file-image' /> 画像の検索
               </Button>
             </Col>
             <Col span={12}>
@@ -139,6 +147,13 @@ const editArticles: React.SFC<any> = ({
             <Col span={24}>
               <p style={{width: '100%'}}> 執筆文字数：{countAll}</p>
             </Col>
+            <Drawer
+              visible={isDrawerVisible}
+              onClose={toggleDrawer}
+              width={400}
+            >
+              <SearchImages />
+            </Drawer>
           </Row>
         </div>
       </div>
