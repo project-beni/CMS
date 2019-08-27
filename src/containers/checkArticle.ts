@@ -31,6 +31,7 @@ type State = {
   writer: string
   relatedQueries: string[]
   keyword: string[]
+  isDrawerVisible: boolean,
 }
 
 export type StateUpdates = {
@@ -41,6 +42,7 @@ export type StateUpdates = {
   setHead: ({ writer, title }: State) => State
   setRelatedQueries: ({ relatedQueries }: State) => State
   setKeyword: ({ keyword }: State) => State
+  toggleDrawer: ({ isDrawerVisible }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State, StateUpdates>(
@@ -52,6 +54,7 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     writer: '',
     relatedQueries: [],
     keyword: [],
+    isDrawerVisible: false,
   },
   {
     updateBody: props => ({ body }) => ({ ...props, body }),
@@ -64,6 +67,10 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
       relatedQueries,
     }),
     setKeyword: props => ({ keyword }) => ({ ...props, keyword }),
+    toggleDrawer: props => () => ({
+      ...props,
+      isDrawerVisible: !props.isDrawerVisible,
+    }),
   }
 )
 
