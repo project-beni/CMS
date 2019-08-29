@@ -1,15 +1,16 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { message } from 'antd'
+import Axios from 'axios'
 
 import Order from '../components/order'
-import { push, listenStart } from '../firebase/database'
-import { getUid } from '../firebase/auth'
+import { listenStart } from '../firebase/database'
+// import { getUid } from '../firebase/auth'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const moment = require('moment')
+// const moment = require('moment')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { editorStateToJSON, editorStateFromRaw } = require('megadraft')
+// const { editorStateToJSON, editorStateFromRaw } = require('megadraft')
 
 type State = {
   isLoading: boolean
@@ -96,7 +97,7 @@ type FormValues = {
 
 const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
   // TODO state types
-  onSubmit: ({ toggleLoading, history }) => async ({
+  onSubmit: ({ toggleLoading }) => async ({
     headings,
     keyword,
     tagNames,
@@ -109,8 +110,8 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
       message.error('全て入力してください')
       return
     }
-    const now = moment().format('YYYY-MM-DD-hh-mm-ss')
-    const userId = await getUid()
+    // const now = moment().format('YYYY-MM-DD-hh-mm-ss')
+    // const userId = await getUid()
 
     const defaultBody: any = {
       entityMap: {},
@@ -177,40 +178,48 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
         loop++
       }
     })
-    const body = editorStateToJSON(editorStateFromRaw(defaultBody))
-    const article = {
-      contents: {
-        body,
-        baseBody: body,
-        title,
-        keyword: keyword.split('\n').map(key => key),
-        tags: tagNames,
-        categories,
-      },
-      status: 'ordered',
-      dates: {
-        ordered: now,
-      },
-      histories: {
-        [now]: {
-          type: 'order',
-          userId,
-          contents: {
-            before: '',
-            after: '',
-            comment: 'order new article',
-          },
-        },
-      },
-    }
-    push({ path: '/articles', data: article })
-      .then(() => {
-        message.success('記事を発注しました．')
-        history.push('/')
-      })
-      .catch((err: Error) => {
-        message.error(err)
-      })
+    await Promise.all(defaultBody.blocks.forEach( async (block: any) => {
+      if (block.type === 'outside-link') {
+        console.log(block.text)
+        
+        const res = await Axios.get(`https://bizual-keywords-generat.herokuapp.com/api/v2/blog-card`, { params: { url: block.text }})
+        console.log(res)
+      }
+    }))
+    // const body = editorStateToJSON(editorStateFromRaw(defaultBody))
+    // const article = {
+    //   contents: {
+    //     body,
+    //     baseBody: body,
+    //     title,
+    //     keyword: keyword.split('\n').map(key => key),
+    //     tags: tagNames,
+    //     categories,
+    //   },
+    //   status: 'ordered',
+    //   dates: {
+    //     ordered: now,
+    //   },
+    //   histories: {
+    //     [now]: {
+    //       type: 'order',
+    //       userId,
+    //       contents: {
+    //         before: '',
+    //         after: '',
+    //         comment: 'order new article',
+    //       },
+    //     },
+    //   },
+    // }
+    // push({ path: '/articles', data: article })
+    //   .then(() => {
+    //     message.success('記事を発注しました．')
+    //     history.push('/')
+    //   })
+    //   .catch((err: Error) => {
+    //     message.error(err)
+    //   })
   },
   fetchData: ({ receiveCategories, receiveTags }) => () => {
     listenStart('/categories', (categories: any) => {
