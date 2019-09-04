@@ -23,7 +23,8 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     isLoading: true,
   },
   {
-    receiveData: () => (dataSource: any) => ({
+    receiveData: (props) => (dataSource) => ({
+      ...props,
       dataSource,
       isLoading: false,
     }),
@@ -48,10 +49,14 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'accepted') {
             const {
-              contents: { keyword, tags, title, countAll, categories },
+              contents: { keyword, tags, title, countAll, categories, body },
               dates: { ordered, pending, accepted, writingStart },
               writer,
             } = val[key]
+
+            const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
+            const existTwitter = types.indexOf('twitter-link')
+            const existLink = types.indexOf('outside-link')
 
             const startBeauty = writingStart
               .split('-')
@@ -86,6 +91,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               categories,
               writer: nickname,
               days: diff,
+              types: [ existTwitter, existLink ]
             })
 
             // generate writer filter

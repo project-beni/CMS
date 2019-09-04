@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Tag, Button } from 'antd'
+import { Table, Tag, Button, Icon } from 'antd'
 import styled from 'styled-components'
 
 const { Column } = Table
@@ -27,7 +27,22 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='タイトル'
-        render={({ title }) => <p>{title}</p>}
+        render={({ title, types }) => (
+          <React.Fragment>
+            {
+              types.map((isExist: number, i: number) => {
+                if (isExist >= 0) {
+                  return i ?
+                    <Icon type='link' style={{ color: '#263238'}} /> :
+                    <Icon type='twitter' style={{ color: '#55acee' }} />
+                } else {
+                  return null
+                }
+              })
+            }
+            <p>{title}</p>
+          </React.Fragment>
+        )}
         key='title'
       />
       <Column
