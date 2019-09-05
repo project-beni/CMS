@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Tag, Button } from 'antd'
+import { Table, Tag, Button, Icon } from 'antd'
 import styled from 'styled-components'
 
 const { Column } = Table
@@ -14,10 +14,21 @@ const AcceptedList: React.SFC<any> = ({
   },
   checkArticle,
   isLoading,
+  pagination,
+  currentPage
 }) => (
   <div>
     <h1>受理した記事の一覧</h1>
-    <List dataSource={list} bordered loading={isLoading} size='small'>
+    <List
+      dataSource={list}
+      bordered
+      loading={isLoading}
+      size='small'
+      pagination={{
+        onChange: pagination,
+        current: currentPage
+      }}
+    >
       <Column
         title='名前'
         render={({ writer }) => <p>{writer}</p>}
@@ -27,7 +38,22 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='タイトル'
-        render={({ title }) => <p>{title}</p>}
+        render={({ title, types }) => (
+          <React.Fragment>
+            {
+              types.map((isExist: number, i: number) => {
+                if (isExist >= 0) {
+                  return i ?
+                    <Icon type='link' style={{ color: '#263238'}} key={i} /> :
+                    <Icon type='twitter' style={{ color: '#55acee' }} key={i} />
+                } else {
+                  return null
+                }
+              })
+            }
+            <p>{title}</p>
+          </React.Fragment>
+        )}
         key='title'
       />
       <Column
@@ -82,6 +108,7 @@ const AcceptedList: React.SFC<any> = ({
             return `${days}日`
           }
         }}
+        key='date'
       />
       <Column
         title='カテゴリー'

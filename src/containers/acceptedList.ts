@@ -1,9 +1,11 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
+import { parse } from 'query-string'
 
 import { listenStart, read, set } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
+import { withRouter } from 'react-router';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment')
@@ -11,28 +13,39 @@ const moment = require('moment')
 type State = {
   dataSource?: any
   isLoading?: boolean
+  currentPage: number
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
+  changePagination: (page: number) => State
 }
 
-const stateHandlers = withStateHandlers<State, StateUpdates>(
+const stateHandlers = withStateHandlers<State & any, StateUpdates>(
   {
     dataSource: { filters: {} },
     isLoading: true,
+    currentPage: 1
   },
   {
-    receiveData: () => (dataSource: any) => ({
+    receiveData: (props) => (dataSource) => ({
+      ...props,
       dataSource,
       isLoading: false,
     }),
+    changePagination:(props) => (page) => {
+      return {
+        ...props,
+        currentPage: page
+      }
+    }
   }
 )
 
 type ActionProps = {
   fetchData: () => void
   checkArticle: ({ id }: { id: string }) => void
+  pagination: (page: number) => void
 }
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
@@ -48,10 +61,14 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         Object.keys(val).forEach((key, i) => {
           if (val[key].status === 'accepted') {
             const {
-              contents: { keyword, tags, title, countAll, categories },
+              contents: { keyword, tags, title, countAll, categories, body },
               dates: { ordered, pending, accepted, writingStart },
               writer,
             } = val[key]
+
+            const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
+            const existTwitter = types.indexOf('twitter-link')
+            const existLink = types.indexOf('outside-link')
 
             const startBeauty = writingStart
               .split('-')
@@ -86,6 +103,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               categories,
               writer: nickname,
               days: diff,
+              types: [ existTwitter, existLink ]
             })
 
             // generate writer filter
@@ -120,14 +138,22 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/acceptedList/${id}`)
   },
+  pagination: ({ history, changePagination }) => (page) => {
+    history.push(`/articles/acceptedList?page=${page}`)
+    changePagination(page)
+  }
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle<LifecycleProps, {}, any>({
   async componentDidMount() {
-    const { fetchData, history } = this.props
+    const { fetchData, history, location, changePagination } = this.props
     const userId = await getUid()
+    const { page } = parse(location.search)
+    changePagination(Number(page))
+
+    
 
     if (!userId) history.push('/login')
 
@@ -152,6 +178,7 @@ const Lifecycle = lifecycle<LifecycleProps, {}, any>({
 })
 export default compose(
   stateHandlers,
+  withRouter,
   WithHandlers,
   Lifecycle
 )(AcceptedList)
