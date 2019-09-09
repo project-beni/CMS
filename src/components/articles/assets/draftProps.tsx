@@ -26,6 +26,7 @@ type Actions = {
 
 const baseActions: Actions[] = [
   { type: 'inline', label: 'Back', style: 'BACK', icon: FormatColorFill },
+  { type: 'entity', label: 'Link', style: 'link', entity: 'LINK', icon: InsertLink },
   { type: 'separator' },
   { type: 'block', label: 'QT', style: 'blockquote', icon: FormatQuote },
   { type: 'block', label: 'UL', style: 'unordered-list-item', icon: FormatListBulleted },
