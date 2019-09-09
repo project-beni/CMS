@@ -17,7 +17,7 @@ export default class Block extends React.Component<any> {
   }
 
   _handleCaptionChange(
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLTextAreaElement>,
     base: string[][],
     rowIndex: number,
     columnIndex: number
@@ -88,10 +88,11 @@ export default class Block extends React.Component<any> {
                                   padding: 0
                                 }}
                               >
-                                <Input
+                                <Input.TextArea
                                   placeholder='ヘッダー'
                                   value={element}
-                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  autosize={true}
+                                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                     this._handleCaptionChange(e, tableData, i, j)
                                   }}
                                   style={{
@@ -111,10 +112,11 @@ export default class Block extends React.Component<any> {
                                   padding: 0
                                 }}
                               >
-                                <Input
+                                <Input.TextArea
                                   placeholder='コンテンツ'
                                   value={element}
-                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  autosize={true}
+                                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                     this._handleCaptionChange(e, tableData, i, j)
                                   }}
                                   style={{
