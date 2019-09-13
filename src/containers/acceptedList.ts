@@ -21,12 +21,14 @@ type State = {
   currentPage: number
   tagFilter: Filter[]
   categoryFilter: Filter[]
+  filteredTags: string[]
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
   changePagination: (page: number) => State
   setFilters: ({ tagFilter, categoryFilter }: State) => State
+  setDefaultFilter: ({ filteredTags }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State & any, StateUpdates>(
@@ -53,7 +55,8 @@ const stateHandlers = withStateHandlers<State & any, StateUpdates>(
       ...props,
       tagFilter,
       categoryFilter
-    })
+    }),
+    setDefaultFilter: (props) => ({ filteredTags }) => ({ ...props, filteredTags})
   }
 )
 
@@ -163,6 +166,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   pagination: ({ history, changePagination }) => (page) => {
     history.push(`/articles/acceptedList?page=${page}`)
     changePagination(page)
+  },
+  filterTags: () => (value: any, { tags }: any) => {
+    if (!tags[1]) {
+      return tags[0].indexOf(value) === 0
+    } else {
+      return tags[0].indexOf(value) === 0 || tags[1].indexOf(value) === 0
+    }
   }
 })
 
@@ -170,9 +180,10 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle<LifecycleProps, {}, any>({
   async componentDidMount() {
-    const { fetchData, history, location, changePagination } = this.props
+    const { fetchData, history, location, changePagination, setDefaultFilter } = this.props
     const userId = await getUid()
-    const { page } = parse(location.search)
+    const { page, tags }: any = parse(location.search)
+    setDefaultFilter({ filteredTags: tags })
     changePagination(Number(page))
 
     
