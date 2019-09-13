@@ -10,6 +10,7 @@ const { editorStateFromRaw, editorStateToJSON } = require('megadraft')
 
 type State = {
   body?: any
+  title: string
   comment?: string
   counts: {
     type:
@@ -27,10 +28,11 @@ type State = {
 
 export type StateUpdates = {
   updateBody: ({ body }: State) => State
-  receiveData: ({ body }: State) => State
+  receiveData: ({ body, title }: State) => State
   setCounts: ({ counts }: State) => State
   setCountAll: ({ countAll }: State) => State
   setType: ({ type }: State) => State
+  updateTitle: ({ title }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State, StateUpdates>(
@@ -39,13 +41,15 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     counts: [],
     countAll: 0,
     type: '',
+    title: ''
   },
   {
     updateBody: props => ({ body }) => ({ ...props, body }),
-    receiveData: props => ({ body }) => ({ ...props, body }),
+    receiveData: props => ({ body, title }) => ({ ...props, body, title }),
     setCounts: props => ({ counts }) => ({ ...props, counts }),
     setCountAll: props => ({ countAll }) => ({ ...props, countAll }),
     setType: props => ({ type }) => ({ ...props, type }),
+    updateTitle: props => ({ title }) => ({ ...props, title })
   }
 )
 
@@ -65,13 +69,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   }) => async () => {
     read(`/articles/${match.params.articleId}`).then(snapshot => {
       const {
-        contents: { body },
+        contents: { body, title },
         type,
       } = snapshot.val()
 
       setType({ type: type ? type : 'normal' })
 
-      receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
+      receiveData({ body: editorStateFromRaw(JSON.parse(body)), title })
 
       const changed = JSON.parse(body).blocks
 
@@ -199,12 +203,12 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     setCountAll({ countAll })
   },
   myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
-  save: ({ body, match, countAll }) => () => {
+  save: ({ body, match, countAll, title }) => () => {
     const article = editorStateToJSON(body)
 
     set({
       path: `/articles/${match.params.articleId}/contents`,
-      data: { body: article, countAll },
+      data: { body: article, countAll, title },
     })
       .then(() => {
         message.success('保存しました')

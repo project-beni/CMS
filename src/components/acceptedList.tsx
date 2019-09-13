@@ -15,7 +15,11 @@ const AcceptedList: React.SFC<any> = ({
   checkArticle,
   isLoading,
   pagination,
-  currentPage
+  currentPage,
+  tagFilter,
+  categoryFilter,
+  filteredTags,
+  filterTags
 }) => (
   <div>
     <h1>受理した記事の一覧</h1>
@@ -117,6 +121,8 @@ const AcceptedList: React.SFC<any> = ({
             <Tag key={i}>{categorie}</Tag>
           ))
         }
+        filters={categoryFilter}
+        onFilter={(value, {categories}: any) => categories[0].indexOf(value) === 0}
         key='categories'
       />
       <Column
@@ -124,6 +130,9 @@ const AcceptedList: React.SFC<any> = ({
         render={({ tags }) =>
           tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
         }
+        filters={tagFilter}
+        onFilter={filterTags}
+        filteredValue={filteredTags}
         key='tags'
       />
       <Column title='文字数' dataIndex='countAll' key='countAll' />

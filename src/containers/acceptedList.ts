@@ -10,22 +10,34 @@ import { withRouter } from 'react-router';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment')
 
+type Filter = {
+  text: string
+  value: string
+}
+
 type State = {
   dataSource?: any
   isLoading?: boolean
   currentPage: number
+  tagFilter: Filter[]
+  categoryFilter: Filter[]
+  filteredTags: string[]
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
   changePagination: (page: number) => State
+  setFilters: ({ tagFilter, categoryFilter }: State) => State
+  setDefaultFilter: ({ filteredTags }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State & any, StateUpdates>(
   {
     dataSource: { filters: {} },
     isLoading: true,
-    currentPage: 1
+    currentPage: 1,
+    tagFilter: [],
+    categoryFilter: []
   },
   {
     receiveData: (props) => (dataSource) => ({
@@ -38,7 +50,13 @@ const stateHandlers = withStateHandlers<State & any, StateUpdates>(
         ...props,
         currentPage: page
       }
-    }
+    },
+    setFilters: (props) => ({ tagFilter, categoryFilter }) => ({
+      ...props,
+      tagFilter,
+      categoryFilter
+    }),
+    setDefaultFilter: (props) => ({ filteredTags }) => ({ ...props, filteredTags})
   }
 )
 
@@ -49,8 +67,15 @@ type ActionProps = {
 }
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
-  fetchData: ({ receiveData }: any) => async () => {
+  fetchData: ({ receiveData, setFilters }: any) => async () => {
     const users = (await read('/users')).val()
+    const categories = (await read('categories')).val()
+    const tags = (await read('tags')).val()
+
+    setFilters({
+      tagFilter: Object.keys(tags).map((key) => ({text: tags[key], value: tags[key]})),
+      categoryFilter: Object.keys(categories).map((key) => ({text: categories[key], value: categories[key]}))
+    })
 
     listenStart('/articles', (val: any) => {
       const writerFilters: any = []
@@ -141,6 +166,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   pagination: ({ history, changePagination }) => (page) => {
     history.push(`/articles/acceptedList?page=${page}`)
     changePagination(page)
+  },
+  filterTags: () => (value: any, { tags }: any) => {
+    if (!tags[1]) {
+      return tags[0].indexOf(value) === 0
+    } else {
+      return tags[0].indexOf(value) === 0 || tags[1].indexOf(value) === 0
+    }
   }
 })
 
@@ -148,9 +180,10 @@ type LifecycleProps = RouteComponentProps | ActionProps
 
 const Lifecycle = lifecycle<LifecycleProps, {}, any>({
   async componentDidMount() {
-    const { fetchData, history, location, changePagination } = this.props
+    const { fetchData, history, location, changePagination, setDefaultFilter } = this.props
     const userId = await getUid()
-    const { page } = parse(location.search)
+    const { page, tags }: any = parse(location.search)
+    setDefaultFilter({ filteredTags: tags })
     changePagination(Number(page))
 
     

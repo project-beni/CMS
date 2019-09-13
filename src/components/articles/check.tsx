@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Popconfirm, Row, Col, Icon, Drawer } from 'antd'
+import { Button, Popconfirm, Row, Col, Icon, Drawer, Input } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import Plugins from '../../plugins'
@@ -22,7 +22,8 @@ const editArticles: React.SFC<any> = ({
   relatedQueries,
   keyword,
   isDrawerVisible,
-  toggleDrawer
+  toggleDrawer,
+  changeTitle
 }) => {
   return (
     <div style={{
@@ -31,7 +32,12 @@ const editArticles: React.SFC<any> = ({
       <Row>
         <Col span={4}></Col>
         <Col span={20}>
-          <h1 style={{fontSize: '1.5em'}}>{title}</h1>
+          <Input
+            value={title}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              changeTitle({ title: e.target.value })
+            }}
+          />
           <p>{writer}</p>
         </Col>
       </Row>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Icon, Row, Col } from 'antd'
+import { Button, Icon, Row, Col, Input } from 'antd'
 const { MegadraftEditor } = require('megadraft')
 
 import Plugins from '../../plugins'
@@ -15,13 +15,24 @@ const AcceptedViewer: React.SFC<any> = ({
   countAll,
   myBlockStyle,
   type,
-  updateType
+  updateType,
+  title,
+  updateTitle
 }) => {
   return (
     <div style={{
       margin: '100px 50px'
     }}>
       <Row>
+        <Col span={4}></Col>
+        <Col span={20}>
+          <Input
+            value={title}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              updateTitle({ title: e.target.value })
+            }}
+          />
+        </Col>
         <Col span={3}>
           <EachLineInfo counts={counts} />
         </Col>

@@ -43,6 +43,7 @@ export type StateUpdates = {
   setRelatedQueries: ({ relatedQueries }: State) => State
   setKeyword: ({ keyword }: State) => State
   toggleDrawer: ({ isDrawerVisible }: State) => State
+  changeTitle: ({ title }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State, StateUpdates>(
@@ -71,6 +72,7 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
       ...props,
       isDrawerVisible: !props.isDrawerVisible,
     }),
+    changeTitle: props => ({ title }) => ({ ...props, title })
   }
 )
 
@@ -247,12 +249,12 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     setCountAll({ countAll })
   },
   myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
-  save: ({ body, match, countAll }) => () => {
+  save: ({ body, match, countAll, title }) => () => {
     const article = editorStateToJSON(body)
 
     set({
       path: `/articles/${match.params.id}/contents`,
-      data: { body: article, countAll },
+      data: { body: article, countAll, title },
     })
       .then(() => {
         message.success('保存しました')
@@ -261,13 +263,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  reject: ({ body, match, history, countAll }) => async () => {
+  reject: ({ body, match, history, countAll, title }) => async () => {
     // save
     const article = editorStateToJSON(body)
 
     set({
       path: `/articles/${match.params.id}/contents`,
-      data: { body: article, countAll },
+      data: { body: article, countAll, title },
     })
       .then(() => {
         message.success('保存しました')
@@ -315,13 +317,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         message.error(err.message)
       })
   },
-  recieve: ({ body, match, history, countAll }) => async () => {
+  recieve: ({ body, match, history, countAll, title }) => async () => {
     // save
     const article = editorStateToJSON(body)
 
     set({
       path: `/articles/${match.params.id}/contents`,
-      data: { body: article, countAll },
+      data: { body: article, countAll, title },
     })
       .then(() => {
         message.success('保存しました')
