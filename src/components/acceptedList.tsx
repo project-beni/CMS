@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Tag, Button, Icon } from 'antd'
+import { Table, Tag, Button, Icon, Popconfirm } from 'antd'
 import styled from 'styled-components'
 
 const { Column } = Table
@@ -19,7 +19,8 @@ const AcceptedList: React.SFC<any> = ({
   tagFilter,
   categoryFilter,
   filteredTags,
-  filterTags
+  filterTags,
+  publish
 }) => (
   <div>
     <h1>受理した記事の一覧</h1>
@@ -148,6 +149,33 @@ const AcceptedList: React.SFC<any> = ({
           </Button>
         )}
         key='check'
+      />
+      <Column
+        title='公開'
+        render={({ id, isPublic, index, categories }) => (
+          !isPublic ? (
+            <Popconfirm
+              onConfirm={() => publish({ id })}
+              title='公開します'
+              okText='公開'
+              cancelText='キャンセル'
+            >
+              <Button
+                type='danger'
+                size='small'
+              >
+                公開({`${categories[0]}/${index}`})
+              </Button>
+            </Popconfirm>
+          ) : (
+            <a
+              href={`https://bizual.jp/category/${categories[0]}/${index}`}
+              target='_blank'
+            >
+              公開済み
+            </a>
+          )
+        )}
       />
     </List>
   </div>
