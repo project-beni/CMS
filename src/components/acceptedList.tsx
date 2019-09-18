@@ -155,7 +155,7 @@ const AcceptedList: React.SFC<any> = ({
         render={({ id, isPublic, index, categories }) => (
           !isPublic ? (
             <Popconfirm
-              onConfirm={() => publish({ id })}
+              onConfirm={() => publish({ id, categories, index })}
               title='公開します'
               okText='公開'
               cancelText='キャンセル'
@@ -164,7 +164,7 @@ const AcceptedList: React.SFC<any> = ({
                 type='danger'
                 size='small'
               >
-                公開({`${categories[0]}/${index}`})
+                公開
               </Button>
             </Popconfirm>
           ) : (

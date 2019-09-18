@@ -65,7 +65,7 @@ type ActionProps = {
   fetchData: () => void
   checkArticle: ({ id }: { id: string }) => void
   pagination: (page: number) => void
-  publish: ({ id }: { id: string }) => void
+  publish: ({ id, categories, index }: { id: string, categories: string[], index: number }) => void
 }
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
@@ -180,11 +180,25 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       return tags[0].indexOf(value) === 0 || tags[1].indexOf(value) === 0
     }
   },
-  publish: () => async ({ id }) => {
+  publish: () => async ({ id, categories, index }) => {
+    const all = (await read('/articles')).val()
+    
+    const sasa = Object.keys(all).map((key) => {  
+      if (
+        all[key].contents.categories[0] === categories[0] &&
+        all[key].index &&
+        all[key].status === 'accepted'
+      ) {
+        return all[key]
+      } else {
+        return null
+      }
+    }).filter(v=>v).sort((a,b) => b.index-a.index)
+    
     try {
       await set({
         path: `/articles/${id}/`,
-        data: { isPublic: true }
+        data: index ? { isPublic: true } : { isPublic: true, index: sasa[0].index+1 }
       })
         .then(() => message.success('公開しました'))
     } catch (err) {
