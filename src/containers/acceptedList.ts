@@ -5,7 +5,8 @@ import { parse } from 'query-string'
 import { listenStart, read, set } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router'
+import { message } from 'antd'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment')
@@ -64,6 +65,7 @@ type ActionProps = {
   fetchData: () => void
   checkArticle: ({ id }: { id: string }) => void
   pagination: (page: number) => void
+  publish: ({ id, categories, index }: { id: string, categories: string[], index: number }) => void
 }
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
@@ -89,6 +91,8 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               contents: { keyword, tags, title, countAll, categories, body },
               dates: { ordered, pending, accepted, writingStart },
               writer,
+              index,
+              isPublic
             } = val[key]
 
             const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
@@ -128,7 +132,9 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               categories,
               writer: nickname,
               days: diff,
-              types: [ existTwitter, existLink ]
+              types: [ existTwitter, existLink ],
+              index,
+              isPublic
             })
 
             // generate writer filter
@@ -172,6 +178,31 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       return tags[0].indexOf(value) === 0
     } else {
       return tags[0].indexOf(value) === 0 || tags[1].indexOf(value) === 0
+    }
+  },
+  publish: () => async ({ id, categories, index }) => {
+    const all = (await read('/articles')).val()
+    
+    const sasa = Object.keys(all).map((key) => {  
+      if (
+        all[key].contents.categories[0] === categories[0] &&
+        all[key].index &&
+        all[key].status === 'accepted'
+      ) {
+        return all[key]
+      } else {
+        return null
+      }
+    }).filter(v=>v).sort((a,b) => b.index-a.index)
+    
+    try {
+      await set({
+        path: `/articles/${id}/`,
+        data: index ? { isPublic: true } : { isPublic: true, index: sasa[0].index+1 }
+      })
+        .then(() => message.success('公開しました'))
+    } catch (err) {
+      console.log(err)
     }
   }
 })
