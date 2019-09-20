@@ -1,6 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { parse } from 'query-string'
+import Axios from 'axios'
 
 import { listenStart, read, set } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
@@ -200,10 +201,19 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         path: `/articles/${id}/`,
         data: index ? { isPublic: true } : { isPublic: true, index: sasa[0].index+1 }
       })
-        .then(() => message.success('公開しました'))
+        .then(() => message.success('公開設定をしました．公開する場合は「ビルド・リリース」ボタンを押してください．'))
     } catch (err) {
       console.log(err)
     }
+  },
+  build: () => async () => {
+    await Axios.post('https://api.netlify.com/build_hooks/5d6e41da325c862acbef4063')
+      .then(() => {
+        message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．')
+      })
+      .catch((err) => {
+        message.error(`ビルドの通信時にエラーが発生しました．${err}`)
+      })
   }
 })
 
