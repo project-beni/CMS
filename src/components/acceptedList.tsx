@@ -126,9 +126,9 @@ const AcceptedList: React.SFC<any> = ({
       <Column
         title='カテゴリー'
         render={({ categories }) =>
-          categories.map((categorie: string, i: number) => (
-            <Tag key={i}>{categorie}</Tag>
-          ))
+          categories ? (
+            categories.map((categorie: string, i: number) => <Tag key={i}>{categorie}</Tag>)
+          ) : 'ERR'
         }
         filters={categoryFilter}
         onFilter={(value, {categories}: any) => categories[0].indexOf(value) === 0}
@@ -137,7 +137,9 @@ const AcceptedList: React.SFC<any> = ({
       <Column
         title='タグ'
         render={({ tags }) =>
-          tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
+          tags ? (
+            tags.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
+          ) : 'ERR'
         }
         filters={tagFilter}
         onFilter={filterTags}

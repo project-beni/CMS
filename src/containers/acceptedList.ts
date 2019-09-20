@@ -199,7 +199,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     try {
       await set({
         path: `/articles/${id}/`,
-        data: index ? { isPublic: true } : { isPublic: true, index: sasa[0].index+1 }
+        data: index ? (
+          {isPublic: true }
+        ) : {
+          isPublic: true,
+          index: sasa[0].index+1,
+          publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+        }
       })
         .then(() => message.success('公開設定をしました．公開する場合は「ビルド・リリース」ボタンを押してください．'))
     } catch (err) {
