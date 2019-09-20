@@ -1,12 +1,8 @@
 import * as React from 'react'
 import { Table, Tag, Button, Icon, Popconfirm } from 'antd'
-import styled from 'styled-components'
+import Markdown from 'react-markdown'
 
 const { Column } = Table
-
-const List = styled(Table)`
-  margin: 20px;
-`
 const AcceptedList: React.SFC<any> = ({
   dataSource: {
     filters: { writerFilters, dateFilters },
@@ -20,11 +16,22 @@ const AcceptedList: React.SFC<any> = ({
   categoryFilter,
   filteredTags,
   filterTags,
-  publish
+  publish,
+  build
 }) => (
-  <div>
+  <div style={{ marginLeft: 20 }}>
     <h1>受理した記事の一覧</h1>
-    <List
+    <Markdown source='[![Netlify Status](https://api.netlify.com/api/v1/badges/efa8c153-cf41-49ec-9d60-1e8635b7149f/deploy-status)](https://app.netlify.com/sites/bizual-viewer/deploys)' />
+    <Popconfirm
+      title='ビルドしたのち，リリースも行います．本当によろしいでしょうか？'
+      okText='はい．ビルドする．'
+      okButtonProps={{ type: 'danger' }}
+      cancelText='キャンセル'
+      onConfirm={build}
+    >
+      <Button type='danger' size='small'>ビルド・リリース</Button>
+    </Popconfirm>
+    <Table
       dataSource={list}
       bordered
       loading={isLoading}
@@ -33,6 +40,7 @@ const AcceptedList: React.SFC<any> = ({
         onChange: pagination,
         current: currentPage
       }}
+      style={{ marginTop: 20 }}
     >
       <Column
         title='名前'
@@ -169,7 +177,7 @@ const AcceptedList: React.SFC<any> = ({
             </Popconfirm>
           ) : (
             <a
-              href={`https://bizual.jp/category/${categories[0]}/${index}`}
+              href={`https://bizual.jp/${categories[0]}/${index}`}
               target='_blank'
             >
               公開済み
@@ -177,7 +185,7 @@ const AcceptedList: React.SFC<any> = ({
           )
         )}
       />
-    </List>
+    </Table>
   </div>
 )
 
