@@ -123,6 +123,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
             dataSource.list.push({
               key: i,
               id: key,
+              writingStart,
               ordered,
               pending,
               accepted,
