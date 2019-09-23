@@ -78,6 +78,14 @@ const AcceptedList: React.SFC<any> = ({
         key='orderDate'
       />
       <Column
+        title='受注日時'
+        render={({ writingStart }) => {
+          const s = writingStart ? writingStart.split('-') : null
+          return s ? `${s[0]}年${s[1]}/${s[2]}` : null
+        }}
+        key='orderDate'
+      />
+      <Column
         title='提出日時'
         render={({ pending }) => {
           const s = pending ? pending.split('-') : null
