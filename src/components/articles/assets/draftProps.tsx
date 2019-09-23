@@ -46,7 +46,6 @@ export const directorActions: Actions[] = [
   { type: 'block', label: 'H6', style: 'header-six', icon: Comment },
   { type: 'separator' },
   ...baseActions,
-  { type: 'entity', label: 'Link', style: 'link', entity: 'LINK', icon: InsertLink },
   { type: 'separator' },
   { type: 'block', label: 'twitter-link', style: 'twitter-link', icon: () => (<Icon type='twitter' />) },
   { type: 'block', label: 'outside-link', style: 'outside-link', icon: OpenInNewTwoTone },
