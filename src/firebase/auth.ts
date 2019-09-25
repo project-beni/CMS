@@ -6,7 +6,7 @@ import firebase from './'
 import { read } from './database'
 
 export function getUid() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     firebase.auth().onAuthStateChanged(({ uid }: any) => resolve(uid))
   })
 }

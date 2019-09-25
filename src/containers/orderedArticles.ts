@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, read, set } from '../firebase/database'
+import { read, set, fetchWithEqual } from '../firebase/database'
 import RecruitingArticles from '../components/orderedArticles'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -37,47 +37,47 @@ type ActionProps = {
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
-    const userId = await getUid()
-    listenStart(`/users/${userId}/articles/writings`, async (val: any) => {
-      if (val) {
-        const dataSource: any = []
-        await Promise.all(
-          Object.keys(val).map(async (key, i) => {
-            const {
-              contents: { keyword, tags, title },
-              dates: { ordered, writingStart },
-            } = (await read(`/articles/${val[key]}`)).val()
-            const diff =
-              7 -
-              Number(
-                moment().diff(
-                  moment(
-                    writingStart
-                      .split('-')
-                      .slice(0, 3)
-                      .join('-')
-                  ),
-                  'days'
-                )
-              )
-            const countdown = diff < 0 ? 0 : diff
-
-            dataSource.push({
-              key: i,
-              id: val[key],
-              ordered,
-              keyword,
-              tags,
-              title,
-              countdown,
-            })
-          })
+    const userId: any = await getUid()
+    const articles: any = (await fetchWithEqual('/articles', 'writer', userId)).val()
+    
+    const writingArticles: any = Object.keys(articles)
+      .map((articleId) => articles[articleId].status === 'writing' ? {...articles[articleId], articleId } : null)
+      .filter(v => v)
+    
+    const dataSource = writingArticles.map((article: any, i: number) => {
+      const {
+        contents: { keyword, tags, title },
+        dates: { ordered, writingStart },
+        articleId
+      } = article
+      const diff =
+        7 -
+        Number(
+          moment().diff(
+            moment(
+              writingStart
+                .split('-')
+                .slice(0, 3)
+                .join('-')
+            ),
+            'days'
+          )
         )
-        receiveData(dataSource)
-      } else {
-        receiveData([])
+      const countdown = diff < 0 ? 0 : diff
+
+      return {
+        key: i,
+        id: articleId,
+        ordered,
+        keyword,
+        tags,
+        title,
+        countdown,
       }
     })
+    
+    receiveData(dataSource)
+
   },
   editArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/edit/${id}`)
