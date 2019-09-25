@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Table, Tag, Button, Popconfirm } from 'antd'
 import styled from 'styled-components'
 
+import beautyDate from '../utils/beautyDate'
+
 const { Column } = Table
 
 const List = styled(Table)`
@@ -26,11 +28,12 @@ const RecruitingArticles: React.SFC<any> = ({
         bordered
         loading={isLoading}
         expandedRowRender={({ summary }) => {
-          return summary.map(({ type, text }: any) => {
+          return summary.map(({ type, text, key }: any) => {
             switch (type) {
               case 'header-one':
                 return (
                   <h1
+                    key={key}
                     style={{
                       fontSize: '1.5em',
                       margin: 0,
@@ -43,6 +46,7 @@ const RecruitingArticles: React.SFC<any> = ({
               case 'header-two':
                 return (
                   <h2
+                    key={key}
                     style={{
                       fontSize: '1em',
                       marginLeft: '2em',
@@ -55,6 +59,7 @@ const RecruitingArticles: React.SFC<any> = ({
               case 'header-three':
                 return (
                   <h3
+                    key={key}
                     style={{
                       fontSize: '1em',
                       marginLeft: '4em',
@@ -73,16 +78,15 @@ const RecruitingArticles: React.SFC<any> = ({
         <Column title='タイトル' dataIndex='title' />
         <Column
           title='発注日時'
-          render={({ ordered }) => {
-            const s = ordered.split('-')
-            return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
-          }}
+          render={({ ordered }) => beautyDate(ordered)}
+          key='orderedDate'
         />
         <Column
           title='キーワード'
           render={({ keyword }) =>
             keyword.map((tag: string, i: number) => <Tag key={i}>{tag}</Tag>)
           }
+          key='keyword'
         />
         {position === 'writer' ? (
           amountOfArticles <= 2 ? (
@@ -96,6 +100,7 @@ const RecruitingArticles: React.SFC<any> = ({
                   <Button size='small'>受注する</Button>
                 </Popconfirm>
               )}
+              key='writingStart'
             />
           ) : null
         ) : null}

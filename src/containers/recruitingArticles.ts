@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { message } from 'antd'
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, push, read, set, listenEqual } from '../firebase/database'
 import RecruitingArticles from '../components/recruitingArticles'
 import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
 
@@ -74,43 +74,42 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       }
     })
 
-    listenStart('/articles', (val: any) => {
-      if (val) {
-        const dataSource: any = []
-        Object.keys(val).forEach((key, i) => {
-          if (val[key].status === 'ordered') {
-            const {
-              contents: { keyword, tags, title, body },
-              dates: { ordered },
-            } = val[key]
+    const articles: any = (await listenEqual('/articles', 'status', 'ordered')).val()
+    
+    const dataSource = Object.keys(articles).map((articleId, i) => {
+      const {
+        contents: { keyword, tags, title, body },
+        dates: { ordered },
+      } = articles[articleId]
+      const summary = JSON.parse(body).blocks.map(({ type, text }: { type: string, text: string}, j: number) => {
+        if (
+          type === 'header-one' ||
+          type === 'header-two' ||
+          type === 'header-three'
+        ) {
+          return { type, text, key: j }
+        } else {
+          return null
+        }
+      }).filter((v: string) => v)
 
-            const summary: any = []
-            JSON.parse(body).blocks.forEach(({ type, text }: any) => {
-              if (
-                type === 'header-one' ||
-                type === 'header-two' ||
-                type === 'header-three'
-              ) {
-                summary.push({ type, text })
-              }
-            })
-
-            dataSource.push({
-              key: i,
-              id: key,
-              ordered,
-              keyword,
-              tags,
-              title,
-              summary,
-            })
-          }
-        })
-        receiveData(dataSource)
-      } else {
-        receiveData([])
+      return {
+        key: i,
+        id: articleId,
+        ordered,
+        keyword,
+        tags,
+        title,
+        summary,
       }
+
     })
+    if (dataSource.length)  {
+      receiveData(dataSource)
+    } else {
+      receiveData([])
+    }
+    
   },
   editArticle: () => async ({ id }) => {
     const now = moment().format('YYYY-MM-DD-hh-mm-ss')

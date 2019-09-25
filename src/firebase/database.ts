@@ -42,3 +42,12 @@ export const remove = ({ path }: { path: string }) => {
     .ref(path)
     .remove()
 }
+
+export const listenEqual = (path: string, child: string, equal: string) => {
+  return firebase
+    .database()
+    .ref(path)
+    .orderByChild(child)
+    .equalTo(equal)
+    .once('value')
+}
