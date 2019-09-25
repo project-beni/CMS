@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, read, set } from '../firebase/database'
+import { read, set, fetchWithEqual } from '../firebase/database'
 import ModelArticles from '../components/modelArticles'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -34,31 +34,25 @@ type ActionProps = {
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
-    listenStart('/articles', (val: any) => {
-      if (val) {
-        const dataSource: any = []
-        Object.keys(val).forEach((key, i) => {
-          if (val[key].type === 'model') {
-            const {
-              contents: { keyword, tags, title, countAll, categories },
-            } = val[key]
+    const modelArticles = (await fetchWithEqual('/articles', 'type', 'model')).val()
 
-            dataSource.push({
-              key: i,
-              id: key,
-              keyword,
-              tags,
-              title,
-              countAll,
-              categories,
-            })
-          }
-        })
-        receiveData(dataSource)
-      } else {
-        receiveData([])
+    const dataSource = Object.keys(modelArticles).map((articleId, i) => {
+      const {
+        contents: { keyword, tags, title, countAll, categories },
+      } = modelArticles[articleId]
+
+      return {
+        key: i,
+        id: articleId,
+        keyword,
+        tags,
+        title,
+        countAll,
+        categories,
       }
     })
+    receiveData(dataSource)
+    
   },
   checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/viewer/${id}`)
