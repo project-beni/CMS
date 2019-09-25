@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Table, Tag, Button, Icon, Popconfirm } from 'antd'
 import Markdown from 'react-markdown'
 
+import BeautyDate from '../utils/beautyDate'
+
 const { Column } = Table
 const AcceptedList: React.SFC<any> = ({
   dataSource: {
@@ -71,34 +73,22 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='発注日時'
-        render={({ ordered }) => {
-          const s = ordered ? ordered.split('-') : null
-          return s ? `${s[0]}年${s[1]}/${s[2]}` : null
-        }}
+        render={({ ordered }) => BeautyDate(ordered)}
         key='orderDate'
       />
       <Column
         title='受注日時'
-        render={({ writingStart }) => {
-          const s = writingStart ? writingStart.split('-') : null
-          return s ? `${s[0]}年${s[1]}/${s[2]}` : null
-        }}
+        render={({ writingStart }) => BeautyDate(writingStart)}
         key='orderDate'
       />
       <Column
         title='提出日時'
-        render={({ pending }) => {
-          const s = pending ? pending.split('-') : null
-          return s ? `${s[0]}年${s[1]}/${s[2]}` : null
-        }}
+        render={({ pending }) => BeautyDate(pending)}
         key='submitDate'
       />
       <Column
         title='受理日時'
-        render={({ accepted }) => {
-          const s = accepted ? accepted.split('-') : null
-          return s ? `${s[0]}年${s[1]}/${s[2]}` : null
-        }}
+        render={({ accepted }) => BeautyDate(accepted)}
         filters={dateFilters}
         onFilter={(value, { accepted }: any) => {
           const s = accepted ? accepted.split('-') : null

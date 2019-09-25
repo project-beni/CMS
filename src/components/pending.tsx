@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Table, Tag } from 'antd'
 import styled from 'styled-components'
 
+import BeautyDate from '../utils/beautyDate'
+
 const { Column } = Table
 
 const List = styled(Table)`
@@ -15,17 +17,11 @@ const RecruitingArticles: React.SFC<any> = ({ dataSource, isLoading }) => (
       <Column title='タイトル' dataIndex='title' />
       <Column
         title='発注日時'
-        render={({ ordered }) => {
-          const s = ordered.split('-')
-          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
-        }}
+        render={({ ordered }) => BeautyDate(ordered)}
       />
       <Column
         title='提出日時'
-        render={({ pending }) => {
-          const s = pending.split('-')
-          return `${s[0]}年${s[1]}月${s[2]}日${s[3]}:${s[4]}`
-        }}
+        render={({ pending }) => BeautyDate(pending)}
       />
       <Column
         title='残り日数'
