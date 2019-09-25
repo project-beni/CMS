@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, read, set } from '../firebase/database'
+import { read, set, fetchWithEqual } from '../firebase/database'
 import Check from '../components/check'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -38,55 +38,48 @@ type ActionProps = {
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
     const users = (await read('/users')).val()
-
-    listenStart('/articles', (val: any) => {
-      if (val) {
-        const dataSource: any = []
-        Object.keys(val).forEach((key, i) => {
-          if (val[key].status === 'pending') {
-            const {
-              contents: { keyword, tags, title, countAll, categories },
-              dates: { ordered, pending, writingStart },
-              writer,
-            } = val[key]
-
-            const diff =
-              7 -
-              Number(
-                moment().diff(
-                  moment(
-                    writingStart
-                      .split('-')
-                      .slice(0, 3)
-                      .join('-')
-                  ),
-                  'days'
-                )
-              )
-            const countdown = diff < 0 ? 0 : diff
-
-            dataSource.push({
-              key: i,
-              id: key,
-              ordered,
-              pending,
-              keyword,
-              tags,
-              title,
-              countAll,
-              categories,
-              countdown,
-              writer: users[writer].profiles
-                ? users[writer].profiles.nickname
-                : '',
-            })
-          }
-        })
-        receiveData(dataSource)
-      } else {
-        receiveData([])
+    const articles: any = (await fetchWithEqual('/articles', 'status', 'pending')).val()
+    const dataSource = Object.keys(articles).map((articleId: string, i: number) => {
+      const {
+        contents: { keyword, tags, title, countAll, categories },
+        dates: { ordered, pending, writingStart },
+        writer,
+      } = articles[articleId]
+      const diff =
+        7 -
+        Number(
+          moment().diff(
+            moment(
+              writingStart
+                .split('-')
+                .slice(0, 3)
+                .join('-')
+            ),
+            'days'
+          )
+        )
+      const countdown = diff < 0 ? 0 : diff
+      return {
+        key: i,
+        id: articleId,
+        ordered,
+        pending,
+        keyword,
+        tags,
+        title,
+        countAll,
+        categories,
+        countdown,
+        writer: users[writer].profiles
+          ? users[writer].profiles.nickname
+          : '',
       }
     })
+    if (dataSource.length) {
+      receiveData(dataSource)
+    } else {
+      receiveData([])
+    }
   },
   checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/checkList/${id}`)

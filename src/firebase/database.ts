@@ -43,7 +43,7 @@ export const remove = ({ path }: { path: string }) => {
     .remove()
 }
 
-export const listenEqual = (path: string, child: string, equal: string) => {
+export const fetchWithEqual = (path: string, child: string, equal: string) => {
   return firebase
     .database()
     .ref(path)

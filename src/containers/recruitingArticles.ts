@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { message } from 'antd'
 
-import { listenStart, push, read, set, listenEqual } from '../firebase/database'
+import { listenStart, push, read, set, fetchWithEqual } from '../firebase/database'
 import RecruitingArticles from '../components/recruitingArticles'
 import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
 
@@ -74,7 +74,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       }
     })
 
-    const articles: any = (await listenEqual('/articles', 'status', 'ordered')).val()
+    const articles: any = (await fetchWithEqual('/articles', 'status', 'ordered')).val()
     
     const dataSource = Object.keys(articles).map((articleId, i) => {
       const {
