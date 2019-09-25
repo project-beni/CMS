@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { parse } from 'query-string'
 import Axios from 'axios'
 
-import { listenStart, read, set } from '../firebase/database'
+import { read, set, fetchWithEqual } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 import { withRouter } from 'react-router'
@@ -21,25 +21,35 @@ type State = {
   dataSource?: any
   isLoading?: boolean
   currentPage: number
-  tagFilter: Filter[]
-  categoryFilter: Filter[]
   filteredTags: string[]
+  filters: {
+    writerFilters: Filter[]
+    dateFilters: Filter[]
+    tagFilter: Filter[]
+    categoryFilter: Filter[]
+  }
 }
 
 type StateUpdates = {
   receiveData: (dataSource: any) => State
   changePagination: (page: number) => State
-  setFilters: ({ tagFilter, categoryFilter }: State) => State
+  setFilters: ({
+    tagFilter, categoryFilter, writerFilters, dateFilters
+  }: State['filters']) => State
   setDefaultFilter: ({ filteredTags }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State & any, StateUpdates>(
   {
-    dataSource: { filters: {} },
+    dataSource: [],
     isLoading: true,
     currentPage: 1,
-    tagFilter: [],
-    categoryFilter: []
+    filters: {
+      tagFilter: [],
+      categoryFilter: [],
+      writerFilters: [],
+      dateFilters: []
+    },
   },
   {
     receiveData: (props) => (dataSource) => ({
@@ -53,10 +63,12 @@ const stateHandlers = withStateHandlers<State & any, StateUpdates>(
         currentPage: page
       }
     },
-    setFilters: (props) => ({ tagFilter, categoryFilter }) => ({
+    setFilters: (props) => ({ tagFilter, categoryFilter, writerFilters, dateFilters }) => ({
       ...props,
       tagFilter,
-      categoryFilter
+      categoryFilter,
+      writerFilters,
+      dateFilters
     }),
     setDefaultFilter: (props) => ({ filteredTags }) => ({ ...props, filteredTags})
   }
@@ -74,99 +86,96 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     const users = (await read('/users')).val()
     const categories = (await read('categories')).val()
     const tags = (await read('tags')).val()
+    
+
+    const acceptedArticles = (await fetchWithEqual('/articles', 'status', 'accepted')).val()
+
+    const writerFilters: any = []
+    const dateFilters: any = []
+
+    const dataSource: any = Object.keys(acceptedArticles).map((articleId, i) => {
+      const {
+        contents: { keyword, tags, title, countAll, categories, body },
+        dates: { ordered, pending, accepted, writingStart },
+        writer,
+        index,
+        isPublic
+      } = acceptedArticles[articleId]
+
+      const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
+      const existTwitter = types.indexOf('twitter-link')
+      const existLink = types.indexOf('outside-link')
+
+      const startBeauty = writingStart
+        .split('-')
+        .slice(0, 3)
+        .join('-')
+      const acceptedBeauty = accepted
+        ? accepted
+            .split('-')
+            .slice(0, 3)
+            .join('-')
+        : ''
+      const diff = Number(
+        moment(acceptedBeauty).diff(moment(startBeauty), 'days')
+      )
+
+      const nickname = users[writer].profiles
+        ? users[writer].profiles.nickname
+          ? users[writer].profiles.nickname
+          : ''
+        : ''
+
+      // generate writer filter
+      if (nickname) {
+        let f = true
+        writerFilters.forEach(({ text }: any) => {
+          if (text === nickname) f = false
+        })
+        if (f) writerFilters.push({ text: nickname, value: nickname })
+      }
+
+      // generate accepted date filter
+      if (accepted) {
+        let f = true
+        const d = accepted.split('-').slice(0, 2)
+        const beauty = `${d[0]}年${d[1]}`
+        dateFilters.forEach(({ value }: any) => {
+          if (value === beauty) f = false
+        })
+        if (f) dateFilters.push({ text: `${beauty}月`, value: beauty })
+      }
+
+      return {
+        key: i,
+        id: articleId,
+        writingStart,
+        ordered,
+        pending,
+        accepted,
+        keyword,
+        tags,
+        title,
+        countAll,
+        categories,
+        writer: nickname,
+        days: diff,
+        types: [ existTwitter, existLink ],
+        index,
+        isPublic
+      }
+
+    })
 
     setFilters({
       tagFilter: Object.keys(tags).map((key) => ({text: tags[key], value: tags[key]})),
-      categoryFilter: Object.keys(categories).map((key) => ({text: categories[key], value: categories[key]}))
+      categoryFilter: Object.keys(categories).map((key) => ({text: categories[key], value: categories[key]})),
+      writerFilters,
+      dateFilters
     })
 
-    listenStart('/articles', (val: any) => {
-      const writerFilters: any = []
-      const dateFilters: any = []
-
-      if (val) {
-        const dataSource: any = { list: [] }
-        Object.keys(val).forEach((key, i) => {
-          if (val[key].status === 'accepted') {
-            const {
-              contents: { keyword, tags, title, countAll, categories, body },
-              dates: { ordered, pending, accepted, writingStart },
-              writer,
-              index,
-              isPublic
-            } = val[key]
-
-            const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
-            const existTwitter = types.indexOf('twitter-link')
-            const existLink = types.indexOf('outside-link')
-
-            const startBeauty = writingStart
-              .split('-')
-              .slice(0, 3)
-              .join('-')
-            const acceptedBeauty = accepted
-              ? accepted
-                  .split('-')
-                  .slice(0, 3)
-                  .join('-')
-              : ''
-            const diff = Number(
-              moment(acceptedBeauty).diff(moment(startBeauty), 'days')
-            )
-
-            const nickname = users[writer].profiles
-              ? users[writer].profiles.nickname
-                ? users[writer].profiles.nickname
-                : ''
-              : ''
-
-            dataSource.list.push({
-              key: i,
-              id: key,
-              writingStart,
-              ordered,
-              pending,
-              accepted,
-              keyword,
-              tags,
-              title,
-              countAll,
-              categories,
-              writer: nickname,
-              days: diff,
-              types: [ existTwitter, existLink ],
-              index,
-              isPublic
-            })
-
-            // generate writer filter
-            if (nickname) {
-              let f = true
-              writerFilters.forEach(({ text }: any) => {
-                if (text === nickname) f = false
-              })
-              if (f) writerFilters.push({ text: nickname, value: nickname })
-            }
-
-            // generate accepted date filter
-            if (accepted) {
-              let f = true
-              const d = accepted.split('-').slice(0, 2)
-              const beauty = `${d[0]}年${d[1]}`
-              dateFilters.forEach(({ value }: any) => {
-                if (value === beauty) f = false
-              })
-              if (f) dateFilters.push({ text: `${beauty}月`, value: beauty })
-            }
-          }
-        })
-        dataSource.filters = { writerFilters, dateFilters }
-
-        receiveData(dataSource)
-      } else {
-        receiveData({})
-      }
-    })
+    receiveData(dataSource)
+    
   },
   checkArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/acceptedList/${id}`)

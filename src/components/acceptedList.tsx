@@ -6,16 +6,12 @@ import BeautyDate from '../utils/beautyDate'
 
 const { Column } = Table
 const AcceptedList: React.SFC<any> = ({
-  dataSource: {
-    filters: { writerFilters, dateFilters },
-    list,
-  },
+  dataSource,
+  filters: { writerFilters, dateFilters, tagFilter, categoryFilter },
   checkArticle,
   isLoading,
   pagination,
   currentPage,
-  tagFilter,
-  categoryFilter,
   filteredTags,
   filterTags,
   publish,
@@ -34,7 +30,7 @@ const AcceptedList: React.SFC<any> = ({
       <Button type='danger' size='small'>ビルド・リリース</Button>
     </Popconfirm>
     <Table
-      dataSource={list}
+      dataSource={dataSource}
       bordered
       loading={isLoading}
       size='small'
@@ -79,7 +75,7 @@ const AcceptedList: React.SFC<any> = ({
       <Column
         title='受注日時'
         render={({ writingStart }) => BeautyDate(writingStart)}
-        key='orderDate'
+        key='orderedDate'
       />
       <Column
         title='提出日時'
