@@ -23,7 +23,8 @@ const editArticles: React.SFC<any> = ({
   keyword,
   isDrawerVisible,
   toggleDrawer,
-  changeTitle
+  changeTitle,
+  instructions
 }) => {
   return (
     <div style={{
@@ -60,6 +61,50 @@ const editArticles: React.SFC<any> = ({
         <Col span={1}></Col>
         <Col span={4}></Col>
       </Row>
+      <div
+        style={{
+          height: '200px',
+          width: 700,
+          position: 'fixed',
+          overflow: 'scroll',
+          bottom: 20,
+          left: 220,
+          opacity: 1,
+          border: 'solid 1px #ccc',
+          borderRadius: '.3em',
+          backgroundColor: 'rgba(250, 250, 250, .95)',
+          zIndex: 1000,
+          padding: '30px 0px'
+        }}
+      >
+        {
+          instructions.length ? (
+            instructions.map((a: any) => {
+              switch (a.type) {
+                case 'header-one':
+                  return <h2 style={{ marginLeft: 10 }}>○{a.text}</h2>
+                  break
+                case 'header-two':
+                  return <h3 style={{ marginLeft: 20 }}>●{a.text}</h3>
+                  break
+                case 'header-three':
+                  return <h4 style={{ marginLeft: 40 }}>・{a.text}</h4>
+                  break
+                case 'paragraph':
+                  return <p style={{ marginLeft: 60 }}>{a.text}</p>
+                  break
+                default:
+                  return null
+              }
+            })
+          ) : (
+            <React.Fragment>
+              指示文を読み込み中
+              <Icon type='loading' />
+            </React.Fragment>
+          )
+        }
+      </div>
       <div
         style={{
           height: 'auto',
