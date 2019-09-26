@@ -107,6 +107,13 @@ const AllArticleList: React.SFC<any> = ({
           </Button>
         }
       />
+      <Column
+        title='状態'
+        render={({ isPublic, categories, index }) => isPublic ? <a href={`https://bizual.jp/${categories[0]}/${index}/`} target='_blank'>公開済</a> : <p>非公開</p>}
+        filters={[{ text: '公開済み', value: 'true' }, { text: '非公開', value: 'false' }]}
+        onFilter={(value: any, {isPublic}: any) => (value === 'true' && isPublic) || (value === 'false' && !isPublic)}
+        key='isPublic'
+      />
     </List>
   </div>
 )

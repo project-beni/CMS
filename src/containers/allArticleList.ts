@@ -64,9 +64,10 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       const dataSource = await Promise.all(
         Object.keys(articles).map((key, i) => {
           const {
-            status, type, writer, dates,
+            status, type, writer, dates, isPublic, index,
             contents: { title, tags, categories }
           } = articles[key]
+          
 
           return {
             key: i,
@@ -78,7 +79,9 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
             writerPosition: writer ? users[writer].writerPosition : '',
             title,
             tags,
-            categories
+            categories,
+            isPublic,
+            index
           }
         })
       )
