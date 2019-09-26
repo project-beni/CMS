@@ -203,7 +203,10 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       await set({
         path: `/articles/${id}/`,
         data: index ? (
-          {isPublic: true }
+          {
+            isPublic: true,
+            publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+          }
         ) : {
           isPublic: true,
           index: sasa[0].index+1,
