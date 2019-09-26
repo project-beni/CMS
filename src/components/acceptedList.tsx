@@ -192,7 +192,7 @@ const AcceptedList: React.SFC<any> = ({
             >
               公開済み
               {
-                publishDate ? '\n9/' + publishDate.split('-')[2] : 'default'
+                publishDate ? `\n${publishDate.split('-')[1]}/${publishDate.split('-')[2]}` : '9/19'
               }
             </a>
           )
