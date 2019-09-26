@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, read, set } from '../firebase/database'
+import { read, set, fetchWithEqual } from '../firebase/database'
 import Accepted from '../components/accepted'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -37,48 +37,42 @@ type ActionProps = {
 
 const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
-    const userId = await getUid()
-    listenStart(`/users/${userId}/articles/wrotes`, async (val: any) => {
-      if (val) {
-        const dataSource: any = []
-        await Promise.all(
-          Object.keys(val).map(async (key, i) => {
-            const {
-              contents: { keyword, tags, title, countAll },
-              dates: { accepted, writingStart },
-            } = (await read(`/articles/${val[key]}`)).val()
+    const userId: any = await getUid()
+    const userArticles = (await fetchWithEqual('/articles', 'writer', userId)).val()
 
-            const startBeauty = writingStart
+    const dataSource = Object.keys(userArticles)
+      .map((articleId, i) => {
+        const {
+          contents: { keyword, tags, title, countAll },
+          dates: { accepted, writingStart },
+        } = userArticles[articleId]
+        const startBeauty = writingStart
+          .split('-')
+          .slice(0, 3)
+          .join('-')
+        const acceptedBeauty = accepted
+          ? accepted
               .split('-')
               .slice(0, 3)
               .join('-')
-            const acceptedBeauty = accepted
-              ? accepted
-                  .split('-')
-                  .slice(0, 3)
-                  .join('-')
-              : ''
-            const diff = Number(
-              moment(acceptedBeauty).diff(moment(startBeauty), 'days')
-            )
-
-            dataSource.push({
-              key: i,
-              id: val[key],
-              accepted,
-              keyword,
-              tags,
-              title,
-              countAll,
-              days: diff,
-            })
-          })
+          : ''
+        const diff = Number(
+          moment(acceptedBeauty).diff(moment(startBeauty), 'days')
         )
-        receiveData(dataSource)
-      } else {
-        receiveData([])
-      }
-    })
+
+        return {
+          key: i,
+          id: userArticles[articleId],
+          accepted,
+          keyword,
+          tags,
+          title,
+          countAll,
+          days: diff,
+        }
+      })
+      .filter((v: any) => v.status === 'accepted')
+    receiveData(dataSource)
   },
   editArticle: ({ history }) => async ({ id }) => {
     history.push(`/articles/edit/${id}`)
