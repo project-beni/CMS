@@ -93,7 +93,8 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               dates: { ordered, pending, accepted, writingStart },
               writer,
               index,
-              isPublic
+              isPublic,
+              publishDate
             } = val[key]
 
             const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
@@ -136,7 +137,8 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               days: diff,
               types: [ existTwitter, existLink ],
               index,
-              isPublic
+              isPublic,
+              publishDate
             })
 
             // generate writer filter
@@ -201,7 +203,10 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       await set({
         path: `/articles/${id}/`,
         data: index ? (
-          {isPublic: true }
+          {
+            isPublic: true,
+            publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+          }
         ) : {
           isPublic: true,
           index: sasa[0].index+1,

@@ -170,7 +170,7 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='公開'
-        render={({ id, isPublic, index, categories }) => (
+        render={({ id, isPublic, index, categories, publishDate }) => (
           !isPublic ? (
             <Popconfirm
               onConfirm={() => publish({ id, categories, index })}
@@ -191,6 +191,9 @@ const AcceptedList: React.SFC<any> = ({
               target='_blank'
             >
               公開済み
+              {
+                publishDate ? `\n${publishDate.split('-')[1]}/${publishDate.split('-')[2]}` : '9/19'
+              }
             </a>
           )
         )}
