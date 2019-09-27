@@ -31,7 +31,8 @@ type State = {
   writer: string
   relatedQueries: string[]
   keyword: string[]
-  isDrawerVisible: boolean,
+  isDrawerVisible: boolean
+  instructions: any
 }
 
 export type StateUpdates = {
@@ -44,6 +45,7 @@ export type StateUpdates = {
   setKeyword: ({ keyword }: State) => State
   toggleDrawer: ({ isDrawerVisible }: State) => State
   changeTitle: ({ title }: State) => State
+  setInstructions: ({ instructions }: State ) => State
 }
 
 const stateHandlers = withStateHandlers<State, StateUpdates>(
@@ -56,6 +58,7 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     relatedQueries: [],
     keyword: [],
     isDrawerVisible: false,
+    instructions: []
   },
   {
     updateBody: props => ({ body }) => ({ ...props, body }),
@@ -72,7 +75,8 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
       ...props,
       isDrawerVisible: !props.isDrawerVisible,
     }),
-    changeTitle: props => ({ title }) => ({ ...props, title })
+    changeTitle: props => ({ title }) => ({ ...props, title }),
+    setInstructions:props => ({ instructions }) => ({ ...props, instructions })
   }
 )
 
@@ -90,13 +94,15 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     setHead,
     receiveData,
     match,
+    setInstructions
   }) => async () => {
     read(`/articles/${match.params.id}`).then(async snapshot => {
       const {
-        contents: { body, keyword, title },
+        contents: { body, keyword, title, baseBody },
         writer,
       } = snapshot.val()
-
+      
+      setInstructions({ instructions: JSON.parse(baseBody).blocks })
       receiveData({ body: editorStateFromRaw(JSON.parse(body)) })
       setKeyword({ keyword: keyword })
 
@@ -110,7 +116,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           if (!keywords.length) {
             keywords.push(searchWord)
           }
-          setRelatedQueries({ relatedQueries: keywords })
+          setRelatedQueries({ relatedQueries: keywords.slice(0, 15) })
         })
         .catch((err: Error) => {
           message.error(`関連キーワードの取得に失敗しました：${err}`)
@@ -165,6 +171,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         const styles: any = []
         let countIndex = 0
 
+
         Array.prototype.forEach.call(contents, (content: any) => {
           if (content.className === 'public-DraftStyleDefault-ul') {
             Array.prototype.forEach.call(content.childNodes, (li: any) => {
@@ -176,6 +183,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               countIndex++
             })
           } else {
+            
             styles[countIndex] = {
               count: counts[countIndex].count,
               type: counts[countIndex].type,
