@@ -42,7 +42,7 @@ const editArticles: React.SFC<any> = ({
           <p>{writer}</p>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ marginBottom: 250 }}>
         <Col span={3}>
           <EachLineInfo counts={counts} />
         </Col>
