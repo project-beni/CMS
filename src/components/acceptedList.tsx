@@ -83,7 +83,7 @@ const AcceptedList: React.SFC<any> = ({
           const s = writingStart ? writingStart.split('-') : null
           return s ? `${s[0]}年${s[1]}/${s[2]}` : null
         }}
-        key='orderDate'
+        key='orderedDate'
       />
       <Column
         title='提出日時'

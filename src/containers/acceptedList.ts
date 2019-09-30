@@ -187,35 +187,41 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   publish: () => async ({ id, categories, index }) => {
     const all = (await read('/articles')).val()
     
+    
     const sasa = Object.keys(all).map((key) => {  
+      const article = all[key]
       if (
-        all[key].contents.categories[0] === categories[0] &&
-        all[key].index &&
-        all[key].status === 'accepted'
+        article.contents.categories[0] === categories[0] &&
+        article.index &&
+        article.status === 'accepted'
       ) {
-        return all[key]
+        return article
       } else {
         return null
       }
-    }).filter(v=>v).sort((a,b) => b.index-a.index)
+    })
+      .filter(v=>v).sort((a,b) => b.index-a.index)
     
     try {
+      let pageIndex
+      if (!sasa.length) {
+        pageIndex = 1
+      } else if (index) {
+        pageIndex = index
+      } else {
+        pageIndex = sasa[0].index+1
+      }
       await set({
         path: `/articles/${id}/`,
-        data: index ? (
-          {
-            isPublic: true,
-            publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
-          }
-        ) : {
+        data: {
           isPublic: true,
-          index: sasa[0].index+1,
+          index: pageIndex,
           publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
         }
       })
         .then(() => message.success('公開設定をしました．公開する場合は「ビルド・リリース」ボタンを押してください．'))
     } catch (err) {
-      console.log(err)
+      message.error(err)
     }
   },
   build: () => async () => {
