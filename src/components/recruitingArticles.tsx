@@ -85,7 +85,7 @@ const RecruitingArticles: React.SFC<any> = ({
           }
         />
         {position === 'writer' ? (
-          amountOfArticles <= 2 ? (
+          amountOfArticles <= 0 ? (
             <Column
               title='受注'
               render={({ id }) => (
