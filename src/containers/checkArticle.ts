@@ -188,7 +188,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               count: counts[countIndex].count,
               type: counts[countIndex].type,
               top: content.offsetTop,
-              data: content.childNodes[0].childNodes[0].childNodes[0].innerHTML
+              text: content.childNodes[0].childNodes[0].childNodes[0].innerHTML
             }
             countIndex++
           }
@@ -239,6 +239,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           count: counts[countIndex].count,
           type: counts[countIndex].type,
           top: content.offsetTop,
+          text: content.childNodes[0].childNodes[0].childNodes[0].innerHTML
         }
         countIndex++
       }
