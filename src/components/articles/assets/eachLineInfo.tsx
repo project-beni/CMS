@@ -7,6 +7,7 @@ type Content = {
   top: number
   count: number
   data: string
+  text: string
 }
 type Props = {
   counts: Content[]
@@ -100,7 +101,7 @@ const EachLineInfo: React.FC<Props> = ({ counts }) => (
                   top: content.top
                 }}
               >
-                <a href={`https://bizual.jp/${content.data}/`} target='_blank'>内リンク</a>
+                <a href={`https://bizual.jp${content.text}/`} target='_blank'>内リンク</a>
               </div>
             )
             break
