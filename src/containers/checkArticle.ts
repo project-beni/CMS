@@ -183,12 +183,15 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               countIndex++
             })
           } else {
-            
+            let inner = ''
+            try {
+              inner = content.childNodes[0].childNodes[0].childNodes[0].innerHTML
+            } catch (e) {}
             styles[countIndex] = {
               count: counts[countIndex].count,
               type: counts[countIndex].type,
               top: content.offsetTop,
-              text: content.childNodes[0].childNodes[0].childNodes[0].innerHTML
+              text: inner
             }
             countIndex++
           }
@@ -235,11 +238,15 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           countIndex++
         })
       } else {
+        let inner = ''
+        try {
+          inner = content.childNodes[0].childNodes[0].childNodes[0].innerHTML
+        } catch (e) {}
         styles[countIndex] = {
           count: counts[countIndex].count,
           type: counts[countIndex].type,
           top: content.offsetTop,
-          text: content.childNodes[0].childNodes[0].childNodes[0].innerHTML
+          text: inner
         }
         countIndex++
       }
