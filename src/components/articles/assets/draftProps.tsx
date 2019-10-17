@@ -9,7 +9,7 @@ import {
 } from '@material-ui/icons'
 import { Icon } from 'antd'
 
-type BlockLabel = 'H1' | 'H2' | 'H3' | 'H6' | 'P' | 'QT' | 'UL' | 'twitter-link' | 'outside-link'
+type BlockLabel = 'H1' | 'H2' | 'H3' | 'H6' | 'P' | 'QT' | 'UL' | 'twitter-link' | 'outside-link' | 'inside-link'
 type BlockStyle = 'header-one' | 'header-two' | 'header-three' | 'header-six' | 'paragraph' | 'blockquote' | 'unordered-list-item' | 'table'
 
 type InlineLabel = 'Link' | 'Back'
@@ -84,6 +84,13 @@ export const directorActions: Actions[] = [
       >
         小<br/><span style={{ fontSize: '0.1em', lineHeight: '0.1em' }}>見出し</span>
       </h3>
+    )
+  },
+  {
+    type: 'block',
+    label: 'inside-link',
+    style: 'inside-link', icon: () => (
+      <p style={{ color: '#fff', lineHeight: '0.7em'}}>内部</p>
     )
   }
 ]

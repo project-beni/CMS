@@ -153,7 +153,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
             break
           case '7':
             tag = 'inside-link'
-            main = content || '内部リンク'
+            main = content || ''
             break
           case '8':
             tag = 'outside-link'

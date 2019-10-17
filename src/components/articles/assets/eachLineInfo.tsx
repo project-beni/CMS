@@ -6,6 +6,8 @@ type Content = {
   type: Styles
   top: number
   count: number
+  data: string
+  text: string
 }
 type Props = {
   counts: Content[]
@@ -87,6 +89,20 @@ const EachLineInfo: React.FC<Props> = ({ counts }) => (
                   top: content.top
                 }}
               >外</div>
+            )
+            break
+          case 'inside-link':
+            return (
+              <div
+                key={i}
+                className='outside-link'
+                style={{
+                  position: 'absolute',
+                  top: content.top
+                }}
+              >
+                <a href={`https://bizual.jp${content.text}/`} target='_blank'>内リンク</a>
+              </div>
             )
             break
           case 'unordered-list-item':
