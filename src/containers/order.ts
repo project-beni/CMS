@@ -163,6 +163,10 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
             tag = 'twitter-link'
             main = content || 'Twitterリンク'
             break
+          case '10':
+            tag = 'author'
+            main = content || '0'
+            break
         }
 
         defaultBody.blocks[loop] = {
