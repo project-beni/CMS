@@ -118,11 +118,11 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
     }
     let loop = 0
     headings.split('\n').forEach(line => {
-      const content = line.slice(2, line.length)
+      const [ type, content ] = line.split('	')
       if (true) {
         let tag = ''
         let main = ''
-        switch (line[0]) {
+        switch (type) {
           case 'D':
             tag = 'paragraph'
             main = content || 'ディスクリプション'
