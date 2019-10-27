@@ -43,6 +43,10 @@ const AllArticleList: React.SFC<any> = ({
               const accepted = dates.accepted.split('-').slice(1,3).join('/')
               return <Tag color='#64b5f6'>受理:{accepted}</Tag>
               break
+            case 'published':
+              const published = dates.accepted.split('-').slice(1,3).join('/')
+              return <Tag color='#00bcd4'>公開:{published}</Tag>
+              break
             default:
               return null
               break
@@ -53,7 +57,8 @@ const AllArticleList: React.SFC<any> = ({
           { text: '執筆', value: 'writing' },
           { text: '検品', value: 'pending' },
           { text: '差戻', value: 'rejected' },
-          { text: '受理', value: 'accepted' }
+          { text: '受理', value: 'accepted' },
+          { text: '公開', value: 'published' }
         ]}
         onFilter={(value, {status}: any) => status.indexOf(value) === 0}
         key='status'

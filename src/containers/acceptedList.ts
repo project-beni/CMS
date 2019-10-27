@@ -87,14 +87,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       if (val) {
         const dataSource: any = { list: [] }
         Object.keys(val).forEach((key, i) => {
-          if (val[key].status === 'accepted') {
+          if (val[key].status === 'accepted' || val[key].status === 'published') {
             const {
               contents: { keyword, tags, title, countAll, categories, body },
-              dates: { ordered, pending, accepted, writingStart },
+              dates: { ordered, pending, accepted, writingStart, published },
               writer,
               index,
-              isPublic,
-              publishDate
+              status
             } = val[key]
 
             const types = JSON.parse(body).blocks.map((content: any) => content.text ? content.type : null).filter((v: string) => v)
@@ -137,8 +136,8 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               days: diff,
               types: [ existTwitter, existLink ],
               index,
-              isPublic,
-              publishDate
+              publishDate: published,
+              status
             })
 
             // generate writer filter
@@ -193,7 +192,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       if (
         article.contents.categories[0] === categories[0] &&
         article.index &&
-        article.status === 'accepted'
+        article.status === 'published'
       ) {
         return article
       } else {
@@ -212,11 +211,16 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         pageIndex = sasa[0].index+1
       }
       await set({
+        path: `/articles/${id}/dates`,
+        data: {
+          published: moment().format('YYYY-MM-DD-hh-mm-ss')
+        }
+      })
+      await set({
         path: `/articles/${id}/`,
         data: {
-          isPublic: true,
           index: pageIndex,
-          publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+          status: 'published'
         }
       })
         .then(() => message.success('公開設定をしました．公開する場合は「ビルド・リリース」ボタンを押してください．'))

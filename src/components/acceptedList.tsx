@@ -170,8 +170,8 @@ const AcceptedList: React.SFC<any> = ({
       />
       <Column
         title='公開'
-        render={({ id, isPublic, index, categories, publishDate }) => (
-          !isPublic ? (
+        render={({ id, status, index, categories, publishDate }) => (
+          status === 'accepted' ? (
             <Popconfirm
               onConfirm={() => publish({ id, categories, index })}
               title='公開します'
