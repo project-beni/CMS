@@ -212,11 +212,16 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         pageIndex = sasa[0].index+1
       }
       await set({
+        path: `/articles/${id}/dates`,
+        data: {
+          publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+        }
+      })
+      await set({
         path: `/articles/${id}/`,
         data: {
-          isPublic: true,
           index: pageIndex,
-          publishDate: moment().format('YYYY-MM-DD-hh-mm-ss')
+          status: 'published'
         }
       })
         .then(() => message.success('公開設定をしました．公開する場合は「ビルド・リリース」ボタンを押してください．'))
