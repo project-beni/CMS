@@ -1,6 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { message } from 'antd'
+const moment = require('moment')
 
 import AcceptedViewer from '../components/articles/acceptedViewer'
 import { read, set } from '../firebase/database'
@@ -213,9 +214,13 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     setCountAll({ countAll })
   },
   myBlockStyle: () => (contentBlock: any) => contentBlock.getType(),
-  save: ({ body, match, countAll, title }) => () => {
+  save: ({ body, match, countAll, title }) => async () => {
     const article = editorStateToJSON(body)
 
+    set({
+      path: `/articles/${match.params.articleId}/dates`,
+      data: { published: moment().format('YYYY-MM-DD-hh-mm-ss') },
+    })
     set({
       path: `/articles/${match.params.articleId}/contents`,
       data: { body: article, countAll, title },
