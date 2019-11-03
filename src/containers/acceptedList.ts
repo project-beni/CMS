@@ -229,7 +229,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     }
   },
   build: () => async () => {
-    await Axios.post('https://api.netlify.com/build_hooks/5d6e41da325c862acbef4063')
+    await Axios.post('https://api.netlify.com/build_hooks/5dbe97ad234e67ace9b4a497')
       .then(() => {
         message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．')
       })
