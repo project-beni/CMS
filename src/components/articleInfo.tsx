@@ -1,19 +1,20 @@
 import * as React from 'react'
-import { Button, Select } from 'antd'
-const { Option } = Select
+// import { Button, Select } from 'antd'
+// const { Option } = Select
 
 const EditWriter: React.SFC<any> = ({
-  changeTags,
-  tags,
-  submit,
-  tagChoices,
-  changeCategory,
-  category,
-  categoryChoices
-
+  // changeTags,
+  // tags,
+  // submit,
+  // tagChoices,
+  // changeCategory,
+  // category,
+  // categoryChoices
 }) => (
   <React.Fragment>
-    <Select
+        <p>現在このページは封鎖中です</p>
+    <p>カテゴリやタグの変更がある場合は直接開発者まで連絡してください．</p>
+    {/* <Select
       mode='multiple'
       style={{ margin: 50, width: 300 }}
       placeholder='Please select'
@@ -48,7 +49,7 @@ const EditWriter: React.SFC<any> = ({
       }}
     >
       保存
-    </Button>
+    </Button> */}
   </React.Fragment>
 )
 
