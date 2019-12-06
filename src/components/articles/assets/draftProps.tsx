@@ -5,7 +5,9 @@ import {
   FormatQuote,
   FormatColorFill,
   Comment,
-  OpenInNewTwoTone
+  OpenInNewTwoTone,
+  MapOutlined,
+  SpeakerNotesOutlined
 } from '@material-ui/icons'
 import { Icon } from 'antd'
 
@@ -42,13 +44,23 @@ const baseActions: Actions[] = [
 
 export const writerActions = baseActions
 
-export const directorActions: Actions[] = [
+export const directorActions: any = [
   { type: 'block', label: 'H6', style: 'header-six', icon: Comment },
   { type: 'separator' },
   ...baseActions,
   { type: 'separator' },
-  { type: 'block', label: 'twitter-link', style: 'twitter-link', icon: () => (<Icon type='twitter' />) },
-  { type: 'block', label: 'outside-link', style: 'outside-link', icon: OpenInNewTwoTone },
+  { type: 'block', label: 'twitter-link', style: 'twitter-link', icon: () => (
+    <><Icon type='twitter' /><p style={{ fontSize: 10 }}>twitter</p></>
+  )},
+  { type: 'block', label: 'google-map', style: 'google-map', icon: () => (
+    <><MapOutlined/><p style={{ fontSize: 10 }}>map</p></>
+  )},
+  { type: 'block', label: 'google-forms', style: 'google-forms', icon: () => (
+    <><SpeakerNotesOutlined/><p style={{ fontSize: 10 }}>form</p></>
+  )},
+  { type: 'block', label: 'outside-link', style: 'outside-link', icon: () => (
+    <><OpenInNewTwoTone/><p style={{ fontSize: 10 }}>o-link</p></>
+  )},
   { type: 'separator' },
   {
     type: 'block',
