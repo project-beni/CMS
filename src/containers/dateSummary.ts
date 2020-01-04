@@ -62,7 +62,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       pending: 0,
       rejected: 0,
       accepted: 0,
-      key: 'regular',
+      key: 'tRegular',
     }
     const todayAll: any = {
       head: '合計',
@@ -72,6 +72,16 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       rejected: 0,
       accepted: 0,
       key: 'regular',
+    }
+    let unique: any = {
+      head: 'ユニーク',
+      ordered: [],
+      writingStart: [],
+      pending: [],
+      rejected: [],
+      accepted: [],
+      published: [],
+      key: 'unique',
     }
 
     Object.keys(articles).forEach(key => {
@@ -84,17 +94,23 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           } catch (err) {
             writerPosition = 'new'
           }
+          unique[date].push(articles[key].writer)
+          todayAll[date] += 1
           if (writerPosition === 'regular') {
             todayRegular[date] += 1
-            todayAll[date] += 1
           } else {
             todayNew[date] += 1
-            todayAll[date] += 1
           }
         }
       })
     })
-    receiveData({ articleData: [todayNew, todayRegular, todayAll] })
+    unique.ordered = unique.ordered.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.writingStart = unique.writingStart.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.pending = unique.pending.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.rejected = unique.rejected.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.accepted = unique.accepted.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    
+    receiveData({ articleData: [ todayNew, todayRegular, todayAll, unique ] })
   },
   changeDate: ({ updateDate, receiveData }) => async compareDate => {
     updateDate({ compareDate })
@@ -116,7 +132,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       pending: 0,
       rejected: 0,
       accepted: 0,
-      key: 'regular',
+      key: 'tRegular',
     }
     const todayAll: any = {
       head: '合計',
@@ -126,6 +142,16 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       rejected: 0,
       accepted: 0,
       key: 'result',
+    }
+    let unique: any = {
+      head: 'ユニーク',
+      ordered: [],
+      writingStart: [],
+      pending: [],
+      rejected: [],
+      accepted: [],
+      published: [],
+      key: 'unique',
     }
 
     Object.keys(articles).forEach(key => {
@@ -143,17 +169,24 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           } catch (err) {
             writerPosition = 'new'
           }
+          unique[date].push(articles[key].writer)
+          todayAll[date] += 1
           if (writerPosition === 'regular') {
             todayRegular[date] += 1
-            todayAll[date] += 1
+            
           } else {
             todayNew[date] += 1
-            todayAll[date] += 1
           }
         }
       })
     })
-    receiveData({ articleData: [todayNew, todayRegular, todayAll] })
+    unique.ordered = unique.ordered.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.writingStart = unique.writingStart.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.pending = unique.pending.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.rejected = unique.rejected.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+    unique.accepted = unique.accepted.filter((x: string, i: number, self: any) => self.indexOf(x) === i).length
+
+    receiveData({ articleData: [ todayNew, todayRegular, todayAll, unique ] })
   },
 })
 
