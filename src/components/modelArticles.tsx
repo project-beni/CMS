@@ -38,6 +38,7 @@ const ModelArticles: React.SFC<any> = ({
         key='tags'
       />
       <Column title='文字数' dataIndex='countAll' />
+      <Column title='説明' dataIndex='describe' />
       <Column
         title='閲覧する'
         render={({ id }) => (
