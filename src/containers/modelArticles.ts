@@ -41,6 +41,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
           if (val[key].type === 'model') {
             const {
               contents: { keyword, tags, title, countAll, categories },
+              describe,
             } = val[key]
 
             dataSource.push({
@@ -51,6 +52,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               title,
               countAll,
               categories,
+              describe: describe || ''
             })
           }
         })

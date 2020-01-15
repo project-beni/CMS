@@ -24,7 +24,8 @@ type State = {
     height: number
   }[]
   type: '' | 'normal' | 'model'
-  countAll: number
+  countAll: number,
+  describe: string,
 }
 
 export type StateUpdates = {
@@ -34,6 +35,7 @@ export type StateUpdates = {
   setCountAll: ({ countAll }: State) => State
   setType: ({ type }: State) => State
   updateTitle: ({ title }: State) => State
+  updateDesc: ({ describe }: State) => State
 }
 
 const stateHandlers = withStateHandlers<State, StateUpdates>(
@@ -42,15 +44,17 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     counts: [],
     countAll: 0,
     type: '',
-    title: ''
+    title: '',
+    describe: '',
   },
   {
-    updateBody: props => ({ body }) => ({ ...props, body }),
+    updateBody: props => ({ body, }) => ({ ...props, body }),
     receiveData: props => ({ body, title }) => ({ ...props, body, title }),
     setCounts: props => ({ counts }) => ({ ...props, counts }),
     setCountAll: props => ({ countAll }) => ({ ...props, countAll }),
     setType: props => ({ type }) => ({ ...props, type }),
-    updateTitle: props => ({ title }) => ({ ...props, title })
+    updateTitle: props => ({ title }) => ({ ...props, title }),
+    updateDesc: props => ({ describe }) => ({ ...props, describe })
   }
 )
 
@@ -67,14 +71,17 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     receiveData,
     setType,
     match,
+    updateDesc
   }) => async () => {
     read(`/articles/${match.params.articleId}`).then(snapshot => {
       const {
         contents: { body, title },
         type,
+        describe,
       } = snapshot.val()
 
       setType({ type: type ? type : 'normal' })
+      updateDesc({ describe })
 
       receiveData({ body: editorStateFromRaw(JSON.parse(body)), title })
 
@@ -247,6 +254,18 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
         message.error(`サーバーとの通信中にエラーが発生しました．：${err}`)
       })
   },
+  sendDescribe: ({ describe, match }) => () => {
+    console.log('asdf');
+    
+    const articleId = match.params.articleId
+    set({ path: `/articles/${articleId}`, data: { describe } })
+      .then(() => {
+        message.success('モデル記事の説明文を更新しました')
+      })
+      .catch(err => {
+        message.error(`サーバーとの通信中にエラーが発生しました．：${err}`)
+      })
+  }
 })
 
 type LifecycleProps = RouteComponentProps | ActionProps
