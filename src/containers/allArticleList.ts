@@ -29,7 +29,7 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
     dataSource: [],
     isLoading: true,
     tagFilter: [],
-    categoryFilter: []
+    categoryFilter: [],
   },
   {
     receiveData: (props) => (dataSource: any) => ({
@@ -41,7 +41,7 @@ const stateHandlers = withStateHandlers<State, StateUpdates>(
       ...props,
       tagFilter,
       categoryFilter
-    })
+    }),
   }
 )
 
