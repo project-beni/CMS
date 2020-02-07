@@ -51,7 +51,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
             } = val[key]
 
             const diff =
-              7 -
+              3 -
               Number(
                 moment().diff(
                   moment(

@@ -1,6 +1,6 @@
 module.exports = {
   '**/*.ts?(x)': () => [
-    'tsc -p tsconfig.json --noEmit',
+    // 'tsc -p tsconfig.json --noEmit',
     'eslint --fix',
     'git add',
   ],
