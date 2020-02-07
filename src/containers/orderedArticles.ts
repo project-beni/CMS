@@ -48,7 +48,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               dates: { ordered, writingStart },
             } = (await read(`/articles/${val[key]}`)).val()
             const diff =
-              7 -
+              3 -
               Number(
                 moment().diff(
                   moment(
