@@ -1,5 +1,6 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
+import { map } from 'bluebird'
 
 import { listenStart, read, set } from '../firebase/database'
 import RecruitingArticles from '../components/orderedArticles'
@@ -40,9 +41,9 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     const userId = await getUid()
     listenStart(`/users/${userId}/articles/writings`, async (val: any) => {
       if (val) {
-        const dataSource: any = []
-        await Promise.all(
-          Object.keys(val).map(async (key, i) => {
+        const dataSource = await map(
+          Object.keys(val),
+          async (key, i) => {
             const {
               contents: { keyword, tags, title },
               dates: { ordered, writingStart },
@@ -60,9 +61,23 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
                   'days'
                 )
               )
+            console.log(moment().format('MM/DD'));
+            console.log(moment(writingStart.split('-').slice(0, 3).join('-')).format('MM/DD'));
+            console.log(Number(
+              moment().diff(
+                moment(
+                  writingStart
+                    .split('-')
+                    .slice(0, 3)
+                    .join('-')
+                ),
+                'days'
+              )
+            ));
+            
+              
             const countdown = diff < 0 ? 0 : diff
-
-            dataSource.push({
+            return {
               key: i,
               id: val[key],
               ordered,
@@ -70,8 +85,9 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
               tags,
               title,
               countdown,
-            })
-          })
+            }
+          },
+          { concurrency: 1 }
         )
         receiveData(dataSource)
       } else {

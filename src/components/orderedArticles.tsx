@@ -29,7 +29,7 @@ const RecruitingArticles: React.SFC<any> = ({
         render={({ countdown }) => {
           if (countdown === 0) {
             return <p style={{ color: '#d32f2f' }}>{`${countdown}日`}</p>
-          } else if (countdown < 4) {
+          } else if (countdown < 1) {
             return <p style={{ color: '#fb8c00' }}>{`${countdown}日`}</p>
           } else {
             return `${countdown}日`
