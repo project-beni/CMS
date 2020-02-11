@@ -39,21 +39,34 @@ const RecruitingArticles: React.SFC<any> = ({
   <div>
     <h1>記事の発注</h1>
     <Formik
-      initialValues={{ title: '', headings: '', keyword: [] }}
+      initialValues={{ title: '', headings: '', keyword1: '', keyword2: '', keyword3: '' }}
       onSubmit={onSubmit}
       render={({
         handleChange,
         handleSubmit,
-        values: { headings, keyword, title },
+        values: { headings, keyword1, keyword2, keyword3, title },
         setFieldValue,
       }) => (
         <Form {...formItemLayout} onSubmit={handleSubmit}>
-          <Item label='キーワード（１つごとに改行）'>
-            <TextArea
-              name='keyword'
+          <Item label='キーワード1'>
+            <Input
+              name='keyword1'
               onChange={handleChange}
-              value={keyword}
-              rows={3}
+              value={keyword1}
+            />
+          </Item>
+          <Item label='キーワード2'>
+            <Input
+              name='keyword2'
+              onChange={handleChange}
+              value={keyword2}
+            />
+          </Item>
+          <Item label='キーワード3'>
+            <Input
+              name='keyword3'
+              onChange={handleChange}
+              value={keyword3}
             />
           </Item>
           <Item label='タグ'>

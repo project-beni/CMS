@@ -43,7 +43,9 @@ const stateHandlers = withStateHandlers<State, Handlers>(
 export type Article = {
   contents: {
     body: string
-    keyword: string
+    keyword1: string
+    keyword2: string
+    keyword3: string
     tags: string[]
   }
   dates: {
@@ -88,7 +90,9 @@ export type Article = {
 
 type FormValues = {
   headings: string
-  keyword: string
+  keyword1: string
+  keyword2: string
+  keyword3: string
   title: string
   tagNames: string[]
   categories: []
@@ -98,13 +102,15 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
   // TODO state types
   onSubmit: ({ toggleLoading, history }) => async ({
     headings,
-    keyword,
+    keyword1,
+    keyword2,
+    keyword3,
     tagNames,
     title,
     categories,
   }: FormValues) => {
     toggleLoading()
-    if (!headings || !keyword || !tagNames || !title || !categories) {
+    if (!headings || !keyword1 || !tagNames || !title || !categories) {
       toggleLoading()
       message.error('全て入力してください')
       return
@@ -182,12 +188,20 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
       }
     })
     const body = editorStateToJSON(editorStateFromRaw(defaultBody))
+    const keywords = [];
+    keyword1 && keywords.push(keyword1)
+    keyword2 && keywords.push(keyword2)
+    keyword3 && keywords.push(keyword3)
+
+    console.log(keywords);
+    
+    
     const article = {
       contents: {
         body,
         baseBody: body,
         title,
-        keyword: keyword.split('\n').map(key => key),
+        keyword: keywords,
         tags: tagNames,
         categories,
       },
