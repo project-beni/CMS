@@ -1,16 +1,23 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { parse } from 'query-string'
-import Axios from 'axios'
 
 import { listenStart, read, set } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 import { withRouter } from 'react-router'
 import { message } from 'antd'
+import { Octokit } from '@octokit/rest'
+import { IncomingWebhook } from '@slack/webhook'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const moment = require('moment')
+
+const octokit =new Octokit({
+  auth: '5a8642f43900c02a60a75e3e63d92341b044a867',
+  baseUrl: 'https://api.github.com',
+})
+const webhook = new IncomingWebhook('https://hooks.slack.com/services/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')
 
 type Filter = {
   text: string
@@ -229,13 +236,18 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     }
   },
   build: () => async () => {
-    await Axios.post('https://api.netlify.com/build_hooks/5dbe97ad234e67ace9b4a497')
-      .then(() => {
-        message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．')
+    // request(options, callback);
+    await octokit.repos.createDispatchEvent({
+      owner: 'taka-sho',
+      repo: 'bizual-viewer',
+      event_type: 'build-media',
+    })
+      .then(async () => {
+        message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．');
+        await webhook.send('【テスト】メディアのビルドを開始しました．');
       })
-      .catch((err) => {
-        message.error(`ビルドの通信時にエラーが発生しました．${err}`)
-      })
+      .catch(e => message.error(`ビルドリクエストの通信時にエラーが発生しました．${e}`));
+      
   }
 })
 
