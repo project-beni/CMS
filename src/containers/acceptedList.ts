@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { parse } from 'query-string'
-import Axios from 'axios'
+const { get } = require('axios')
 
 import { listenStart, read, set } from '../firebase/database'
 import AcceptedList from '../components/acceptedList'
@@ -229,13 +229,12 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
     }
   },
   build: () => async () => {
-    await Axios.post('https://api.netlify.com/build_hooks/5dbe97ad234e67ace9b4a497')
+    get(`https://bizual-keywords-generat.herokuapp.com/api/v2/build`)
       .then(() => {
-        message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．')
+        message.success('ビルドを開始しました．リリースされるまで10分ほどかかります．');
       })
-      .catch((err) => {
-        message.error(`ビルドの通信時にエラーが発生しました．${err}`)
-      })
+      .catch((e: Error) => message.error(`ビルドリクエストの通信時にエラーが発生しました．${e}`));
+      
   }
 })
 
