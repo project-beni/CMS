@@ -31,7 +31,7 @@ const AcceptedList: React.SFC<any> = ({
   return (
     <div style={{ marginLeft: 20 }}>
       <h1>受理した記事の一覧</h1>
-      <Markdown source='[![Netlify Status](https://api.netlify.com/api/v1/badges/efa8c153-cf41-49ec-9d60-1e8635b7149f/deploy-status)](https://app.netlify.com/sites/bizual-viewer/deploys)' />
+      <Markdown source='![Build and release](https://github.com/taka-sho/bizual-viewer/workflows/Build%20and%20release/badge.svg?branch=master)' />
       <Popconfirm
         title='ビルドしたのち，リリースも行います．本当によろしいでしょうか？'
         okText='はい．ビルドする．'
