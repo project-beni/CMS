@@ -26,6 +26,7 @@ const editArticles: React.SFC<any> = ({
   updateCheck,
   checks
 }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
   return (
     <div style={{ margin: '100px 50px' }} >
       <Row>
@@ -154,7 +155,10 @@ const editArticles: React.SFC<any> = ({
         />
         <Popconfirm
           title='本当に提出しますか'
-          onConfirm={submit}
+          onConfirm={() => {
+            setIsLoading(true)
+            submit()
+          }}
           disabled={checks!==6}
         >
           <Button
@@ -163,6 +167,7 @@ const editArticles: React.SFC<any> = ({
             }}
             disabled={checks!==6}
             type='danger'
+            loading={isLoading}
           >
             提出する
           </Button>
