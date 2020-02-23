@@ -147,7 +147,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
             break
           case '4':
             tag = 'image'
-            main = content || '画像挿入'
+            main = content || '横長の画像を挿入（①縦長の画像　②外部サイトの画像　は使用しないでください）'
             break
           case '5':
             tag = 'paragraph'

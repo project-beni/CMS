@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { message } from 'antd';
 import { ImageRounded } from '@material-ui/icons'
 const { insertDataBlock } = require('megadraft')
 
@@ -13,6 +14,10 @@ export default class Table extends React.Component <any> {
   onClick () {
     const src = window.prompt('画像のURLを貼り付けてください')
     if (!src) return
+    if (!/unsplash/.test(src)) {
+      message.error('指定された画像を使用してください');
+      return
+    }
     const data = {
       type: constants.PLUGIN_TYPE,
       src
