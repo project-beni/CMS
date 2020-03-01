@@ -58,14 +58,14 @@ const WithHandlers = withHandlers<any, ActionProps>({
     const categoryBeauty = Object.keys(categoryChoices).map((key: string) => categoryChoices[key])
     setCategoryChoices({ categoryChoices: categoryBeauty })
   },
-  submit: ({ match, category, tags }) => () => {
+  submit: ({ match, tags }) => () => {
     const articleId = match.params.id
     
     try {
       set({
         path: `/articles/${articleId}/contents`,
         data: {
-          categories: [category],
+          // categories: category,
           tags
         }
       }).then(() => {
