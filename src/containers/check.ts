@@ -1,7 +1,7 @@
 import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { listenStart, read, set } from '../firebase/database'
+import { listenStart, read, set, listenCheckingArticles } from '../firebase/database'
 import Check from '../components/check'
 import { getUid, isEmailConfirmed } from '../firebase/auth'
 
@@ -39,7 +39,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
   fetchData: ({ receiveData }: any) => async () => {
     const users = (await read('/users')).val()
 
-    listenStart('/articles', (val: any) => {
+    listenCheckingArticles('articles', (val: any) => {
       if (val) {
         const dataSource: any = []
         Object.keys(val).forEach((key, i) => {

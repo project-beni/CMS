@@ -2,7 +2,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import { RouteComponentProps } from 'react-router-dom'
 import { message } from 'antd'
 
-import { listenStart, push, read, set } from '../firebase/database'
+import { listenStart, push, read, set, listenOrderedArticles } from '../firebase/database'
 import RecruitingArticles from '../components/recruitingArticles'
 import { getUid, isEmailConfirmed, isLogedIn } from '../firebase/auth'
 
@@ -74,7 +74,7 @@ const WithHandlers = withHandlers<RouteComponentProps | any, ActionProps>({
       }
     })
 
-    listenStart('/articles', (val: any) => {
+    listenOrderedArticles('/articles', (val: any) => {
       if (val) {
         const dataSource: any = []
         Object.keys(val).forEach((key, i) => {
