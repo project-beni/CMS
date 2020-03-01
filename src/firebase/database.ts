@@ -36,6 +36,39 @@ export const listenStart = (path: string, cb: Function) => {
     })
 }
 
+export const listenOrderedArticles = (path: string, cb: Function) => {
+  firebase
+    .database()
+    .ref(path)
+    .orderByChild('status')
+    .equalTo('ordered')
+    .on('value', (snapshot: any) => {
+      cb(snapshot.val())
+    })
+}
+
+export const listenModelArticles = (path: string, cb: Function) => {
+  firebase
+    .database()
+    .ref(path)
+    .orderByChild('type')
+    .equalTo('model')
+    .on('value', (snapshot: any) => {
+      cb(snapshot.val())
+    })
+}
+
+export const listenCheckingArticles = (path: string, cb: Function) => {
+  firebase
+    .database()
+    .ref(path)
+    .orderByChild('status')
+    .equalTo('pending')
+    .on('value', (snapshot: any) => {
+      cb(snapshot.val())
+    })
+}
+
 export const remove = ({ path }: { path: string }) => {
   return firebase
     .database()
