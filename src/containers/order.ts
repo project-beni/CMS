@@ -173,6 +173,22 @@ const WithHandlers = withHandlers<RouteComponentProps | any, {}>({
             tag = 'author'
             main = content || '0'
             break
+          case '11':
+            tag = 'map'
+            main = content
+            break
+          case '12':
+            tag = 'form'
+            main = content
+            break
+          case '13':
+            tag = 'youtube'
+            main = content
+            break
+          case '14':
+            tag = 'instagram'
+            main = content
+            break
         }
 
         defaultBody.blocks[loop] = {
