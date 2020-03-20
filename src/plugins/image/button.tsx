@@ -14,7 +14,7 @@ export default class Table extends React.Component <any> {
   onClick () {
     const src = window.prompt('画像のURLを貼り付けてください')
     if (!src) return
-    if (!/unsplash/.test(src)) {
+    if (!/unsplash|storage.googleapis.com\/job-scope.appspot.com\//.test(src)) {
       message.error('指定された画像を使用してください');
       return
     }
