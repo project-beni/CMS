@@ -145,7 +145,8 @@ const editArticles: React.SFC<any> = ({
             'テキストは2,3行で改行され、空行はありませんか？',
             '大事なポイントは太字、特に重要なポイントは太字+マーカーにしていますか？',
             '誤字脱字、変換ミスはありませんか？',
-            'コピペはしていませんか？'
+            'コピペはしていませんか？',
+            '本記事のキーワードの検索結果 1位~3位 の記事よりも、読者を満足でき充実した記事と言えますか？',
           ]}
           style={{
             fontSize: '.6em',
@@ -159,13 +160,13 @@ const editArticles: React.SFC<any> = ({
             setIsLoading(true)
             submit()
           }}
-          disabled={checks!==6}
+          disabled={checks!==7}
         >
           <Button
             style={{
               margin: '0 0 15px 15px',
             }}
-            disabled={checks!==6}
+            disabled={checks!==7}
             type='danger'
             loading={isLoading}
           >
