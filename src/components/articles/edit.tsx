@@ -160,13 +160,13 @@ const editArticles: React.SFC<any> = ({
             setIsLoading(true)
             submit()
           }}
-          disabled={checks!==6}
+          disabled={checks!==7}
         >
           <Button
             style={{
               margin: '0 0 15px 15px',
             }}
-            disabled={checks!==6}
+            disabled={checks!==7}
             type='danger'
             loading={isLoading}
           >
