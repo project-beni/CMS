@@ -91,7 +91,8 @@ export default class Block extends React.Component<any> {
                                 <Input.TextArea
                                   placeholder='ヘッダー'
                                   value={element}
-                                  autosize={true}
+                                  // autosize={true}
+                                  key={`input-${i}-${j}`}
                                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                     this._handleCaptionChange(e, tableData, i, j)
                                   }}
@@ -115,7 +116,8 @@ export default class Block extends React.Component<any> {
                                 <Input.TextArea
                                   placeholder='コンテンツ'
                                   value={element}
-                                  autosize={true}
+                                  // autosize={true}
+                                  key={`input-${i}-${j}`}
                                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                     this._handleCaptionChange(e, tableData, i, j)
                                   }}
